@@ -1,0 +1,17 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile.backend"
+
+[deploy]
+startCommand = "uvicorn main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+
+[[services]]
+name = "backend"
+source = "backend"
+
+[[services]]
+name = "frontend"
+source = "frontend"
+dockerfilePath = "Dockerfile.frontend"
