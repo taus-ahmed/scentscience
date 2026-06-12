@@ -60,6 +60,20 @@ TARGET_GROUPS = {
 
 SOCIAL_DISTANCE_MAP = {0: "intimate", 1: "personal", 2: "room", 3: "crowd"}
 
+# Ground-truth longevity midpoints from Perfumes_dataset community_longevity_label
+LONGEVITY_LABEL_HOURS = {
+    "very strong": 12.0,
+    "strong":       9.0,
+    "medium":       5.5,
+    "moderate":     5.5,
+    "light–medium": 4.0,
+    "light-medium": 4.0,
+    "medium–strong": 7.5,
+    "medium-strong": 7.5,
+    "light":        2.0,
+    "weak":         2.0,
+}
+
 
 def _model_path(group: str) -> Path:
     return MODELS_DIR / f"{group}_v{MODEL_VERSION}.pkl"
@@ -103,6 +117,13 @@ def _generate_labels(perfume: dict, group: str) -> np.ndarray:
 
     longevity_hours = (longevity_class * 2.0 + community_long * 1.5) * conc_mult / 2.5
     sillage = (projection * 0.6 + community_sill * 2.0) * conc_mult / 2.0
+
+    # Blend community_longevity_label ground truth into longevity_hours (50/50)
+    label_key = perfume.get("community_longevity_label", "")
+    if label_key:
+        label_hours = LONGEVITY_LABEL_HOURS.get(label_key.lower().strip())
+        if label_hours is not None:
+            longevity_hours = 0.5 * longevity_hours + 0.5 * label_hours
 
     if group == "performance":
         decay = (10 - volatility) / 10.0

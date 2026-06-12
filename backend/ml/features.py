@@ -145,7 +145,11 @@ def build_feature_vector(perfume: dict[str, Any]) -> np.ndarray:
     occ_total = max(sum(occ_votes), 1)
     occ_dist = [v / occ_total for v in occ_votes]
 
-    vector = note_features + family_features + community + season_dist + occ_dist
+    # Source reliability: normalized source_count capped at 3 → 0.33 / 0.67 / 1.0
+    source_count = float(perfume.get("source_count", 1))
+    source_reliability = [min(source_count, 3.0) / 3.0]
+
+    vector = note_features + family_features + community + season_dist + occ_dist + source_reliability
     return np.array(vector, dtype=np.float32)
 
 
@@ -188,5 +192,5 @@ def apply_context_modifiers(predictions: dict, context: dict) -> dict:
 
 def get_feature_dim() -> int:
     # 9 chemistry fields + longevity_class + concentration_multiplier = 11
-    # + 17 family fractions + 3 community ratings + 4 season fracs + 6 occasion fracs
-    return 11 + len(FAMILIES) + 3 + 4 + 6  # 41
+    # + 17 family fractions + 3 community ratings + 4 season fracs + 6 occasion fracs + 1 source_reliability
+    return 11 + len(FAMILIES) + 3 + 4 + 6 + 1  # 42

@@ -1,8 +1,18 @@
 """Cross-validate and sanity-check model predictions."""
 
 
-def validate_predictions(predictions: dict) -> dict:
-    """Clamp all 0-10 scores, fix logical inconsistencies."""
+def validate_predictions(
+    predictions: dict,
+    source_count: int = 1,
+    has_pyramid: bool = False,
+) -> dict:
+    """
+    Clamp all 0-10 scores, fix logical inconsistencies, compute confidence.
+
+    source_count and has_pyramid are used to weight the confidence_score:
+      - multi-source + note pyramid → full confidence
+      - single-source + no pyramid  → 70% confidence (lower, not excluded)
+    """
     score_fields = [
         "proj_1hr", "proj_3hr", "proj_6hr", "proj_8hr",
         "sillage_score", "heat_amplification",
@@ -42,8 +52,20 @@ def validate_predictions(predictions: dict) -> dict:
     if t_max <= t_min:
         p["temp_optimal_max_c"] = t_min + 10
 
-    # Confidence score: average of model-derived scores vs community expectation
+    # Base confidence: average of model-derived scores normalised to 0-1
     scores = [p.get(f, 5) for f in score_fields if f in p]
-    p["confidence_score"] = round(sum(scores) / len(scores) / 10.0, 3) if scores else 0.5
+    base = (sum(scores) / len(scores) / 10.0) if scores else 0.5
+
+    # Data-quality multiplier based on how well this perfume is documented
+    if source_count >= 2 and has_pyramid:
+        quality = 1.00   # confirmed by multiple sources + full note data
+    elif source_count >= 2 and not has_pyramid:
+        quality = 0.85   # multi-source but no note pyramid
+    elif source_count == 1 and has_pyramid:
+        quality = 0.90   # single source but note chemistry available
+    else:
+        quality = 0.70   # single source, no pyramid — predictions are less grounded
+
+    p["confidence_score"] = round(base * quality, 3)
 
     return p

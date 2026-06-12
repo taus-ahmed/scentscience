@@ -5,16 +5,31 @@ ML-powered perfume recommendation platform.
 ## Current Status
 
 ### ML Models
-All 5 models trained on **67,222 perfumes** (was 20):
+All 5 models trained on **67,222 perfumes** with full source-quality weighting:
 - **performance** — how a fragrance performs (longevity, sillage)
 - **environmental** — best season/weather fit
 - **person** — demographic/skin-type targeting
 - **occasion** — use-case matching (date, office, casual, etc.)
 - **value** — price-to-quality ratio assessment
 
-Dior Sauvage EDT prediction (final, 67k dataset):
-- Longevity: 3.9h | Sillage: 4.7/10 | Blind buy: 6.8/10 | Versatility: 7.1/10
-- confidence_score: **0.439** — note: this is `avg(all predictions)/10`, not a true ML accuracy metric. The models trained on 67k perfumes are far better calibrated than the 20-perfume seed, but the metric doesn't reflect that directly.
+**Feature vector: 42-dimensional** (added `source_reliability` as feature 42)
+
+Dior Sauvage EDT prediction (after source_count + longevity_label wiring):
+- Longevity: 3.6h | Sillage: 4.6/10 | Blind buy: 6.6/10 | Versatility: 7.2/10
+- source_count: 1 | has_pyramid: True → quality multiplier: 0.90
+- confidence_score: **0.389**
+
+Confidence score = `avg(all scores) / 10 * quality_multiplier`. Quality multiplier tiers:
+| source_count | has_pyramid | multiplier |
+|---|---|---|
+| ≥ 2 | yes | 1.00 |
+| ≥ 2 | no | 0.85 |
+| 1 | yes | 0.90 |
+| 1 | no | 0.70 |
+
+Community longevity label blending (384 perfumes with labels):
+- `longevity_hours = 0.5 * chemistry_derived + 0.5 * label_midpoint`
+- Label midpoints: Very Strong→12h, Strong→9h, Medium/Moderate→5.5h, Light→2h
 
 ### Database (final — import complete)
 - **67,222 perfumes** in the database
@@ -37,7 +52,7 @@ Multi-source import via `backend/scripts/import_dataset.py` (idempotent, safe to
 
 Deduplication: 1,204 fra_cleaned dupes skipped; 3 fra_perfumes skipped (no parseable URL); 568 Perfumes_dataset rows unmatched (sparse/obscure brands). Max source_count on any single record: 43.
 
-**Model columns on Perfume:**
+**Perfume model columns added:**
 - `source_count` (Integer, default=1) — incremented per contributing source
 - `community_longevity_label` (String, nullable) — "Strong"/"Medium"/"Light" from Perfumes_dataset
 
@@ -46,16 +61,14 @@ Deduplication: 1,204 fra_cleaned dupes skipped; 3 fra_perfumes skipped (no parse
 - **Async model loading with lock** — loads `.pkl` if it exists, trains only if missing
 - **Combination skin type handled** — no longer crashes
 - **Missing notes logged as warnings** — instead of silently failing
-- **`get_feature_dim` fixed** — returns 41
+- **`get_feature_dim` fixed** — returns 42 (was 41 before source_reliability)
 - **Dead imports removed**
 - **`ClimateChart` parseFloat fix** — prevented NaN renders on the frontend
 
 ## Next Steps
 
 1. **Expand `notes_chemistry.json`** — many fra_cleaned notes still default to 5.0 (e.g., `incense`, `turkish rose`, `yuzu`, `oud`). Add family-based defaults for the top ~100 most-used missing notes to improve feature vector quality.
-2. **Wire `source_count` into confidence weighting** — use as a reliability multiplier in `_generate_labels()` in `ml/model.py` so records backed by 3+ sources get stronger signal.
-3. **Wire `community_longevity_label` into performance model** — map Strong→5/Medium→3/Light→1 and blend with the existing `longevity_class` feature in `ml/features.py`.
-4. **Improve predict route model loading** — `routes/predict.py` still falls back to `seed_perfumes.json` if no pkl exists; update it to load from DB (matching `scripts/test_model.py`).
+2. **Improve predict route model loading** — `routes/predict.py` still falls back to `seed_perfumes.json` if no pkl exists on cold deploy; update it to load from DB (matching `scripts/test_model.py`).
 
 ## Do Not Do
 

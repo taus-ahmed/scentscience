@@ -17,6 +17,7 @@ from sqlalchemy import select
 from models.database import AsyncSessionLocal, init_db
 from models.perfume import Perfume
 from ml.model import train_all_models, load_models, predict
+from ml.validators import validate_predictions
 
 
 def _perfume_to_dict(p: Perfume) -> dict:
@@ -42,6 +43,8 @@ def _perfume_to_dict(p: Perfume) -> dict:
         "community_longevity_rating": p.community_longevity_rating or 3.0,
         "community_sillage_rating": p.community_sillage_rating or 3.0,
         "community_overall_rating": p.community_overall_rating or 3.0,
+        "source_count": p.source_count or 1,
+        "community_longevity_label": p.community_longevity_label or "",
     }
 
 
@@ -99,13 +102,23 @@ if sauvage is None:
     sauvage = candidates[0] if candidates else perfumes[0]
     print(f"  (Using '{sauvage['name']}' by {sauvage['brand']} as test subject)")
 
-result = predict(sauvage, models)
+raw = predict(sauvage, models)
+has_pyramid = bool(sauvage.get("top_notes") or sauvage.get("middle_notes") or sauvage.get("base_notes"))
+result = validate_predictions(
+    raw,
+    source_count=sauvage.get("source_count", 1),
+    has_pyramid=has_pyramid,
+)
 
 print(f"\nDior Sauvage ({sauvage.get('concentration', '?')}) prediction:")
-print(f"  Longevity:     {result['longevity_hours']:.1f}h")
-print(f"  Sillage:       {result['sillage_score']:.1f}/10")
-print(f"  Blind buy:     {result['blind_buy_score']:.1f}/10")
-print(f"  Versatility:   {result['versatility_score']:.1f}/10")
-print(f"  Season summer: {result['season_summer']:.1f}/10")
-print(f"  Dry down:      {result['dry_down_character']}")
+print(f"  Longevity:        {result['longevity_hours']:.1f}h")
+print(f"  Sillage:          {result['sillage_score']:.1f}/10")
+print(f"  Blind buy:        {result['blind_buy_score']:.1f}/10")
+print(f"  Versatility:      {result['versatility_score']:.1f}/10")
+print(f"  Season summer:    {result['season_summer']:.1f}/10")
+print(f"  Dry down:         {result['dry_down_character']}")
+print(f"  source_count:     {sauvage.get('source_count', 1)}")
+print(f"  has_pyramid:      {has_pyramid}")
+print(f"  longevity_label:  {sauvage.get('community_longevity_label') or '(none)'}")
+print(f"  confidence_score: {result['confidence_score']}")
 print("Model training SUCCESS")

@@ -79,6 +79,8 @@ def _perfume_to_dict(p: Perfume) -> dict:
         "community_longevity_rating": p.community_longevity_rating,
         "community_sillage_rating": p.community_sillage_rating,
         "community_overall_rating": p.community_overall_rating,
+        "source_count": p.source_count or 1,
+        "community_longevity_label": p.community_longevity_label or "",
     }
 
 
@@ -121,8 +123,15 @@ async def predict_endpoint(req: PredictRequest, db: AsyncSession = Depends(get_d
     ctx_dict = req.context.model_dump() if req.context else {}
     raw_predictions = apply_context_modifiers(raw_predictions, ctx_dict)
 
-    # 4. Validate
-    predictions = validate_predictions(raw_predictions)
+    # 4. Validate — pass data-quality signals for confidence weighting
+    has_pyramid = bool(
+        (matched_perfume.top_notes or matched_perfume.middle_notes or matched_perfume.base_notes)
+    )
+    predictions = validate_predictions(
+        raw_predictions,
+        source_count=matched_perfume.source_count or 1,
+        has_pyramid=has_pyramid,
+    )
     predictions["model_version"] = settings.model_version
 
     # 5. NLP via Claude
