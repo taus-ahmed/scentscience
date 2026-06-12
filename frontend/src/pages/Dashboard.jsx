@@ -129,10 +129,10 @@ export default function Dashboard() {
 
 function ClimateChart({ predictions: p }) {
   const data = [
-    { name: 'Tropical', value: p.climate_tropical?.toFixed(1), color: '#f59e0b' },
-    { name: 'Arid', value: p.climate_arid?.toFixed(1), color: '#fb923c' },
-    { name: 'Temperate', value: p.climate_temperate?.toFixed(1), color: '#34d399' },
-    { name: 'Cold', value: p.climate_cold?.toFixed(1), color: '#60a5fa' },
+    { name: 'Tropical', value: parseFloat(p.climate_tropical?.toFixed(1)), color: '#f59e0b' },
+    { name: 'Arid', value: parseFloat(p.climate_arid?.toFixed(1)), color: '#fb923c' },
+    { name: 'Temperate', value: parseFloat(p.climate_temperate?.toFixed(1)), color: '#34d399' },
+    { name: 'Cold', value: parseFloat(p.climate_cold?.toFixed(1)), color: '#60a5fa' },
   ]
   return (
     <div style={{ background: '#111827', borderRadius: '12px', padding: '1.5rem', border: '1px solid #1f2937' }}>

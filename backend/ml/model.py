@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from ml.features import build_feature_vector, FAMILIES
+from config import get_settings
 
 try:
     from xgboost import XGBRegressor
@@ -22,7 +23,11 @@ try:
 except ImportError:
     XGB_AVAILABLE = False
 
-MODELS_DIR = Path(__file__).parent / "models"
+_models_dir_setting = get_settings().models_dir
+MODELS_DIR = (
+    Path(_models_dir_setting) if Path(_models_dir_setting).is_absolute()
+    else Path(__file__).parent.parent / _models_dir_setting
+)
 MODEL_VERSION = "1.0.0"
 
 TARGET_GROUPS = {

@@ -1,7 +1,10 @@
+import logging
 import numpy as np
 import json
 import os
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 CONCENTRATION_MULTIPLIERS = {
     "EDC": 0.6,
@@ -57,6 +60,14 @@ def build_feature_vector(perfume: dict[str, Any]) -> np.ndarray:
     top = perfume.get("top_notes", [])
     mid = perfume.get("middle_notes", [])
     base = perfume.get("base_notes", [])
+
+    all_note_names = set(top + mid + base)
+    missing = {n for n in all_note_names if not _get_note(n)}
+    if missing:
+        logger.warning(
+            "Notes not in notes_chemistry.json (defaulting to 5.0): %s",
+            sorted(missing),
+        )
 
     fields = [
         "volatility", "heat_performance", "cold_performance",
@@ -155,6 +166,10 @@ def apply_context_modifiers(predictions: dict, context: dict) -> dict:
     elif skin == "oily":
         p["skin_oily_score"] = min(10.0, p.get("skin_oily_score", 5) * 1.15)
         p["sillage_score"] = min(10.0, p.get("sillage_score", 5) * 1.10)
+    elif skin == "combination":
+        p["skin_combo_score"] = min(10.0, p.get("skin_combo_score", 5) * 1.10)
+        p["longevity_hours"] = min(24.0, p.get("longevity_hours", 6) * 1.05)
+        p["sillage_score"] = min(10.0, p.get("sillage_score", 5) * 1.05)
 
     season_boosts = {"spring": "season_spring", "summer": "season_summer",
                      "fall": "season_fall", "winter": "season_winter"}
@@ -172,4 +187,6 @@ def apply_context_modifiers(predictions: dict, context: dict) -> dict:
 
 
 def get_feature_dim() -> int:
-    return 10 + len(FAMILIES) + 3 + 4 + 6  # 46
+    # 9 chemistry fields + longevity_class + concentration_multiplier = 11
+    # + 17 family fractions + 3 community ratings + 4 season fracs + 6 occasion fracs
+    return 11 + len(FAMILIES) + 3 + 4 + 6  # 41

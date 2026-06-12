@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -17,21 +19,28 @@ router = APIRouter()
 settings = get_settings()
 
 _models_cache: dict | None = None
+_models_lock: asyncio.Lock | None = None
 
 
-def _get_models():
-    global _models_cache
-    if _models_cache is None:
-        _models_cache = load_models()
-        if not _models_cache:
+async def _get_models() -> dict:
+    global _models_cache, _models_lock
+    if _models_lock is None:
+        _models_lock = asyncio.Lock()
+    async with _models_lock:
+        if _models_cache is not None:
+            return _models_cache
+        cache = load_models()
+        if not cache:
             import json
             from pathlib import Path
             seed_path = Path(__file__).parent.parent / "data" / "seed_perfumes.json"
             with open(seed_path) as f:
                 perfumes = json.load(f)
-            train_all_models(perfumes)
-            _models_cache = load_models()
-    return _models_cache
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(None, train_all_models, perfumes)
+            cache = load_models()
+        _models_cache = cache
+        return _models_cache
 
 
 class PredictContext(BaseModel):
@@ -85,12 +94,16 @@ async def predict_endpoint(req: PredictRequest, db: AsyncSession = Depends(get_d
     perfumes = result.scalars().all()
 
     if not perfumes:
-        stmt2 = select(Perfume)
+        # Brand filter returned nothing — retry with name filter only
+        stmt2 = select(Perfume).where(Perfume.name.ilike(f"%{req.perfume_name}%"))
         result2 = await db.execute(stmt2)
         perfumes = result2.scalars().all()
 
     if not perfumes:
-        raise HTTPException(status_code=404, detail="No perfumes in database. Run the seeder first.")
+        raise HTTPException(
+            status_code=404,
+            detail=f"Perfume '{req.perfume_name}' not found. Check the name or brand and try again.",
+        )
 
     names = [p.name for p in perfumes]
     match = process.extractOne(req.perfume_name, names, scorer=fuzz.WRatio)
@@ -101,7 +114,7 @@ async def predict_endpoint(req: PredictRequest, db: AsyncSession = Depends(get_d
     perfume_dict = _perfume_to_dict(matched_perfume)
 
     # 2. Run ML models
-    models = _get_models()
+    models = await _get_models()
     raw_predictions = ml_predict(perfume_dict, models)
 
     # 3. Apply user context modifiers

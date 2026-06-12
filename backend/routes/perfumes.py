@@ -3,7 +3,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
 from pydantic import BaseModel
 from typing import Optional
-import json
 
 from models.database import get_db
 from models.perfume import Perfume
