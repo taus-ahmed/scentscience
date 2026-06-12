@@ -52,6 +52,8 @@ class Perfume(Base):
     community_longevity_rating: Mapped[float] = mapped_column(Float, default=3.0)
     community_sillage_rating: Mapped[float] = mapped_column(Float, default=3.0)
     community_overall_rating: Mapped[float] = mapped_column(Float, default=3.0)
+    source_count: Mapped[int] = mapped_column(Integer, default=1)
+    community_longevity_label: Mapped[str | None] = mapped_column(String(50), nullable=True)
     scraped_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 

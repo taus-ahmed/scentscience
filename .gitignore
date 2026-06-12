@@ -56,3 +56,7 @@ notebooks/.ipynb_checkpoints/
 
 # Docker
 .dockerignore
+
+# Large dataset CSVs (Kaggle sources — too big for git)
+backend/data/datasets/fra_cleaned.csv
+backend/data/datasets/fra_perfumes.csv
