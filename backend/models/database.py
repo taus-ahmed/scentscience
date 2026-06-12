@@ -21,9 +21,7 @@ async def get_db():
 
 
 async def init_db():
-    from models.perfume import Perfume, Note, PerfumeNote  # noqa: F401
-    from models.prediction import PredictionResult  # noqa: F401
-    from models.review import UserReview  # noqa: F401
+    import models  # noqa: F401 — registers all mappers via models/__init__.py
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     print("Database tables created.")
