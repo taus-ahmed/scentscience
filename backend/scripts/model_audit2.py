@@ -105,7 +105,7 @@ TARGETS = [
     ("yves saint",     "black opium",     "oriental gourmand"),
     ("guerlain",       "shalimar",        "oriental"),
     ("versace",        "eros",            "fresh fougere"),
-    ("thierry mugler", "angel",           "oriental gourmand"),
+    ("mugler",          "angel",           "oriental gourmand"),
     ("jo malone",      "lime basil",      "citrus"),
     ("tom ford",       "black orchid",    "dark floral"),
 ]
