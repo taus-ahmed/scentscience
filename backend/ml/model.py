@@ -217,11 +217,13 @@ def train_all_models(perfumes: list[dict] | None = None) -> None:
 
     X = np.array([build_feature_vector(p) for p in perfumes])
 
-    # Upweight the 384 labeled perfumes so they carry equal total weight to all
-    # unlabeled perfumes — prevents XGBoost regressing purely to chemistry median.
+    # Upweight labeled perfumes so they dominate the regression signal.
+    # Ratio 2.5× means labeled perfumes carry ~71% of total training weight,
+    # which pulls strong/light predictions closer to ground-truth hour values
+    # and reduces the under-prediction bias for heavy orientals.
     n_labeled = sum(1 for p in perfumes if p.get("community_longevity_label"))
     n_unlabeled = len(perfumes) - n_labeled
-    label_weight = (n_unlabeled / n_labeled) if n_labeled > 0 else 1.0
+    label_weight = (n_unlabeled / n_labeled) * 2.5 if n_labeled > 0 else 1.0
     sample_weights = np.array([
         label_weight if p.get("community_longevity_label") else 1.0
         for p in perfumes

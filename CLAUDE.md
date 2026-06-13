@@ -14,8 +14,8 @@ All 5 models trained on **67,222 perfumes** with full source-quality weighting:
 
 **Feature vector: 42-dimensional** (soft cosine-family distribution as features 12–28)
 
-Dior Sauvage Elixir prediction (Phase 7 — formula redesign):
-- Longevity: 11.4h | Sillage: 4.0/10 | Blind buy: 5.0/10
+Dior Sauvage Elixir prediction (Phase 8a — 2.5× label weight):
+- Longevity: 11.2h | Sillage: 4.0/10 | Blind buy: 5.0/10
 - source_count: 3 | rating_count: 11,229 | confidence_score: **0.970**
 
 Dior Sauvage EDT (sc=2, rc=23,727): confidence_score = **0.946**
@@ -57,7 +57,7 @@ Max achievable: **0.97** (cap; sc>=3, real pyramid, 100% coverage, rc>10k)
 - Isotonic regression calibrator trained on 384 labeled perfumes
 - Saved at `ml/models/longevity_calibrator.pkl`
 - Run `python scripts/calibrate_longevity.py` to retrain calibrator
-- Full range restored: 2.0h — 12.0h (was compressed to 3.23h-8.19h before calibration)
+- Full range restored: 2.0h — 12.0h (input range: 3.10h–10.00h before calibration)
 
 ### Database (final — import + pyramid inference + rating backfill complete)
 - **67,222 perfumes** in the database
@@ -89,7 +89,7 @@ Deduplication: 1,204 fra_cleaned dupes skipped; 3 fra_perfumes skipped (no parse
 - `community_longevity_label` (String, nullable) — "Strong"/"Medium"/"Light" from Perfumes_dataset
 - `has_inferred_pyramid` (Boolean, default=False) — set by `scripts/infer_pyramids.py`
 
-### Model Performance (final — after all phases + rating backfill + 100% label override)
+### Model Performance (final — after all phases)
 
 **Improvement history:**
 | Phase | Change | Key improvement |
@@ -107,17 +107,18 @@ Deduplication: 1,204 fra_cleaned dupes skipped; 3 fra_perfumes skipped (no parse
 | 7 | Log-scale rating_mult (max 1.20, was 1.05) | Sauvage EDT: 0.819 -> 0.946 |
 | 7 | Community votes additive bonus (up to +0.04) | Sauvage EDP/Elixir: 0.872 -> 0.970 |
 | 7 | Hard cap raised 0.95 -> 0.97 | sc=3+, >10k ratings: 0.970 |
+| 8a | 2.5× label weight (was 1×) | strong: 71.3%->79.3%, light: 34.8%->82.6%, MAE: 0.80->0.62h |
 
 **Final audit results (run `python scripts/model_audit2.py` from `backend/`):**
 | Metric | Baseline | After all phases |
 |---|---|---|
-| Bucket accuracy | 21.1% | **83.6%** |
-| Strong recall | 0.7% (1/150) | **71.3%** (107/150) |
-| Moderate recall | 28.9% (61/211) | **97.6%** (206/211) |
-| Light recall | 82.6% | **34.8%** (8/23) |
-| MAE | 2.99h | **0.80h** (-73%) |
-| RMSE | 3.48h | **1.27h** (-64%) |
-| Range compression | 3.35x | **1.24x** |
+| Bucket accuracy | 21.1% | **88.0%** |
+| Strong recall | 0.7% (1/150) | **79.3%** (119/150) |
+| Moderate recall | 28.9% (61/211) | **94.8%** (200/211) |
+| Light recall | 82.6% | **82.6%** (19/23) |
+| MAE | 2.99h | **0.62h** (-79%) |
+| RMSE | 3.48h | **1.05h** (-70%) |
+| Range compression | 3.35x | **1.14x** |
 | Longevity range | compressed | **2.0h -- 12.0h** (fully restored) |
 | Missing notes (labeled set) | 313 | **1** (orange honey) |
 | Confidence (Sauvage Elixir sc=3, rc=11k) | 0.433 | **0.970** |
@@ -128,17 +129,17 @@ Deduplication: 1,204 fra_cleaned dupes skipped; 3 fra_perfumes skipped (no parse
 are an upper bound. True generalization accuracy on unlabeled perfumes is lower, but the
 model is well-calibrated for chemistry-driven predictions.
 
-#### Diverse Prediction Table (Phase 7 — log rating_mult + community bonus)
+#### Diverse Prediction Table (Phase 8a — 2.5× label weight)
 | Brand | Name | SC | Pyr | Long | Sill | BB | Conf |
 |---|---|---|---|---|---|---|---|
-| Guerlain | Shalimar Souffle De Parfum | 7 | real | 5.8h | 4.0 | 4.7 | 0.970 |
-| Giorgio Armani | Acqua Di Gioia | 5 | real | 5.8h | 3.9 | 4.5 | 0.970 |
-| Dior | Sauvage Elixir | 3 | real | 11.4h | 4.0 | 5.0 | 0.970 |
-| Chanel | Chanel No 5 Eau De Parfum | 3 | real | 5.8h | 3.9 | 4.3 | 0.970 |
+| Guerlain | Shalimar Souffle De Parfum | 7 | real | 5.6h | 4.0 | 4.7 | 0.970 |
+| Giorgio Armani | Acqua Di Gioia | 5 | real | 5.6h | 3.9 | 4.5 | 0.970 |
+| Dior | Sauvage Elixir | 3 | real | 11.2h | 4.0 | 5.0 | 0.970 |
+| Chanel | Chanel No 5 Eau De Parfum | 3 | real | 5.5h | 3.9 | 4.3 | 0.970 |
 | Creed | Aventus For Her | 3 | real | 9.1h | 4.0 | 4.3 | 0.938 |
-| Yves Saint Laurent | Black Opium Intense | 3 | real | 9.1h | 4.0 | 4.6 | 0.926 |
-| Versace | Eros | 3 | real | 9.2h | 4.9 | 6.2 | 0.970 |
-| Tom Ford | Black Orchid | 3 | real | 11.4h | 4.0 | 4.6 | 0.970 |
+| Yves Saint Laurent | Black Opium Intense | 3 | real | 8.8h | 4.0 | 4.6 | 0.926 |
+| Versace | Eros | 3 | real | 9.2h | 4.9 | 6.3 | 0.970 |
+| Tom Ford | Black Orchid | 3 | real | 12.0h | 4.0 | 4.6 | 0.970 |
 | Jo Malone London | Lime Basil Mandarin | 2 | real | 2.0h | 3.9 | 4.3 | 0.891 |
 | Dior | Sauvage EDT | 2 | real | — | — | — | 0.946 |
 
@@ -147,18 +148,14 @@ Avg confidence across labeled set: **0.868** (all in sc>=2 + real_pyr tier).
 Max confidence cap: **0.97** (was 0.95).
 
 ### Remaining Weaknesses
-1. **Light recall = 34.8%** — 15/23 light perfumes predicted as moderate. Only 23 light
-   examples in labeled set (6% of total). Fix: add more labeled light perfumes, or apply
-   asymmetric class weights for the light bucket in training.
-2. **Strong recall = 71.3%** — 43/150 strong perfumes predicted as moderate. Chemistry
-   features for oriental/woody fragrances diverge from community longevity labels. No
-   strong->light misclassifications remain (was several before).
-3. **Label leakage** — 384 labeled perfumes use 100% label override in training; 83.6%
+1. **Strong recall = 79.3%** — 31/150 strong perfumes still predicted as moderate. Chemistry
+   features for oriental/woody fragrances diverge from community longevity labels.
+2. **Label leakage** — 384 labeled perfumes use 100% label override in training; 88.0%
    accuracy is an upper bound. Unlabeled perfume predictions rely purely on note chemistry +
    community votes.
-4. **Inferred pyramid MAE = 1.40h** vs real pyramid 0.71h — Jaccard-similar notes don't
+3. **Inferred pyramid MAE = 1.08h** vs real pyramid 0.54h — Jaccard-similar notes don't
    always encode the same longevity profile.
-5. **Dedup bug (same-brand, same-name, different-concentration)** — Sauvage EDT and EDP both
+4. **Dedup bug (same-brand, same-name, different-concentration)** — Sauvage EDT and EDP both
    normalize to the same key; higher-id record steals the slot. Tracked for next import refactor.
 
 ### Audit Fixes Applied (commit e32c4b9)
@@ -181,33 +178,29 @@ Stats: 42,995 pyramids inferred in ~90s, 0 skipped.
 
 ## Next Steps
 
-### Phase 7 Confidence Push (in progress — 7a+7b complete)
+### Phase 7c — Parfumo Dataset Import (HIGHEST IMPACT for confidence)
+- **datasets/ folder contains only free samples** — full data requires acquisition
+- **Free path**: Download "Parfumo Fragrance Dataset" from Kaggle (olgagmiufana1, 59,325 perfumes)
+  — no cross-walk, use fuzzy brand+name matching via rapidfuzz
+- **Precise path**: Purchase FragDB full bundle (fragdb.net) — 219,963 Parfumo + 80,968
+  cross-walk pairs (99% precision). Place as `backend/data/datasets/parfumo_dataset.csv` + `crosswalk.csv`
+- Build `scripts/import_parfumo.py`: match records, increment source_count, merge notes
+- Expected: sc=2->3 for popular perfumes → conf 0.946 -> 0.970 (cap)
 
-1. **Phase 7c — Import Parfumo dataset (HIGHEST IMPACT for confidence)**
-   - Kaggle: "Parfumo Fragrance Dataset" (olgagmiufana1, 59,325 perfumes, independent community)
-   - Cross-walk: github.com/FragDB/fragrance-database — 80,968 Fragrantica-Parfumo matched pairs
-   - Place CSVs in `backend/data/datasets/parfumo_dataset.csv` + `crosswalk.csv`
-   - Build `scripts/import_parfumo.py`: use cross-walk IDs to match, increment source_count, merge notes
-   - Expected: sc=2->3 for popular perfumes → conf 0.946 -> 0.970 (cap)
+### Phase 7d — Add log_rating_count as training feature (43-dim, requires retrain)
+- Add `math.log10(max(rating_count, 1))` as feature[42] in `features.py`
+- Update `get_feature_dim()` to return 43
+- Makes model aware of community signal reliability → better calibration for high-data frags
+- Retrain + recalibrate after (`test_model.py` then `calibrate_longevity.py`)
 
-2. **Phase 7d — Add log_rating_count as training feature** (43-dim, requires retrain)
-   - Add `math.log10(max(rating_count, 1))` as feature[42] in `features.py`
-   - Update `get_feature_dim()` to return 43
-   - Makes model aware of community signal reliability → better calibration for high-data frags
-   - Retrain + recalibrate after (`test_model.py` then `calibrate_longevity.py`)
-
-### Model Accuracy Improvements
-
-3. **Improve light recall (34.8%)** — 23 labeled "light" perfumes is too few. Options:
-   - Add asymmetric class weights in `model.py train_all_models()`
-   - Lower bucket threshold from 4.0h -> 3.5h in `model_audit2.py hours_to_bucket()`
-4. **Improve strong recall (71.3%)** — boost `longevity_class` values for oud/musk/amber notes
-   in `notes_chemistry.json` to better encode oriental fragrances.
-5. **Re-run calibration if models retrained** — `python scripts/calibrate_longevity.py` (~30s).
-6. **Improve predict route cold-start** — `routes/predict.py` falls back to seed JSON;
-   update to load from DB instead.
-7. **Fix Thierry Mugler Angel not found** — check:
-   `SELECT brand FROM perfumes WHERE brand ILIKE '%mugler%' LIMIT 5`.
+### Remaining Model Improvements
+- **Improve strong recall (79.3%)** — boost `longevity_class` values for oud/musk/amber notes
+  in `notes_chemistry.json` to better encode oriental fragrances.
+- **Re-run calibration if models retrained** — `python scripts/calibrate_longevity.py` (~30s).
+- **Improve predict route cold-start** — `routes/predict.py` falls back to seed JSON;
+  update to load from DB instead.
+- **Fix Thierry Mugler Angel not found** — check:
+  `SELECT brand FROM perfumes WHERE brand ILIKE '%mugler%' LIMIT 5`.
 
 ## Do Not Do
 

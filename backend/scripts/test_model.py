@@ -111,6 +111,16 @@ coverage = compute_note_coverage(
     sauvage.get("middle_notes", []),
     sauvage.get("base_notes", []),
 )
+total_cv = sum(
+    sauvage.get(k, 0) or 0
+    for k in (
+        "season_spring_votes", "season_summer_votes",
+        "season_fall_votes", "season_winter_votes",
+        "occasion_daily_votes", "occasion_evening_votes",
+        "occasion_sport_votes", "occasion_office_votes",
+        "occasion_night_votes", "occasion_beach_votes",
+    )
+)
 result = validate_predictions(
     raw,
     source_count=sauvage.get("source_count", 1),
@@ -118,6 +128,7 @@ result = validate_predictions(
     has_inferred_pyramid=False,
     note_coverage=coverage,
     rating_count=sauvage.get("rating_count", 0),
+    total_community_votes=total_cv,
 )
 
 print(f"\nDior Sauvage ({sauvage.get('concentration', '?')}) prediction:")
