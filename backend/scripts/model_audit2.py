@@ -196,7 +196,7 @@ async def main():
             label_dist[p.community_longevity_label] += 1
         print("\n  Ground-truth label distribution:")
         for lab, cnt in sorted(label_dist.items(), key=lambda x: -x[1]):
-            bar = "▓" * (cnt * 30 // len(labeled))
+            bar = "#" * (cnt * 30 // len(labeled))
             print(f"    {lab:<22}  {bar:<30}  {cnt:>4}  ({cnt/len(labeled)*100:.1f}%)")
 
         # Run predictions
