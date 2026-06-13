@@ -14,10 +14,17 @@ All 5 models trained on **67,222 perfumes** with full source-quality weighting:
 
 **Feature vector: 42-dimensional** (added `source_reliability` as feature 42)
 
-Dior Sauvage EDT prediction (after pyramid inference + retrain):
+Dior Sauvage EDT prediction (after source_count fix):
 - Longevity: 3.6h | Sillage: 4.6/10 | Blind buy: 6.7/10 | Versatility: 7.2/10
-- source_count: 1 | has_pyramid: True → quality multiplier: 0.90
-- confidence_score: **0.390**
+- source_count: 2 | has_pyramid: True → quality multiplier: 1.00
+- confidence_score: **0.433**
+
+Note: source_count was incorrectly 1 due to a by_brand key-collision in import_dataset.py —
+Sauvage EDT (id=1) and EDP (id=2) both normalize to `by_brand['dior']['sauvage']`; the EDP
+(higher id, iterated last) stole the slot and absorbed the fra_perfumes source_count bump.
+Fixed by `scripts/fix_sauvage_source_count.py` (manual patch: source_count=2, 9 accords,
+fragrantica_url set). Bug is in the dedup logic for same-brand same-name-different-concentration
+records — tracked as a known issue for the next import refactor.
 
 Confidence score = `avg(all scores) / 10 * quality_multiplier`. Quality multiplier tiers:
 | source_count | has_pyramid | multiplier |
