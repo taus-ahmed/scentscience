@@ -258,6 +258,20 @@ def train_all_models(perfumes: list[dict] | None = None) -> None:
         print(f"Trained and saved: {path}")
 
 
+_CALIBRATOR_PATH = MODELS_DIR / "longevity_calibrator.pkl"
+_longevity_calibrator: Any = None
+
+
+def _load_calibrator() -> Any | None:
+    global _longevity_calibrator
+    if _longevity_calibrator is not None:
+        return _longevity_calibrator
+    if _CALIBRATOR_PATH.exists():
+        with open(_CALIBRATOR_PATH, "rb") as f:
+            _longevity_calibrator = pickle.load(f)
+    return _longevity_calibrator
+
+
 def load_models() -> dict[str, Any]:
     models = {}
     for group in TARGET_GROUPS:
@@ -295,7 +309,12 @@ def predict(perfume: dict, models: dict | None = None) -> dict:
     result["temp_optimal_max_c"] = float(result.get("temp_optimal_max_c", 25))
 
     # Longevity hours not clipped to 10
-    result["longevity_hours"] = float(np.clip(result.get("longevity_hours", 6), 0, 24))
+    raw_long = float(np.clip(result.get("longevity_hours", 6), 0, 24))
+    cal = _load_calibrator()
+    if cal is not None:
+        import numpy as _np
+        raw_long = float(cal.predict([raw_long])[0])
+    result["longevity_hours"] = float(np.clip(raw_long, 0.5, 24.0))
 
     # Dry down character from note chemistry
     result["dry_down_character"] = _describe_dry_down(perfume)
