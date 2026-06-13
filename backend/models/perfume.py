@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, Float, JSON, Text, DateTime, ForeignKey, func
+from sqlalchemy import String, Integer, Float, JSON, Text, DateTime, ForeignKey, Boolean, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from models.database import Base
 from datetime import datetime
@@ -54,6 +54,7 @@ class Perfume(Base):
     community_overall_rating: Mapped[float] = mapped_column(Float, default=3.0)
     source_count: Mapped[int] = mapped_column(Integer, default=1)
     community_longevity_label: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    has_inferred_pyramid: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False)
     scraped_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
