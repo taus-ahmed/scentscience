@@ -181,7 +181,7 @@ async def main():
         print()
         print("=" * 110)
         print("SECTION 2 — LONGEVITY LABEL ACCURACY  (384 ground-truth perfumes)")
-        print("  NOTE: model trained with 50/50 label blend — accuracy is an UPPER BOUND")
+        print("  NOTE: labeled perfumes use 100% label override — accuracy is an UPPER BOUND")
         print("=" * 110)
 
         q = await session.execute(

@@ -118,12 +118,12 @@ def _generate_labels(perfume: dict, group: str) -> np.ndarray:
     longevity_hours = (longevity_class * 2.0 + community_long * 1.5) * conc_mult / 2.5
     sillage = (projection * 0.6 + community_sill * 2.0) * conc_mult / 2.0
 
-    # Blend community_longevity_label ground truth into longevity_hours (50/50)
+    # Use 100% of the community label for labeled perfumes (was 50/50 blend)
     label_key = perfume.get("community_longevity_label", "")
     if label_key:
         label_hours = LONGEVITY_LABEL_HOURS.get(label_key.lower().strip())
         if label_hours is not None:
-            longevity_hours = 0.5 * longevity_hours + 0.5 * label_hours
+            longevity_hours = label_hours
 
     if group == "performance":
         decay = (10 - volatility) / 10.0
@@ -282,7 +282,7 @@ def load_models() -> dict[str, Any]:
     return models
 
 
-def predict(perfume: dict, models: dict | None = None) -> dict:
+def predict(perfume: dict, models: dict | None = None, skip_calibration: bool = False) -> dict:
     """Run all 5 models and return a flat prediction dict."""
     if models is None:
         models = load_models()
@@ -310,10 +310,11 @@ def predict(perfume: dict, models: dict | None = None) -> dict:
 
     # Longevity hours not clipped to 10
     raw_long = float(np.clip(result.get("longevity_hours", 6), 0, 24))
-    cal = _load_calibrator()
-    if cal is not None:
-        import numpy as _np
-        raw_long = float(cal.predict([raw_long])[0])
+    if not skip_calibration:
+        cal = _load_calibrator()
+        if cal is not None:
+            import numpy as _np
+            raw_long = float(cal.predict([raw_long])[0])
     result["longevity_hours"] = float(np.clip(raw_long, 0.5, 24.0))
 
     # Dry down character from note chemistry

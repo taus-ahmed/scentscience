@@ -51,7 +51,13 @@ def p_dict(p: Perfume) -> dict:
 
 
 async def collect_labeled() -> list[tuple[float, float]]:
-    """Return (predicted_hours, true_hours) for 384 labeled perfumes."""
+    """Return (raw_predicted_hours, true_hours) for 384 labeled perfumes.
+
+    Uses skip_calibration=True so the isotonic regression is always fit on
+    the raw model output, not on a previously-calibrated value.  Without this,
+    re-training a new model and immediately re-calibrating would compose two
+    calibrators and produce a mismatch at inference time.
+    """
     await init_db()
     models = load_models()
     if not models:
@@ -71,7 +77,8 @@ async def collect_labeled() -> list[tuple[float, float]]:
         true_hours = LONGEVITY_LABEL_HOURS.get((pd["community_longevity_label"] or "").lower().strip())
         if true_hours is None:
             continue
-        raw = predict(pd, models)
+        # skip_calibration=True: get raw model output, not any prior calibration
+        raw = predict(pd, models, skip_calibration=True)
         pred_hours = float(raw.get("longevity_hours", 5.5))
         pairs.append((pred_hours, true_hours))
 
