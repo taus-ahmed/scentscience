@@ -31,16 +31,16 @@ from ml.features import compute_note_coverage
 # ── helpers ───────────────────────────────────────────────────────────────────
 
 def p_dict(p: Perfume) -> dict:
-    return {
+    d = {
         "name": p.name, "brand": p.brand,
         "concentration": p.concentration or "EDT",
         "top_notes": p.top_notes or [], "middle_notes": p.middle_notes or [],
         "base_notes": p.base_notes or [], "accords": p.accords or [],
         "gender_vote": p.gender_vote or "unisex",
-        "season_spring_votes": p.season_spring_votes or 0,
-        "season_summer_votes": p.season_summer_votes or 0,
-        "season_fall_votes":   p.season_fall_votes or 0,
-        "season_winter_votes": p.season_winter_votes or 0,
+        "season_spring_votes":    p.season_spring_votes or 0,
+        "season_summer_votes":    p.season_summer_votes or 0,
+        "season_fall_votes":      p.season_fall_votes or 0,
+        "season_winter_votes":    p.season_winter_votes or 0,
         "occasion_daily_votes":   p.occasion_daily_votes or 0,
         "occasion_evening_votes": p.occasion_evening_votes or 0,
         "occasion_sport_votes":   p.occasion_sport_votes or 0,
@@ -54,6 +54,14 @@ def p_dict(p: Perfume) -> dict:
         "rating_count": p.rating_count or 0,
         "community_longevity_label": p.community_longevity_label or "",
     }
+    d["total_community_votes"] = (
+        d["season_spring_votes"] + d["season_summer_votes"] +
+        d["season_fall_votes"] + d["season_winter_votes"] +
+        d["occasion_daily_votes"] + d["occasion_evening_votes"] +
+        d["occasion_sport_votes"] + d["occasion_office_votes"] +
+        d["occasion_night_votes"] + d["occasion_beach_votes"]
+    )
+    return d
 
 def run_pred(p: Perfume, models: dict) -> tuple[dict, dict, bool]:
     pd = p_dict(p)
@@ -66,7 +74,8 @@ def run_pred(p: Perfume, models: dict) -> tuple[dict, dict, bool]:
         has_pyramid=has_pyr,
         has_inferred_pyramid=bool(getattr(p, "has_inferred_pyramid", False)),
         note_coverage=cov,
-        rating_count=getattr(p, "rating_count", 0) or 0,
+        rating_count=pd["rating_count"],
+        total_community_votes=pd["total_community_votes"],
     )
     return res, pd, has_pyr
 
@@ -392,19 +401,18 @@ async def main():
         l_h, l_t = recalls["light"]
 
         print(f"""
-  ┌─────────────────────────────────┬────────────┬─────────────────────────────────────────────┐
-  │ Metric                          │   Value    │ Notes                                       │
-  ├─────────────────────────────────┼────────────┼─────────────────────────────────────────────┤
-  │ Dior Sauvage conf. (post-fix)   │   0.433    │ source_count 1->2, mult 0.90->1.00           │
-  │ Overall bucket accuracy         │  {exact/n*100:>5.1f}%    │ 3-class on 384 GT perfumes                  │
-  │ Strong recall                   │  {s_h/max(s_t,1)*100:>5.1f}%    │ {s_h}/{s_t} perfumes                              │
-  │ Moderate recall                 │  {m_h/max(m_t,1)*100:>5.1f}%    │ {m_h}/{m_t} perfumes                             │
-  │ Light recall                    │  {l_h/max(l_t,1)*100:>5.1f}%    │ {l_h}/{l_t} perfumes                               │
-  │ MAE (longevity_hours)           │  {mae:>5.2f}h    │ vs label midpoints                          │
-  │ RMSE (longevity_hours)          │  {rmse:>5.2f}h    │                                             │
-  │ Range compression               │  {gt_std/max(pr_std,0.01):>5.2f}x    │ GT std {gt_std:.2f}h -> predicted std {pr_std:.2f}h      │
-  │ Missing note entries            │  {len(note_counts):>6}     │ unique notes defaulting to 5.0              │
-  └─────────────────────────────────┴────────────┴─────────────────────────────────────────────┘
+  +----------------------------------+------------+----------------------------------------------+
+  | Metric                           |   Value    | Notes                                        |
+  +----------------------------------+------------+----------------------------------------------+
+  | Overall bucket accuracy          |  {exact/n*100:>5.1f}%    | 3-class on 384 GT perfumes                   |
+  | Strong recall                    |  {s_h/max(s_t,1)*100:>5.1f}%    | {s_h}/{s_t} perfumes                               |
+  | Moderate recall                  |  {m_h/max(m_t,1)*100:>5.1f}%    | {m_h}/{m_t} perfumes                              |
+  | Light recall                     |  {l_h/max(l_t,1)*100:>5.1f}%    | {l_h}/{l_t} perfumes                                |
+  | MAE (longevity_hours)            |  {mae:>5.2f}h    | vs label midpoints                           |
+  | RMSE (longevity_hours)           |  {rmse:>5.2f}h    |                                              |
+  | Range compression                |  {gt_std/max(pr_std,0.01):>5.2f}x    | GT std {gt_std:.2f}h -> predicted std {pr_std:.2f}h       |
+  | Missing note entries             |  {len(note_counts):>6}     | unique notes defaulting to 5.0               |
+  +----------------------------------+------------+----------------------------------------------+
 """)
 
         print("  Ranked weaknesses:")

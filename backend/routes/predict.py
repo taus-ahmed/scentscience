@@ -133,6 +133,18 @@ async def predict_endpoint(req: PredictRequest, db: AsyncSession = Depends(get_d
         matched_perfume.middle_notes or [],
         matched_perfume.base_notes or [],
     )
+    total_community_votes = (
+        (matched_perfume.season_spring_votes or 0) +
+        (matched_perfume.season_summer_votes or 0) +
+        (matched_perfume.season_fall_votes or 0) +
+        (matched_perfume.season_winter_votes or 0) +
+        (matched_perfume.occasion_daily_votes or 0) +
+        (matched_perfume.occasion_evening_votes or 0) +
+        (matched_perfume.occasion_sport_votes or 0) +
+        (matched_perfume.occasion_office_votes or 0) +
+        (matched_perfume.occasion_night_votes or 0) +
+        (matched_perfume.occasion_beach_votes or 0)
+    )
     predictions = validate_predictions(
         raw_predictions,
         source_count=matched_perfume.source_count or 1,
@@ -140,6 +152,7 @@ async def predict_endpoint(req: PredictRequest, db: AsyncSession = Depends(get_d
         has_inferred_pyramid=bool(matched_perfume.has_inferred_pyramid),
         note_coverage=coverage,
         rating_count=matched_perfume.rating_count or 0,
+        total_community_votes=total_community_votes,
     )
     predictions["model_version"] = settings.model_version
 
