@@ -26,6 +26,7 @@ from models.database import AsyncSessionLocal, init_db
 from models.perfume import Perfume
 from ml.model import load_models, predict, LONGEVITY_LABEL_HOURS
 from ml.validators import validate_predictions
+from ml.features import compute_note_coverage
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -57,7 +58,14 @@ def run_pred(p: Perfume, models: dict) -> tuple[dict, dict, bool]:
     pd = p_dict(p)
     raw = predict(pd, models)
     has_pyr = bool(pd["top_notes"] or pd["middle_notes"] or pd["base_notes"])
-    res = validate_predictions(raw, source_count=pd["source_count"], has_pyramid=has_pyr)
+    cov = compute_note_coverage(pd["top_notes"], pd["middle_notes"], pd["base_notes"])
+    res = validate_predictions(
+        raw,
+        source_count=pd["source_count"],
+        has_pyramid=has_pyr,
+        has_inferred_pyramid=bool(getattr(p, "has_inferred_pyramid", False)),
+        note_coverage=cov,
+    )
     return res, pd, has_pyr
 
 def label_to_midpoint(label: str) -> float | None:

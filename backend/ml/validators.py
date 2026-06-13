@@ -5,13 +5,21 @@ def validate_predictions(
     predictions: dict,
     source_count: int = 1,
     has_pyramid: bool = False,
+    has_inferred_pyramid: bool = False,
+    note_coverage: float = 0.5,
 ) -> dict:
     """
     Clamp all 0-10 scores, fix logical inconsistencies, compute confidence.
 
-    source_count and has_pyramid are used to weight the confidence_score:
-      - multi-source + note pyramid → full confidence
-      - single-source + no pyramid  → 70% confidence (lower, not excluded)
+    confidence_score is now DATA-QUALITY based (not average-of-predictions):
+      base(0.10) + source_count(0-0.25) + pyramid_type(0-0.25) + note_coverage(0-0.30)
+      Max = 0.90 for a perfectly documented fragrance.
+
+    Args:
+        source_count: number of contributing data sources
+        has_pyramid: True if perfume has any note pyramid (real or inferred)
+        has_inferred_pyramid: True if pyramid was inferred (not originally provided)
+        note_coverage: fraction of notes in this perfume found in notes_chemistry.json (0-1)
     """
     score_fields = [
         "proj_1hr", "proj_3hr", "proj_6hr", "proj_8hr",
@@ -52,20 +60,34 @@ def validate_predictions(
     if t_max <= t_min:
         p["temp_optimal_max_c"] = t_min + 10
 
-    # Base confidence: average of model-derived scores normalised to 0-1
-    scores = [p.get(f, 5) for f in score_fields if f in p]
-    base = (sum(scores) / len(scores) / 10.0) if scores else 0.5
+    # ── Data-quality confidence (replaces avg-of-scores formula) ────────────
+    # base: every prediction gets at least 0.10
+    conf = 0.10
 
-    # Data-quality multiplier based on how well this perfume is documented
-    if source_count >= 2 and has_pyramid:
-        quality = 1.00   # confirmed by multiple sources + full note data
-    elif source_count >= 2 and not has_pyramid:
-        quality = 0.85   # multi-source but no note pyramid
-    elif source_count == 1 and has_pyramid:
-        quality = 0.90   # single source but note chemistry available
-    else:
-        quality = 0.70   # single source, no pyramid — predictions are less grounded
+    # source_count contribution: 0.05 (sc=1) → 0.25 (sc≥6)
+    sc = max(1, source_count or 1)
+    if sc >= 6:
+        conf += 0.25
+    elif sc >= 4:
+        conf += 0.22
+    elif sc == 3:
+        conf += 0.18
+    elif sc == 2:
+        conf += 0.13
+    else:  # sc == 1
+        conf += 0.05
 
-    p["confidence_score"] = round(base * quality, 3)
+    # pyramid type: 0.00 (none) / 0.15 (inferred) / 0.25 (real)
+    if has_pyramid and not has_inferred_pyramid:
+        conf += 0.25   # real note pyramid — highest quality
+    elif has_pyramid and has_inferred_pyramid:
+        conf += 0.15   # inferred pyramid — moderate quality
+    # else: no pyramid → 0.00
+
+    # note coverage: up to 0.30
+    cov = max(0.0, min(1.0, note_coverage))
+    conf += cov * 0.30
+
+    p["confidence_score"] = round(min(conf, 0.90), 3)
 
     return p

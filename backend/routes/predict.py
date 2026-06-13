@@ -12,7 +12,7 @@ from models.prediction import PredictionResult
 from ml.model import predict as ml_predict, load_models, train_all_models
 from ml.nlp import generate_nlp_conclusion
 from ml.validators import validate_predictions
-from ml.features import apply_context_modifiers
+from ml.features import apply_context_modifiers, compute_note_coverage
 from config import get_settings
 
 router = APIRouter()
@@ -127,10 +127,17 @@ async def predict_endpoint(req: PredictRequest, db: AsyncSession = Depends(get_d
     has_pyramid = bool(
         (matched_perfume.top_notes or matched_perfume.middle_notes or matched_perfume.base_notes)
     )
+    coverage = compute_note_coverage(
+        matched_perfume.top_notes or [],
+        matched_perfume.middle_notes or [],
+        matched_perfume.base_notes or [],
+    )
     predictions = validate_predictions(
         raw_predictions,
         source_count=matched_perfume.source_count or 1,
         has_pyramid=has_pyramid,
+        has_inferred_pyramid=bool(matched_perfume.has_inferred_pyramid),
+        note_coverage=coverage,
     )
     predictions["model_version"] = settings.model_version
 

@@ -39,6 +39,16 @@ def _get_note(name: str) -> dict | None:
     return db.get(name.lower())
 
 
+def compute_note_coverage(top: list, middle: list, base: list) -> float:
+    """Return fraction of perfume's notes that have entries in notes_chemistry.json."""
+    all_notes = [n for n in (top or []) + (middle or []) + (base or []) if n]
+    if not all_notes:
+        return 0.5  # unknown coverage — use neutral default
+    db = _load_notes_db()
+    known = sum(1 for n in all_notes if n.lower() in db)
+    return known / len(all_notes)
+
+
 def _weighted_avg(note_names: list[str], field: str, weight: float, default: float = 5.0) -> tuple[float, float]:
     total_weight = 0.0
     total_value = 0.0

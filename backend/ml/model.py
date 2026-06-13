@@ -217,6 +217,16 @@ def train_all_models(perfumes: list[dict] | None = None) -> None:
 
     X = np.array([build_feature_vector(p) for p in perfumes])
 
+    # Upweight the 384 labeled perfumes so they carry equal total weight to all
+    # unlabeled perfumes — prevents XGBoost regressing purely to chemistry median.
+    n_labeled = sum(1 for p in perfumes if p.get("community_longevity_label"))
+    n_unlabeled = len(perfumes) - n_labeled
+    label_weight = (n_unlabeled / n_labeled) if n_labeled > 0 else 1.0
+    sample_weights = np.array([
+        label_weight if p.get("community_longevity_label") else 1.0
+        for p in perfumes
+    ])
+
     for group, targets in TARGET_GROUPS.items():
         Y = np.array([_generate_labels(p, group) for p in perfumes])
 
@@ -239,7 +249,7 @@ def train_all_models(perfumes: list[dict] | None = None) -> None:
             base = GradientBoostingRegressor(n_estimators=100, max_depth=3, random_state=42)
             model = MultiOutputRegressor(base, n_jobs=-1)
 
-        model.fit(X, Y)
+        model.fit(X, Y, sample_weight=sample_weights)
         model.target_names = targets
 
         path = _model_path(group)

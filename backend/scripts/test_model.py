@@ -18,6 +18,7 @@ from models.database import AsyncSessionLocal, init_db
 from models.perfume import Perfume
 from ml.model import train_all_models, load_models, predict
 from ml.validators import validate_predictions
+from ml.features import compute_note_coverage
 
 
 def _perfume_to_dict(p: Perfume) -> dict:
@@ -104,10 +105,17 @@ if sauvage is None:
 
 raw = predict(sauvage, models)
 has_pyramid = bool(sauvage.get("top_notes") or sauvage.get("middle_notes") or sauvage.get("base_notes"))
+coverage = compute_note_coverage(
+    sauvage.get("top_notes", []),
+    sauvage.get("middle_notes", []),
+    sauvage.get("base_notes", []),
+)
 result = validate_predictions(
     raw,
     source_count=sauvage.get("source_count", 1),
     has_pyramid=has_pyramid,
+    has_inferred_pyramid=False,
+    note_coverage=coverage,
 )
 
 print(f"\nDior Sauvage ({sauvage.get('concentration', '?')}) prediction:")
