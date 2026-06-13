@@ -138,9 +138,11 @@ def build_feature_vector(perfume: dict[str, Any]) -> np.ndarray:
         avg = total_val / total_w if total_w > 0 else 5.0
         note_features.append(avg)
 
-    # Longevity class weighted average
+    # Longevity class: base notes are fixatives — weight them more heavily than
+    # top/mid notes, which are volatile and don't determine lasting power.
+    lc_weights = [(top, 0.1), (mid, 0.3), (base, 0.6)]
     lc_total = lc_w = 0.0
-    for notes, w in position_weights:
+    for notes, w in lc_weights:
         for name in notes:
             note = _get_note(name)
             if note:
