@@ -21,6 +21,13 @@ FAMILIES = [
 ]
 
 _notes_db: dict[str, dict] | None = None
+_family_centroids: dict[str, np.ndarray] | None = None
+
+_CHEM_FIELDS = [
+    "volatility", "heat_performance", "cold_performance",
+    "humidity_performance", "dry_performance", "skin_bonding",
+    "dry_skin_boost", "oily_skin_boost", "projection_strength", "longevity_class",
+]
 
 
 def _load_notes_db() -> dict[str, dict]:
@@ -37,6 +44,38 @@ def _load_notes_db() -> dict[str, dict]:
 def _get_note(name: str) -> dict | None:
     db = _load_notes_db()
     return db.get(name.lower())
+
+
+def _note_vec(note: dict) -> np.ndarray:
+    return np.array([float(note.get(f, 5.0)) for f in _CHEM_FIELDS], dtype=np.float32)
+
+
+def _cosine_sim(a: np.ndarray, b: np.ndarray) -> float:
+    na, nb = np.linalg.norm(a), np.linalg.norm(b)
+    if na == 0 or nb == 0:
+        return 0.0
+    return float(np.dot(a, b) / (na * nb))
+
+
+def _get_family_centroids() -> dict[str, np.ndarray]:
+    """Compute (once) the chemistry centroid for each family from notes_chemistry.json."""
+    global _family_centroids
+    if _family_centroids is not None:
+        return _family_centroids
+    db = _load_notes_db()
+    buckets: dict[str, list[np.ndarray]] = {f: [] for f in FAMILIES}
+    for note in db.values():
+        fam = note.get("family", "").lower()
+        if fam in buckets:
+            buckets[fam].append(_note_vec(note))
+    centroids: dict[str, np.ndarray] = {}
+    for fam in FAMILIES:
+        if buckets[fam]:
+            centroids[fam] = np.mean(buckets[fam], axis=0).astype(np.float32)
+        else:
+            centroids[fam] = np.full(len(_CHEM_FIELDS), 5.0, dtype=np.float32)
+    _family_centroids = centroids
+    return _family_centroids
 
 
 def compute_note_coverage(top: list, middle: list, base: list) -> float:
@@ -114,17 +153,21 @@ def build_feature_vector(perfume: dict[str, Any]) -> np.ndarray:
     conc_mult = CONCENTRATION_MULTIPLIERS.get(conc, 0.8)
     note_features.append(conc_mult)
 
-    # Family distribution
+    # Soft family attribution: each note contributes to ALL families weighted by
+    # cosine similarity between its chemistry vector and that family's centroid.
+    # This lets a note like cardamom contribute to both "spicy" and "citrus"
+    # instead of being assigned to only one family.
     all_notes = top + mid + base
-    family_counts = {f: 0 for f in FAMILIES}
-    total_notes = max(len(all_notes), 1)
+    centroids = _get_family_centroids()
+    family_sims = {f: 0.0 for f in FAMILIES}
     for name in all_notes:
         note = _get_note(name)
         if note:
-            fam = note.get("family", "").lower()
-            if fam in family_counts:
-                family_counts[fam] += 1
-    family_features = [family_counts[f] / total_notes for f in FAMILIES]
+            nv = _note_vec(note)
+            for fam in FAMILIES:
+                family_sims[fam] += max(0.0, _cosine_sim(nv, centroids[fam]))
+    total_sim = max(sum(family_sims.values()), 1e-9)
+    family_features = [family_sims[f] / total_sim for f in FAMILIES]
 
     # Community ratings
     community = [
