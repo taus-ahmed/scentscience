@@ -7,19 +7,22 @@ def validate_predictions(
     has_pyramid: bool = False,
     has_inferred_pyramid: bool = False,
     note_coverage: float = 0.5,
+    rating_count: int = 0,
 ) -> dict:
     """
     Clamp all 0-10 scores, fix logical inconsistencies, compute confidence.
 
-    confidence_score is now DATA-QUALITY based (not average-of-predictions):
+    confidence_score is DATA-QUALITY based:
       base(0.10) + source_count(0-0.25) + pyramid_type(0-0.25) + note_coverage(0-0.30)
-      Max = 0.90 for a perfectly documented fragrance.
+      × rating_count_multiplier(0.85-1.05)
+      Max ~0.945 for a perfectly documented, highly-rated fragrance.
 
     Args:
         source_count: number of contributing data sources
         has_pyramid: True if perfume has any note pyramid (real or inferred)
         has_inferred_pyramid: True if pyramid was inferred (not originally provided)
-        note_coverage: fraction of notes in this perfume found in notes_chemistry.json (0-1)
+        note_coverage: fraction of notes found in notes_chemistry.json (0-1)
+        rating_count: number of community ratings for this perfume
     """
     score_fields = [
         "proj_1hr", "proj_3hr", "proj_6hr", "proj_8hr",
@@ -88,6 +91,17 @@ def validate_predictions(
     cov = max(0.0, min(1.0, note_coverage))
     conf += cov * 0.30
 
-    p["confidence_score"] = round(min(conf, 0.90), 3)
+    # rating_count multiplier: community validation signal
+    rc = rating_count or 0
+    if rc > 1000:
+        rating_mult = 1.05
+    elif rc >= 200:
+        rating_mult = 1.00
+    elif rc >= 50:
+        rating_mult = 0.95
+    else:
+        rating_mult = 0.85
+
+    p["confidence_score"] = round(min(conf * rating_mult, 0.95), 3)
 
     return p

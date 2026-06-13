@@ -53,6 +53,7 @@ class Perfume(Base):
     community_sillage_rating: Mapped[float] = mapped_column(Float, default=3.0)
     community_overall_rating: Mapped[float] = mapped_column(Float, default=3.0)
     source_count: Mapped[int] = mapped_column(Integer, default=1)
+    rating_count: Mapped[int] = mapped_column(Integer, default=0)
     community_longevity_label: Mapped[str | None] = mapped_column(String(50), nullable=True)
     has_inferred_pyramid: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False)
     scraped_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

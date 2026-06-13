@@ -51,6 +51,7 @@ def p_dict(p: Perfume) -> dict:
         "community_sillage_rating":   p.community_sillage_rating or 3.0,
         "community_overall_rating":   p.community_overall_rating or 3.0,
         "source_count": p.source_count or 1,
+        "rating_count": p.rating_count or 0,
         "community_longevity_label": p.community_longevity_label or "",
     }
 
@@ -65,6 +66,7 @@ def run_pred(p: Perfume, models: dict) -> tuple[dict, dict, bool]:
         has_pyramid=has_pyr,
         has_inferred_pyramid=bool(getattr(p, "has_inferred_pyramid", False)),
         note_coverage=cov,
+        rating_count=getattr(p, "rating_count", 0) or 0,
     )
     return res, pd, has_pyr
 

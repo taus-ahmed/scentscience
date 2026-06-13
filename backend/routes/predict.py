@@ -80,6 +80,7 @@ def _perfume_to_dict(p: Perfume) -> dict:
         "community_sillage_rating": p.community_sillage_rating,
         "community_overall_rating": p.community_overall_rating,
         "source_count": p.source_count or 1,
+        "rating_count": p.rating_count or 0,
         "community_longevity_label": p.community_longevity_label or "",
     }
 
@@ -138,6 +139,7 @@ async def predict_endpoint(req: PredictRequest, db: AsyncSession = Depends(get_d
         has_pyramid=has_pyramid,
         has_inferred_pyramid=bool(matched_perfume.has_inferred_pyramid),
         note_coverage=coverage,
+        rating_count=matched_perfume.rating_count or 0,
     )
     predictions["model_version"] = settings.model_version
 

@@ -45,6 +45,7 @@ def _perfume_to_dict(p: Perfume) -> dict:
         "community_sillage_rating": p.community_sillage_rating or 3.0,
         "community_overall_rating": p.community_overall_rating or 3.0,
         "source_count": p.source_count or 1,
+        "rating_count": p.rating_count or 0,
         "community_longevity_label": p.community_longevity_label or "",
     }
 
@@ -116,6 +117,7 @@ result = validate_predictions(
     has_pyramid=has_pyramid,
     has_inferred_pyramid=False,
     note_coverage=coverage,
+    rating_count=sauvage.get("rating_count", 0),
 )
 
 print(f"\nDior Sauvage ({sauvage.get('concentration', '?')}) prediction:")

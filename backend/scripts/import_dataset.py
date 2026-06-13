@@ -497,6 +497,7 @@ async def import_fra_perfumes(session, by_brand: dict) -> dict:
                         accords=accords,
                         gender_vote=gender,
                         community_overall_rating=rating or 3.0,
+                        rating_count=rating_count,
                         source_count=1,
                     )
                     batch_new.append(p)
@@ -559,13 +560,14 @@ async def _apply_secondary_updates(session, updates: list[dict]) -> None:
         if u["accords"] and not p.accords:
             p.accords = u["accords"]
 
-        # Weighted-average rating
+        # Weighted-average rating; also accumulate rating_count
         if u["rating"] is not None and u["rating_count"] > 0:
             existing_count = int(p.community_overall_rating * 10)  # rough weight
             p.community_overall_rating = weighted_rating_avg(
                 p.community_overall_rating, existing_count,
                 u["rating"], u["rating_count"],
             )
+            p.rating_count = (p.rating_count or 0) + u["rating_count"]
 
         # Increment source_count
         current = p.source_count if p.source_count is not None else 1
