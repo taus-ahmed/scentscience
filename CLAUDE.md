@@ -83,9 +83,68 @@ top/middle/base (5 each).
 
 Stats: 42,995 pyramids inferred in ~90s, 0 skipped.
 
+### Model Performance Audit (scripts/model_audit2.py — 384 GT perfumes + 9-perfume diverse table)
+
+#### Section 1 — Diverse Prediction Table
+| Brand | Name | SC | Pyr | Long | Sill | BB | Vers | Conf | Notes coverage |
+|---|---|---|---|---|---|---|---|---|---|
+| Versace | Eros | 3 | real | 6.5h | 4.9 | 6.3 | 7.0 | 0.451 | 10/10 ✓ |
+| Dior | Sauvage Elixir | 3 | real | 4.1h | 4.0 | 5.0 | 2.2 | 0.385 | 8/10 |
+| Chanel | No 5 Parfum | 3 | real | 3.8h | 3.9 | 4.3 | 1.8 | 0.373 | 16/18 |
+| Creed | Aventus For Her | 3 | real | 3.8h | 4.0 | 4.3 | 1.8 | 0.372 | 11/15 |
+| YSL | Black Opium Intense | 3 | real | 3.8h | 3.9 | 4.6 | 2.0 | 0.363 | 3/8 |
+| Tom Ford | Black Orchid | 3 | real | 3.5h | 4.0 | 4.6 | 2.0 | 0.366 | 12/23 |
+| Jo Malone | Lime Basil Mandarin | 2 | real | 3.1h | 3.9 | 4.3 | 1.8 | 0.351 | 7/9 |
+| Guerlain | Shalimar Souffle | 7 | real | 3.1h | 3.9 | 4.7 | 2.1 | 0.333 | 5/8 |
+| Giorgio Armani | Acqua Di Gioia | 5 | real | 2.9h | 3.8 | 4.5 | 1.9 | 0.326 | 1/6 |
+
+Key observation: Versace Eros (10/10 note coverage) scores highest across the board. Acqua Di Gioia
+(1/6 coverage) gets the lowest confidence despite having source_count=5 — note coverage dominates.
+
+#### Section 2 — Longevity Bucket Accuracy (384 GT perfumes)
+Ground-truth distribution: Medium 211 (54.9%), Strong 141 (36.7%), Light 23 (6.0%), Very Strong 9 (2.3%)
+
+| Class | Correct | Total | Recall |
+|---|---|---|---|
+| Strong | 1 | 150 | 0.7% |
+| Moderate | 61 | 211 | 28.9% |
+| Light | 19 | 23 | 82.6% |
+| **Overall** | **81** | **384** | **21.1%** |
+
+Confusion: 67 "Strong" perfumes predicted as Light. 150 "Moderate" perfumes predicted as Light.
+Model almost never predicts Strong — strong recall is effectively 0.
+
+NOTE: 50/50 label blend in training inflates these numbers. True generalization accuracy on
+unlabeled perfumes is materially lower.
+
+#### Section 3 — MAE on longevity_hours (384 GT perfumes)
+- **MAE = 2.99h** | RMSE = 3.48h | Median AE = 2.12h | P90 AE = 5.36h
+- Strong bucket: MAE = 5.03h, bias = −5.03h (systematic under-prediction)
+- Moderate bucket: MAE = 1.70h, bias = −1.70h
+- Light bucket: MAE = 1.53h, bias = +1.53h (slight over-prediction)
+- GT range: 2.0–12.0h | Predicted range: 2.8–8.4h | **Compression: 3.35x**
+- Real pyramid MAE = 2.94h (n=330) vs inferred pyramid MAE = 3.32h (n=54)
+
+#### Section 4 — Ranked Weaknesses
+1. **Range compression (3.35x)** — model predicts 2.8–8.4h; GT spans 2.0–12.0h. Extreme
+   longevity never reached. Root cause: missing notes pull all predictions toward 5.0 median.
+2. **Note coverage** — 313 unique notes missing from `notes_chemistry.json`; avg 28.7% of each
+   perfume's notes default to 5.0. 45/384 labeled perfumes have >50% notes missing.
+   Top gaps: `black currant` (45 perfumes), `pear` (38), `agarwood/oud` (26), `incense` (25),
+   `tuberose` (24), `ylang-ylang` (22), `peony` (20), `jasmine sambac` (16), `coffee` (13).
+3. **Strong-class blindness** — 67 strong perfumes predicted as Light (<4h), nearly all due to
+   missing notes. Strong recall = 0.7%.
+4. **Label leakage** — 50/50 blend inflates labeled-set accuracy; unlabeled generalization is worse.
+5. **Inferred pyramids slightly worse** — +0.38h MAE vs real pyramids (3.32h vs 2.94h).
+
 ## Next Steps
 
-1. **Expand `notes_chemistry.json`** — many fra_cleaned notes still default to 5.0 (e.g., `incense`, `turkish rose`, `yuzu`, `oud`). Add family-based defaults for the top ~100 most-used missing notes to improve feature vector quality.
+1. **Expand `notes_chemistry.json`** — audit confirms 313 unique notes defaulting to 5.0.
+   Priority additions (by labeled-perfume frequency): `black currant`, `pear`, `agarwood/oud`,
+   `incense`, `tuberose`, `ylang-ylang`, `peony`, `jasmine sambac`, `coffee`, `olibanum`,
+   `violet leaf`, `raspberry`, `gardenia`, `bulgarian rose`, `blood orange`, `heliotrope`.
+   Fixing these directly resolves range compression and strong-class blindness (same root cause).
+   After adding, retrain models — `python scripts/train_model.py` from `backend/`.
 2. **Improve predict route model loading** — `routes/predict.py` still falls back to `seed_perfumes.json` if no pkl exists on cold deploy; update it to load from DB (matching `scripts/test_model.py`).
 
 ## Do Not Do
