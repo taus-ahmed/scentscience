@@ -12,6 +12,9 @@ import sys, asyncio, statistics, logging, warnings
 from collections import defaultdict
 from pathlib import Path
 
+# Force UTF-8 on Windows where default encoding is cp1252
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 # ── silence the per-note warnings that flood stderr ───────────────────────────
 logging.disable(logging.WARNING)
 warnings.filterwarnings("ignore")
@@ -258,7 +261,7 @@ async def main():
 
         print()
         print(f"  Confusion matrix (rows = ground truth, cols = predicted):")
-        print(f"  {'':12}  {'→strong':>9}  {'→moderate':>10}  {'→light':>8}  {'total':>6}")
+        print(f"  {'':12}  {'->strong':>9}  {'->moderate':>10}  {'->light':>8}  {'total':>6}")
         for tb in ("strong", "moderate", "light"):
             row = by_bucket[tb]
             tot = sum(row.values())
