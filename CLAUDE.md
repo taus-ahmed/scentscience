@@ -108,6 +108,8 @@ Deduplication: 1,204 fra_cleaned dupes skipped; 3 fra_perfumes skipped (no parse
 | 7 | Community votes additive bonus (up to +0.04) | Sauvage EDP/Elixir: 0.872 -> 0.970 |
 | 7 | Hard cap raised 0.95 -> 0.97 | sc=3+, >10k ratings: 0.970 |
 | 8a | 2.5× label weight (was 1×) | strong: 71.3%->79.3%, light: 34.8%->82.6%, MAE: 0.80->0.62h |
+| 9 | Longevity_class position weights: base=0.6 (was 0.2) | Angel pseudo-label 3.1h→4.25h |
+| 9 | community_longevity/sillage_rating backfill from fragrances.csv | Angel: 3.0→4.23 |
 
 **Final audit results (run `python scripts/model_audit2.py` from `backend/`):**
 | Metric | Baseline | After all phases |
@@ -147,15 +149,20 @@ All perfumes in the labeled set show 100% note coverage (0 missing notes).
 Avg confidence across labeled set: **0.868** (all in sc>=2 + real_pyr tier).
 Max confidence cap: **0.97** (was 0.95).
 
-### Remaining Weaknesses
-1. **Strong recall = 79.3%** — 31/150 strong perfumes still predicted as moderate. Chemistry
-   features for oriental/woody fragrances diverge from community longevity labels.
-2. **Label leakage** — 384 labeled perfumes use 100% label override in training; 88.0%
+### Remaining Weaknesses (post Phase 9 — pending retrain)
+1. **Angel/La Nuit Trésor miss** — Phase 9 fixes applied (position weights + community rating
+   backfill); expect moderate-range prediction after retrain. Full strong prediction requires
+   a `community_longevity_label` override or Parfumo data import for these unlabeled frags.
+2. **Strong recall = 79.3%** — 31/150 strong perfumes still predicted as moderate. Root cause:
+   unlabeled oriental/gourmand frags like Angel don't have ground-truth labels.
+3. **community_longevity_rating at default 3.0 for ~65k perfumes** — only 10 perfumes updated
+   from fragrances.csv sample. Full fix requires Parfumo import or additional data source.
+4. **Label leakage** — 384 labeled perfumes use 100% label override in training; 88.0%
    accuracy is an upper bound. Unlabeled perfume predictions rely purely on note chemistry +
    community votes.
-3. **Inferred pyramid MAE = 1.08h** vs real pyramid 0.54h — Jaccard-similar notes don't
+5. **Inferred pyramid MAE = 1.08h** vs real pyramid 0.54h — Jaccard-similar notes don't
    always encode the same longevity profile.
-4. **Dedup bug (same-brand, same-name, different-concentration)** — Sauvage EDT and EDP both
+6. **Dedup bug (same-brand, same-name, different-concentration)** — Sauvage EDT and EDP both
    normalize to the same key; higher-id record steals the slot. Tracked for next import refactor.
 
 ### Audit Fixes Applied (commit e32c4b9)
@@ -194,13 +201,18 @@ Stats: 42,995 pyramids inferred in ~90s, 0 skipped.
 - Retrain + recalibrate after (`test_model.py` then `calibrate_longevity.py`)
 
 ### Remaining Model Improvements
-- **Improve strong recall (79.3%)** — boost `longevity_class` values for oud/musk/amber notes
-  in `notes_chemistry.json` to better encode oriental fragrances.
-- **Re-run calibration if models retrained** — `python scripts/calibrate_longevity.py` (~30s).
+- **Phase 9 retrain in progress** — after retrain completes, run:
+  1. `python scripts/calibrate_longevity.py` (~30s, recalibrate on new pkl weights)
+  2. `python scripts/model_audit2.py` (get new bucket accuracy / strong recall / MAE)
+  3. `python scripts/brand_validation.py` (verify Angel/La Nuit Trésor fixed)
+- **Improve strong recall** — main lever is Parfumo import (sc→3, community_longevity_label
+  for many unlabeled strong orientals) or manual label additions for Angel, La Nuit Trésor.
+- **community_longevity_rating backfill at scale** — only 10 perfumes fixed from fragrances.csv
+  sample; Parfumo dataset import is the primary path to fixing this for popular perfumes.
 - **Improve predict route cold-start** — `routes/predict.py` falls back to seed JSON;
   update to load from DB instead.
-- **Fix Thierry Mugler Angel not found** — check:
-  `SELECT brand FROM perfumes WHERE brand ILIKE '%mugler%' LIMIT 5`.
+- **Brand validation audit fixed** — `scripts/model_audit2.py` Angel brand was "thierry mugler"
+  (no match); now fixed to "mugler" (commit 054a4bd).
 
 ## Do Not Do
 
