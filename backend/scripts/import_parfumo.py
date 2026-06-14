@@ -29,7 +29,9 @@ import asyncio
 import csv
 import json
 import logging
+import re
 import sys
+from collections import defaultdict
 from pathlib import Path
 from typing import Optional
 
@@ -122,7 +124,7 @@ def extract_kaggle_row(row: dict) -> dict:
     name  = _col(row, "Name", "Perfume", "Fragrance")
     brand = _col(row, "Brand", "House", "Maison")
 
-    rating_str = _col(row, "Rating", "Average_Rating", "Score")
+    rating_str = _col(row, "Rating_Value", "Rating", "Average_Rating", "Score")
     try:
         rating = float(rating_str) if rating_str else None
         # Parfumo uses 1-5 scale; Fragrantica uses 1-5 too — keep as-is
@@ -163,40 +165,107 @@ def extract_kaggle_row(row: dict) -> dict:
 
 # ── Fuzzy matching ────────────────────────────────────────────────────────────
 
+_YEAR_RE = re.compile(r"\b(19|20)\d{2}\b")
+# Concentration suffixes — only stripped when name is verbose (contains brand or year)
+_CONC_SUFFIXES = re.compile(
+    r"\s+(eau\s+de\s+(parfum|toilette|cologne)|lotion\s+apr[eè]s.rasage"
+    r"|lotion\s+avant.rasage|lotion|very\s+cool\s+spray|concentr[eé][e]?"
+    r"|solid|body\s+spray)\b.*$",
+    re.IGNORECASE,
+)
+
+
 def _normalize(s: str) -> str:
     return s.lower().strip()
+
+
+def _clean_parfumo_name(name: str, brand: str) -> str:
+    """Strip embedded brand/year/concentration from verbose Parfumo names.
+
+    Only modifies names that contain the brand or a 4-digit year — clean names
+    like 'Sauvage Elixir' or 'Black Opium' are returned unchanged.
+
+    'Sauvage Dior 2015 Eau de Toilette' → 'Sauvage'
+    'Joop! Homme Joop! 1989 Eau de Toilette' → 'Joop! Homme'
+    'Sauvage Elixir' → 'Sauvage Elixir'  (unchanged)
+    """
+    brand_norm = brand.strip()
+    has_year = bool(_YEAR_RE.search(name))
+    has_brand = bool(re.search(r"\s+" + re.escape(brand_norm), name, re.IGNORECASE))
+
+    if not has_year and not has_brand:
+        return name  # already clean
+
+    s = name.strip()
+    s = _CONC_SUFFIXES.sub("", s).strip()
+    s = _YEAR_RE.sub("", s).strip()
+    brand_pattern = r"\s+" + re.escape(brand_norm) + r"\s*$"
+    s = re.sub(brand_pattern, "", s, flags=re.IGNORECASE).strip()
+    return s or name  # fall back to original if we stripped everything
 
 
 def _match_key(brand: str, name: str) -> str:
     return f"{_normalize(brand)}||{_normalize(name)}"
 
 
-def build_db_index(perfumes: list[Perfume]) -> dict[str, int]:
-    """Build a fast lookup: 'brand||name' -> perfume.id."""
-    return {_match_key(p.brand or "", p.name or ""): p.id for p in perfumes}
+def build_db_index(
+    perfumes: list[Perfume],
+) -> tuple[dict[str, int], dict[str, list[tuple[str, int]]]]:
+    """Build two indexes:
+      - exact_index: 'brand||name' -> perfume.id  (O(1) lookup)
+      - brand_index: normalized_brand -> [(normalized_name, id), ...]  (brand-scoped fuzzy)
+    """
+    exact_index: dict[str, int] = {}
+    brand_index: dict[str, list[tuple[str, int]]] = defaultdict(list)
+
+    for p in perfumes:
+        b = _normalize(p.brand or "")
+        n = _normalize(p.name or "")
+        exact_index[f"{b}||{n}"] = p.id
+        brand_index[b].append((n, p.id))
+
+    return exact_index, brand_index
 
 
 def fuzzy_match(
     brand: str,
     name: str,
-    db_index: dict[str, int],
+    exact_index: dict[str, int],
+    brand_index: dict[str, list[tuple[str, int]]],
     perfumes_by_id: dict[int, Perfume],
     threshold: int = 90,
 ) -> Optional[Perfume]:
-    """Try exact first, then token_sort_ratio fuzzy match."""
+    """Try exact match first, then brand-scoped token_sort_ratio fuzzy match.
+
+    Scopes fuzzy search to the same brand, reducing candidates from 67k → ~10-100.
+    Also tries with the cleaned name (brand/year/concentration stripped).
+    """
     from rapidfuzz import fuzz
 
-    exact_key = _match_key(brand, name)
-    if exact_key in db_index:
-        return perfumes_by_id[db_index[exact_key]]
+    brand_norm = _normalize(brand)
+    name_norm = _normalize(name)
+    clean_name = _normalize(_clean_parfumo_name(name, brand))
 
-    query_str = f"{_normalize(brand)} {_normalize(name)}"
+    # 1. Exact match on original name
+    exact_key = f"{brand_norm}||{name_norm}"
+    if exact_key in exact_index:
+        return perfumes_by_id[exact_index[exact_key]]
+
+    # 2. Exact match on cleaned name
+    if clean_name != name_norm:
+        clean_key = f"{brand_norm}||{clean_name}"
+        if clean_key in exact_index:
+            return perfumes_by_id[exact_index[clean_key]]
+
+    # 3. Brand-scoped fuzzy match (only entries with the same brand)
+    candidates = brand_index.get(brand_norm, [])
+    if not candidates:
+        return None
+
     best_score = 0
     best_id = None
-    for key, pid in db_index.items():
-        db_brand, db_name = key.split("||", 1)
-        candidate_str = f"{db_brand} {db_name}"
-        score = fuzz.token_sort_ratio(query_str, candidate_str)
+    for db_name, pid in candidates:
+        score = fuzz.token_sort_ratio(clean_name, db_name)
         if score > best_score:
             best_score = score
             best_id = pid
@@ -208,32 +277,142 @@ def fuzzy_match(
 
 # ── DB operations ─────────────────────────────────────────────────────────────
 
-async def load_all_perfumes() -> tuple[list[Perfume], dict[str, int], dict[int, Perfume]]:
+async def load_all_perfumes() -> tuple[
+    list[Perfume],
+    dict[str, int],
+    dict[str, list[tuple[str, int]]],
+    dict[int, Perfume],
+]:
     await init_db()
     async with AsyncSessionLocal() as session:
         result = await session.execute(select(Perfume))
         perfumes = result.scalars().all()
-    idx = build_db_index(perfumes)
+    exact_idx, brand_idx = build_db_index(perfumes)
     by_id = {p.id: p for p in perfumes}
-    return perfumes, idx, by_id
+    return perfumes, exact_idx, brand_idx, by_id
 
 
 async def apply_updates(updates: list[dict], dry_run: bool) -> None:
-    """Batch-apply updates to the DB."""
+    """Batch-apply updates using bulk SQL to avoid per-row round-trips.
+
+    Uses PostgreSQL unnest() arrays so the entire update is 3-5 queries total
+    instead of 16,000 individual round-trips.
+    """
     if not updates:
         return
     if dry_run:
         logger.info("[DRY RUN] Would apply %d updates", len(updates))
         return
 
+    from sqlalchemy import text
+
+    sc_ids: list[int] = []
+    rc_pairs: list[tuple[int, int]] = []   # (id, new_rating_count)
+    cor_pairs: list[tuple[int, float]] = []  # (id, community_overall_rating)
+    label_pairs: list[tuple[int, str]] = []  # (id, community_longevity_label)
+    conc_pairs: list[tuple[int, str]] = []   # (id, concentration)
+    # JSON array fields — rare (only unlabeled perfumes without pyramids); keep individual
+    json_updates: list[dict] = []
+
+    for u in updates:
+        pid = u["id"]
+        sc_ids.append(pid)
+        if "rating_count" in u:
+            rc_pairs.append((pid, int(u["rating_count"])))
+        if "community_overall_rating" in u:
+            cor_pairs.append((pid, float(u["community_overall_rating"])))
+        if "community_longevity_label" in u:
+            label_pairs.append((pid, u["community_longevity_label"]))
+        if "concentration" in u:
+            conc_pairs.append((pid, u["concentration"]))
+        if any(f in u for f in ("top_notes", "middle_notes", "base_notes")):
+            json_updates.append({k: v for k, v in u.items()
+                                  if k in ("id", "top_notes", "middle_notes", "base_notes")})
+
     async with AsyncSessionLocal() as session:
-        for u in updates:
-            pid = u.pop("id")
+        # 1. Bulk source_count increment via unnest — one query
+        if sc_ids:
             await session.execute(
-                update(Perfume).where(Perfume.id == pid).values(**u)
+                text(
+                    "UPDATE perfumes SET source_count = source_count + 1"
+                    " WHERE id = ANY(:ids)"
+                ),
+                {"ids": sc_ids},
             )
+            logger.info("  source_count +1 applied to %d perfumes", len(sc_ids))
+
+        # 2. rating_count via unnest pair — one query
+        if rc_pairs:
+            ids = [p[0] for p in rc_pairs]
+            vals = [p[1] for p in rc_pairs]
+            await session.execute(
+                text(
+                    "UPDATE perfumes SET rating_count = v.rc"
+                    " FROM unnest(CAST(:ids AS int[]), CAST(:vals AS int[])) AS v(pid, rc)"
+                    " WHERE perfumes.id = v.pid"
+                ),
+                {"ids": ids, "vals": vals},
+            )
+            logger.info("  rating_count updated for %d perfumes", len(rc_pairs))
+
+        # 3. community_overall_rating
+        if cor_pairs:
+            ids = [p[0] for p in cor_pairs]
+            vals = [p[1] for p in cor_pairs]
+            await session.execute(
+                text(
+                    "UPDATE perfumes SET community_overall_rating = v.r"
+                    " FROM unnest(CAST(:ids AS int[]), CAST(:vals AS float[])) AS v(pid, r)"
+                    " WHERE perfumes.id = v.pid"
+                ),
+                {"ids": ids, "vals": vals},
+            )
+            logger.info("  community_overall_rating updated for %d perfumes", len(cor_pairs))
+
+        # 4. community_longevity_label
+        if label_pairs:
+            ids = [p[0] for p in label_pairs]
+            vals = [p[1] for p in label_pairs]
+            await session.execute(
+                text(
+                    "UPDATE perfumes SET community_longevity_label = v.lbl"
+                    " FROM unnest(CAST(:ids AS int[]), CAST(:vals AS text[])) AS v(pid, lbl)"
+                    " WHERE perfumes.id = v.pid"
+                ),
+                {"ids": ids, "vals": vals},
+            )
+            logger.info("  community_longevity_label updated for %d perfumes", len(label_pairs))
+
+        # 5. concentration
+        if conc_pairs:
+            ids = [p[0] for p in conc_pairs]
+            vals = [p[1] for p in conc_pairs]
+            await session.execute(
+                text(
+                    "UPDATE perfumes SET concentration = v.c"
+                    " FROM unnest(CAST(:ids AS int[]), CAST(:vals AS text[])) AS v(pid, c)"
+                    " WHERE perfumes.id = v.pid"
+                ),
+                {"ids": ids, "vals": vals},
+            )
+            logger.info("  concentration updated for %d perfumes", len(conc_pairs))
+
+        # 6. JSON array fields (small subset — individually parameterized)
+        if json_updates:
+            for u in json_updates:
+                pid = u["id"]
+                fields = {k: json.dumps(v) for k, v in u.items()
+                          if k != "id" and v is not None}
+                for field, val in fields.items():
+                    await session.execute(
+                        text(f"UPDATE perfumes SET {field} = :val::jsonb WHERE id = :pid"),
+                        {"val": val, "pid": pid},
+                    )
+            logger.info("  JSON note pyramids merged for %d perfumes", len(json_updates))
+
         await session.commit()
-    logger.info("Applied %d updates to database", len(updates))
+
+    logger.info("Bulk apply complete: %d perfumes updated", len(sc_ids))
 
 
 # ── Main logic ────────────────────────────────────────────────────────────────
@@ -250,10 +429,13 @@ def save_runstate(seen: set[str]) -> None:
         json.dump(sorted(seen), f)
 
 
-async def run_import(csv_path: Path, dry_run: bool, match_threshold: int) -> None:
+async def run_import(csv_path: Path, dry_run: bool, match_threshold: int, save_matches_path: Optional[Path] = None) -> None:
     logger.info("Loading all perfumes from DB…")
-    _, db_index, by_id = await load_all_perfumes()
-    logger.info("Loaded %d perfumes into fuzzy index", len(db_index))
+    _, exact_index, brand_index, by_id = await load_all_perfumes()
+    logger.info(
+        "Loaded %d perfumes into index (%d brands)",
+        len(exact_index), len(brand_index),
+    )
 
     already_imported = load_runstate()
     logger.info("Runstate: %d Parfumo entries already imported", len(already_imported))
@@ -304,7 +486,7 @@ async def run_import(csv_path: Path, dry_run: bool, match_threshold: int) -> Non
                 rows_skipped_runstate += 1
                 continue
 
-            matched = fuzzy_match(pbrand, pname, db_index, by_id, match_threshold)
+            matched = fuzzy_match(pbrand, pname, exact_index, brand_index, by_id, match_threshold)
             if not matched:
                 rows_no_match += 1
                 if rows_no_match <= 20:
@@ -370,6 +552,12 @@ async def run_import(csv_path: Path, dry_run: bool, match_threshold: int) -> Non
         rows_total, rows_matched, rows_skipped_runstate, match_threshold, rows_no_match,
     )
 
+    if save_matches_path:
+        with open(save_matches_path, "w") as f:
+            json.dump(updates, f)
+        logger.info("Matches saved to %s — run with --apply-only to write to DB", save_matches_path)
+        return
+
     await apply_updates(updates, dry_run)
 
     if not dry_run:
@@ -379,19 +567,52 @@ async def run_import(csv_path: Path, dry_run: bool, match_threshold: int) -> Non
         logger.info("[DRY RUN] Runstate not updated")
 
 
+async def run_apply_only(matches_path: Path) -> None:
+    """Load a saved matches JSON and apply updates to DB (phase 2)."""
+    with open(matches_path) as f:
+        updates = json.load(f)
+    logger.info("Loaded %d updates from %s", len(updates), matches_path)
+    await apply_updates(updates, dry_run=False)
+
+    # Rebuild runstate from the match file so re-runs stay idempotent
+    seen: set[str] = load_runstate()
+    for u in updates:
+        pid = u.get("id")
+        if pid:
+            seen.add(str(pid))
+    save_runstate(seen)
+    logger.info("Runstate updated: %d entries", len(seen))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Import Parfumo CSV into perfumes table")
-    parser.add_argument("--csv", required=True, help="Path to Parfumo CSV file")
+    parser.add_argument("--csv", help="Path to Parfumo CSV file")
     parser.add_argument("--dry-run", action="store_true", help="Parse + match but don't write to DB")
     parser.add_argument("--threshold", type=int, default=90, help="Fuzzy match threshold 0-100 (default 90)")
+    parser.add_argument("--save-matches", metavar="FILE",
+                        help="Save match list to FILE as JSON (phase 1 only, no DB write)")
+    parser.add_argument("--apply-only", metavar="FILE",
+                        help="Skip matching; load FILE and apply updates to DB (phase 2)")
     args = parser.parse_args()
+
+    if args.apply_only:
+        p = Path(args.apply_only)
+        if not p.exists():
+            logger.error("Matches file not found: %s", p)
+            sys.exit(1)
+        asyncio.run(run_apply_only(p))
+        return
+
+    if not args.csv:
+        parser.error("--csv is required unless --apply-only is used")
 
     csv_path = Path(args.csv)
     if not csv_path.exists():
         logger.error("File not found: %s", csv_path)
         sys.exit(1)
 
-    asyncio.run(run_import(csv_path, args.dry_run, args.threshold))
+    save_matches_path = Path(args.save_matches) if args.save_matches else None
+    asyncio.run(run_import(csv_path, args.dry_run, args.threshold, save_matches_path))
 
 
 if __name__ == "__main__":
