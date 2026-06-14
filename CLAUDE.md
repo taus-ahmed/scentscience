@@ -186,6 +186,43 @@ top/middle/base (5 each).
 
 Stats: 42,995 pyramids inferred in ~90s, 0 skipped.
 
+## Frontend Status (as of 2026-06-14)
+
+### What works end-to-end (all components complete and wired):
+- **Search page** (`/search`) — browse DB, click card navigates to `/?name=X&brand=Y`
+- **Dashboard page** (`/`) — auto-triggers prediction from URL params (BUG 7 fixed)
+- **PerfumeSearch** — debounced autocomplete, context selectors, pre-fills from URL params
+- **ScoreCard** — Longevity (purple), all /10 scores dynamically colored (green >7, amber 4-7, red <4)
+- **RadarChart** — Season + Occasion spider (Recharts, wired to API)
+- **BarChart** — Time of day + Projection arc (Recharts, wired to API)
+- **PieChart** — Gender expression + Skin type distribution (Recharts, wired to API)
+- **ClimateChart** — Progress bars with temp range (inline in Dashboard)
+- **PersonFit** — Skin/Age/Personality horizontal bars (inline in Dashboard, mobile-responsive)
+- **GeoSection** — City tags grouped by climate (Tropical/Arid/Temperate/Cold)
+- **NLPConclusion** — Expert paragraph + confidence badge (High/Medium/Low with %) + model version
+- **Instagram Brief** — Bullet points with per-bullet Copy + Copy All buttons
+
+### Deployment status:
+- **NOT yet deployed to Railway** — BACKEND_URL/FRONTEND_URL still point to localhost in .env
+- Railway services defined in `railway.toml` (backend + frontend)
+- `Dockerfile.frontend` uses `envsubst` to inject `$BACKEND_URL` at container start
+- Default `BACKEND_URL=http://backend.railway.internal:8000` (Railway private network)
+- To deploy: push to GitHub → Railway picks up → set `BACKEND_URL` env var in Railway frontend service
+- **Build is clean**: `npm run build` succeeds (187KB gzipped, chunk warning only — Recharts is large)
+
+### Key files:
+- `frontend/src/pages/Dashboard.jsx` — main page with all sections
+- `frontend/src/pages/Search.jsx` — browse + navigate to dashboard
+- `frontend/src/components/` — ScoreCard, RadarChart, BarChart, PieChart, NLPConclusion, PerfumeSearch
+- `frontend/src/api/client.js` — axios client, `VITE_API_URL` env var (defaults to `/api`)
+- `docker/nginx.conf` — nginx template with `${BACKEND_URL}` proxy
+- `Dockerfile.frontend` — multi-stage: node build → nginx + envsubst
+
+### Remaining frontend issues:
+- No loading skeleton while prediction runs (just disabled Predict button)
+- Recharts bundle is large (~647KB) — could code-split if needed
+- No error state for NLP timeout (Claude API can be slow)
+
 ## Next Steps
 
 ### Phase 7c — Parfumo Dataset Import (HIGHEST IMPACT for confidence)
