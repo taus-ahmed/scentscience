@@ -260,11 +260,16 @@ function PersonFit({ predictions: p }) {
     { label: 'Casual', value: p.personality_casual, color: '#34d399' },
     { label: 'Romantic', value: p.personality_romantic, color: '#f472b6' },
   ]
+  const genderData = [
+    { label: 'Masculine', value: p.gender_masculine, color: '#60a5fa' },
+    { label: 'Feminine', value: p.gender_feminine, color: '#f472b6' },
+    { label: 'Unisex', value: p.gender_unisex, color: '#34d399' },
+  ]
 
   const s2 = {
     section: { background: '#111827', borderRadius: '12px', padding: '1.5rem', border: '1px solid #1f2937', marginBottom: '2rem' },
     title: { color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1.25rem', textTransform: 'uppercase' },
-    grid3: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' },
+    grid3: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1.5rem' },
     barRow: { marginBottom: '0.6rem' },
     barLabel: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem' },
     barLabelText: { color: '#d1d5db', fontSize: '0.8rem' },
@@ -299,6 +304,10 @@ function PersonFit({ predictions: p }) {
         <div>
           <p style={{ color: '#6b7280', fontSize: '0.75rem', marginBottom: '0.75rem' }}>PERSONALITY</p>
           {personData.map(d => <Bar key={d.label} {...d} />)}
+        </div>
+        <div>
+          <p style={{ color: '#6b7280', fontSize: '0.75rem', marginBottom: '0.75rem' }}>GENDER EXPRESSION</p>
+          {genderData.map(d => <Bar key={d.label} {...d} />)}
         </div>
       </div>
     </div>
