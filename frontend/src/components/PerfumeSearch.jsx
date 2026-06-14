@@ -7,9 +7,9 @@ const TIMES = ['', 'morning', 'afternoon', 'evening', 'night']
 
 const s = {
   wrapper: { maxWidth: '700px', margin: '0 auto' },
-  mainRow: { display: 'flex', gap: '0.75rem', marginBottom: '0.75rem' },
+  mainRow: { display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' },
   input: {
-    flex: 1, padding: '0.875rem 1.25rem',
+    flex: 1, minWidth: '180px', padding: '0.875rem 1.25rem',
     background: '#111827', border: '1px solid #374151', borderRadius: '12px',
     color: '#fff', fontSize: '1rem', outline: 'none',
   },
@@ -34,9 +34,9 @@ const s = {
   },
 }
 
-export default function PerfumeSearch({ onSearch, loading }) {
-  const [name, setName] = useState('')
-  const [brand, setBrand] = useState('')
+export default function PerfumeSearch({ onSearch, loading, defaultName = '', defaultBrand = '' }) {
+  const [name, setName] = useState(defaultName)
+  const [brand, setBrand] = useState(defaultBrand)
   const [skinType, setSkinType] = useState('')
   const [season, setSeason] = useState('')
   const [timeOfDay, setTimeOfDay] = useState('')
@@ -64,9 +64,9 @@ export default function PerfumeSearch({ onSearch, loading }) {
     onSearch({ name, brand, context: Object.keys(context).length ? context : null })
   }
 
-  const pickSuggestion = s => {
-    setName(s.name)
-    setBrand(s.brand)
+  const pickSuggestion = sg => {
+    setName(sg.name)
+    setBrand(sg.brand)
     setShowSuggestions(false)
   }
 

@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
 
-export default function NLPConclusion({ conclusion, instagramBrief, perfumeName }) {
+function confidenceMeta(score) {
+  if (score == null) return null
+  if (score > 0.85) return { label: 'High confidence', color: '#34d399', bg: '#022c22' }
+  if (score >= 0.60) return { label: 'Medium confidence', color: '#fbbf24', bg: '#1c1407' }
+  return { label: 'Low confidence — limited data', color: '#ef4444', bg: '#1c0a0a' }
+}
+
+export default function NLPConclusion({ conclusion, instagramBrief, perfumeName, confidenceScore, modelVersion }) {
   const [copied, setCopied] = useState(null)
+  const meta = confidenceMeta(confidenceScore)
 
   const copyAll = async () => {
     await navigator.clipboard.writeText(instagramBrief || '')
@@ -19,11 +27,33 @@ export default function NLPConclusion({ conclusion, instagramBrief, perfumeName 
         borderRadius: '16px', padding: '2rem',
         border: '1px solid #312e81',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-          <span style={{ fontSize: '1.2rem' }}>⚗</span>
-          <p style={{ color: '#a78bfa', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            ScentScience Analysis
-          </p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ fontSize: '1.2rem' }}>⚗</span>
+            <p style={{ color: '#a78bfa', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              ScentScience Analysis
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            {meta && (
+              <span style={{
+                padding: '0.25rem 0.75rem', borderRadius: '999px',
+                background: meta.bg, border: `1px solid ${meta.color}40`,
+                color: meta.color, fontSize: '0.72rem', fontWeight: 700,
+              }}>
+                {meta.label} · {(confidenceScore * 100).toFixed(0)}%
+              </span>
+            )}
+            {modelVersion && (
+              <span style={{
+                padding: '0.25rem 0.75rem', borderRadius: '999px',
+                background: '#1f2937', border: '1px solid #374151',
+                color: '#6b7280', fontSize: '0.72rem', fontWeight: 600,
+              }}>
+                v{modelVersion}
+              </span>
+            )}
+          </div>
         </div>
         <p style={{ color: '#e5e7eb', lineHeight: 1.7, fontSize: '0.95rem' }}>
           {conclusion || 'Generating expert analysis…'}
@@ -35,7 +65,7 @@ export default function NLPConclusion({ conclusion, instagramBrief, perfumeName 
         background: '#111827', borderRadius: '16px', padding: '2rem',
         border: '1px solid #1f2937',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ fontSize: '1.2rem' }}>📱</span>
             <p style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>

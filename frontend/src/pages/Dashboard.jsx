@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import PerfumeSearch from '../components/PerfumeSearch.jsx'
 import ScoreCard from '../components/ScoreCard.jsx'
 import RadarChart from '../components/RadarChart.jsx'
@@ -17,7 +18,7 @@ const s = {
     background: '#1e1b4b', color: '#a78bfa', fontSize: '0.75rem', fontWeight: 600,
     marginRight: '0.5rem', marginBottom: '2rem',
   },
-  content: { maxWidth: '1200px', margin: '0 auto', padding: '0 2rem 4rem' },
+  content: { maxWidth: '1200px', margin: '0 auto', padding: '0 1rem 4rem' },
   perfumeCard: {
     background: 'linear-gradient(135deg, #1e1b4b 0%, #1a1a3e 100%)',
     borderRadius: '16px', padding: '1.5rem 2rem',
@@ -29,18 +30,27 @@ const s = {
   accordBadge: {
     display: 'inline-block', padding: '0.2rem 0.6rem',
     background: '#312e81', borderRadius: '999px',
-    fontSize: '0.72rem', color: '#c4b5fd', marginRight: '0.4rem',
+    fontSize: '0.72rem', color: '#c4b5fd', marginRight: '0.4rem', marginBottom: '0.3rem',
   },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem', marginBottom: '2rem' },
-  chartsGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem', marginBottom: '2rem' },
+  chartsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2rem' },
   sectionTitle: { fontSize: '1rem', fontWeight: 700, color: '#94a3b8', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' },
   error: { color: '#f87171', background: '#1c1c2e', padding: '1rem', borderRadius: '8px', marginTop: '1rem' },
+}
+
+// Color-code /10 scores: green >7, amber 4-7, red <4
+const scoreColor = (v) => {
+  if (v == null || isNaN(v)) return '#a78bfa'
+  if (v > 7) return '#34d399'
+  if (v >= 4) return '#fbbf24'
+  return '#ef4444'
 }
 
 export default function Dashboard() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [searchParams] = useSearchParams()
 
   const handleSearch = async ({ name, brand, context }) => {
     setLoading(true)
@@ -56,7 +66,23 @@ export default function Dashboard() {
     }
   }
 
+  // BUG 7 fix: auto-trigger prediction when navigated from Search (?name=X&brand=Y)
+  useEffect(() => {
+    const name = searchParams.get('name')
+    const brand = searchParams.get('brand')
+    if (!name) return
+    setLoading(true)
+    setError(null)
+    setResult(null)
+    predictPerfume(name, brand || '', null)
+      .then(data => setResult(data))
+      .catch(e => setError(e.response?.data?.detail || e.message || 'Prediction failed'))
+      .finally(() => setLoading(false))
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const p = result?.predictions
+  const defaultName = searchParams.get('name') || ''
+  const defaultBrand = searchParams.get('brand') || ''
 
   return (
     <div style={s.page}>
@@ -66,7 +92,12 @@ export default function Dashboard() {
         <span style={s.badge}>XGBoost Model</span>
         <span style={s.badge}>Claude NLP</span>
         <span style={s.badge}>35+ Predictions</span>
-        <PerfumeSearch onSearch={handleSearch} loading={loading} />
+        <PerfumeSearch
+          onSearch={handleSearch}
+          loading={loading}
+          defaultName={defaultName}
+          defaultBrand={defaultBrand}
+        />
         {error && <p style={s.error}>{error}</p>}
       </div>
 
@@ -92,13 +123,13 @@ export default function Dashboard() {
           <p style={s.sectionTitle}>Key Metrics</p>
           <div style={s.grid}>
             <ScoreCard label="Longevity" value={`${p.longevity_hours?.toFixed(1)}h`} sub="on skin" color="#a78bfa" />
-            <ScoreCard label="Sillage" value={p.sillage_score?.toFixed(1)} sub="/10" color="#34d399" />
-            <ScoreCard label="Versatility" value={p.versatility_score?.toFixed(1)} sub="/10" color="#60a5fa" />
-            <ScoreCard label="Blind Buy" value={p.blind_buy_score?.toFixed(1)} sub="/10" color="#fbbf24" />
-            <ScoreCard label="Compliment" value={p.compliment_score?.toFixed(1)} sub="/10" color="#f472b6" />
-            <ScoreCard label="Cost/Wear" value={p.cost_per_wear_score?.toFixed(1)} sub="/10" color="#fb923c" />
-            <ScoreCard label="Projection 1h" value={p.proj_1hr?.toFixed(1)} sub="/10" color="#e879f9" />
-            <ScoreCard label="Heat Performance" value={p.heat_amplification?.toFixed(1)} sub="/10" color="#f87171" />
+            <ScoreCard label="Sillage" value={p.sillage_score?.toFixed(1)} sub="/10" color={scoreColor(p.sillage_score)} />
+            <ScoreCard label="Versatility" value={p.versatility_score?.toFixed(1)} sub="/10" color={scoreColor(p.versatility_score)} />
+            <ScoreCard label="Blind Buy" value={p.blind_buy_score?.toFixed(1)} sub="/10" color={scoreColor(p.blind_buy_score)} />
+            <ScoreCard label="Compliment" value={p.compliment_score?.toFixed(1)} sub="/10" color={scoreColor(p.compliment_score)} />
+            <ScoreCard label="Cost/Wear" value={p.cost_per_wear_score?.toFixed(1)} sub="/10" color={scoreColor(p.cost_per_wear_score)} />
+            <ScoreCard label="Projection 1h" value={p.proj_1hr?.toFixed(1)} sub="/10" color={scoreColor(p.proj_1hr)} />
+            <ScoreCard label="Heat Perf." value={p.heat_amplification?.toFixed(1)} sub="/10" color={scoreColor(p.heat_amplification)} />
           </div>
 
           {/* Charts */}
@@ -115,11 +146,16 @@ export default function Dashboard() {
           {/* Person Fit */}
           <PersonFit predictions={p} />
 
+          {/* Geo Section */}
+          <GeoSection predictions={p} />
+
           {/* NLP Conclusion */}
           <NLPConclusion
             conclusion={p.nlp_conclusion}
             instagramBrief={p.instagram_brief}
             perfumeName={`${result.perfume.brand} ${result.perfume.name}`}
+            confidenceScore={p.confidence_score}
+            modelVersion={p.model_version}
           />
         </div>
       )}
@@ -136,7 +172,9 @@ function ClimateChart({ predictions: p }) {
   ]
   return (
     <div style={{ background: '#111827', borderRadius: '12px', padding: '1.5rem', border: '1px solid #1f2937' }}>
-      <p style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase' }}>Climate Performance</p>
+      <p style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase' }}>
+        Climate Performance
+      </p>
       {data.map(d => (
         <div key={d.name} style={{ marginBottom: '0.75rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
@@ -153,6 +191,52 @@ function ClimateChart({ predictions: p }) {
         <span style={{ color: '#e5e7eb', fontSize: '0.78rem', fontWeight: 600 }}>
           {p.temp_optimal_min_c?.toFixed(0)}°C – {p.temp_optimal_max_c?.toFixed(0)}°C
         </span>
+      </div>
+    </div>
+  )
+}
+
+function GeoSection({ predictions: p }) {
+  const sections = [
+    { key: 'geo_tropical_cities', label: 'Tropical', color: '#f59e0b' },
+    { key: 'geo_arid_cities', label: 'Arid', color: '#fb923c' },
+    { key: 'geo_temperate_cities', label: 'Temperate', color: '#34d399' },
+    { key: 'geo_cold_cities', label: 'Cold', color: '#60a5fa' },
+  ]
+  const hasAny = sections.some(sec => (p[sec.key] || []).length > 0)
+  if (!hasAny) return null
+
+  return (
+    <div style={{ background: '#111827', borderRadius: '12px', padding: '1.5rem', border: '1px solid #1f2937', marginBottom: '2rem' }}>
+      <p style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase' }}>
+        Recommended Cities
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem' }}>
+        {sections.map(({ key, label, color }) => {
+          const cities = p[key] || []
+          if (!cities.length) return null
+          return (
+            <div key={key}>
+              <p style={{ color, fontSize: '0.72rem', fontWeight: 700, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {label}
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                {cities.map(city => (
+                  <span key={city} style={{
+                    padding: '0.2rem 0.6rem',
+                    background: `${color}18`,
+                    border: `1px solid ${color}40`,
+                    borderRadius: '999px',
+                    fontSize: '0.75rem',
+                    color: '#d1d5db',
+                  }}>
+                    {city}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -180,7 +264,7 @@ function PersonFit({ predictions: p }) {
   const s2 = {
     section: { background: '#111827', borderRadius: '12px', padding: '1.5rem', border: '1px solid #1f2937', marginBottom: '2rem' },
     title: { color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1.25rem', textTransform: 'uppercase' },
-    grid3: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem' },
+    grid3: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1.5rem' },
     barRow: { marginBottom: '0.6rem' },
     barLabel: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem' },
     barLabelText: { color: '#d1d5db', fontSize: '0.8rem' },
