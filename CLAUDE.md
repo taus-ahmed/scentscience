@@ -15,7 +15,7 @@ All 5 models trained on **110,053 perfumes** with full source-quality weighting:
 **Feature vector: 42-dimensional** (soft cosine-family distribution as features 12–28)
 
 Dior Sauvage EDT prediction (Phase 10 — after Parfumo 59K import):
-- Longevity: 5.9h | Sillage: 4.6/10 | Blind buy: 6.1/10
+- Longevity: 5.5h | Sillage: 4.6/10 | Blind buy: 6.1/10
 - source_count: 2 | rating_count: 23,727 | confidence_score: **0.946**
 - (Sauvage not in Parfumo dataset — sc unchanged; conf held at 0.946)
 
@@ -58,7 +58,7 @@ Max achievable: **0.97** (cap; sc>=3, real pyramid, 100% coverage, rc>10k)
 - Saved at `ml/models/longevity_calibrator.pkl`
 - Run `python scripts/calibrate_longevity.py` to retrain calibrator
 - Full range restored: 2.0h — 12.0h (input range: 2.88h–10.00h before calibration)
-- Phase 10 calibrator MAE: **0.477h** (was 0.57h after Phase 9)
+- Phase 10 calibrator MAE: **0.515h** (was 0.57h after Phase 9)
 
 ### Database (Phase 10 — Parfumo import complete)
 - **110,053 perfumes** in the database (was 67,222; +42,831 from Parfumo)
@@ -119,30 +119,30 @@ Deduplication: 1,204 fra_cleaned dupes skipped; 3 fra_perfumes skipped (no parse
 | 9 | Longevity_class position weights: base=0.6 (was 0.2) | Angel pseudo-label 3.1h→4.25h |
 | 9 | community_longevity/sillage_rating backfill from fragrances.csv | Angel: 3.0→4.23 |
 | 10 | Parfumo 59K import: +42,831 perfumes, notes_chemistry 1619->4785 | DB: 67k->110k |
-| 10 | Retrain on 110,053 perfumes + recalibrate | MAE: 0.57h->0.477h (-16%) |
+| 10 | Retrain on 110,053 perfumes + recalibrate | MAE: 0.57h->0.515h (-10%) |
 
 **Final audit results (run `python scripts/model_audit2.py` from `backend/`):**
-| Metric | Baseline | After all phases |
-|---|---|---|
-| Bucket accuracy | 21.1% | **90.1%** |
-| Strong recall | 0.7% (1/150) | **82.7%** (124/150) |
-| Moderate recall | 28.9% (61/211) | **98.1%** (207/211) |
-| Light recall | 82.6% | **65.2%** (15/23) |
-| MAE | 2.99h | **0.57h** (-81%) |
-| RMSE | 3.48h | **1.01h** (-71%) |
-| Range compression | 3.35x | **1.13x** |
-| Longevity range | compressed | **2.0h -- 12.0h** (fully restored) |
-| Missing notes (labeled set) | 313 | **1** (orange honey) |
-| Confidence (Sauvage Elixir sc=3, rc=11k) | 0.433 | **0.970** |
-| Confidence (Sauvage EDT sc=2, rc=23k) | 0.433 | **0.946** |
-| Avg confidence (labeled set sc>=2+real pyr) | 0.433 | **0.868** |
-| Strong→light misclassifications | many | **0** (zero cross-bucket misses) |
+| Metric | Baseline | Phase 9 | **Phase 10** |
+|---|---|---|---|
+| Bucket accuracy | 21.1% | 90.1% | **90.9%** |
+| Strong recall | 0.7% (1/150) | 82.7% (124/150) | **86.7%** (130/150) |
+| Moderate recall | 28.9% (61/211) | 98.1% (207/211) | **95.3%** (201/211) |
+| Light recall | 82.6% | 65.2% (15/23) | **78.3%** (18/23) |
+| MAE | 2.99h | 0.57h | **0.52h** (-83% from baseline) |
+| RMSE | 3.48h | 1.01h | **0.94h** (-73% from baseline) |
+| Range compression | 3.35x | 1.13x | **1.11x** |
+| Longevity range | compressed | 2.0h–12.0h | **2.0h–12.0h** (fully restored) |
+| Missing notes (labeled set) | 313 | 1 | **1** (orange honey) |
+| Confidence (Sauvage Elixir sc=3, rc=11k) | 0.433 | 0.970 | **0.970** |
+| Confidence (Sauvage EDT sc=2, rc=23k) | 0.433 | 0.946 | **0.946** |
+| Avg confidence (labeled set sc>=2+real pyr) | 0.433 | 0.868 | **0.868** |
+| Strong→light misclassifications | many | 0 | **0** (zero cross-bucket misses) |
 
 **Note on accuracy:** labeled perfumes use 100% label override in training — these numbers
 are an upper bound. True generalization accuracy on unlabeled perfumes is lower, but the
 model is well-calibrated for chemistry-driven predictions.
 
-#### Diverse Prediction Table (Phase 9 — base-dominant longevity weights)
+#### Diverse Prediction Table (Phase 10 — 110K perfumes, retrained)
 | Brand | Name | SC | Pyr | Long | Sill | BB | Conf |
 |---|---|---|---|---|---|---|---|
 | Guerlain | Shalimar Souffle De Parfum | 7 | real | 5.5h | 4.0 | 4.7 | 0.970 |
@@ -161,14 +161,16 @@ Avg confidence across labeled set: **0.868** (all in sc>=2 + real_pyr tier).
 Max confidence cap: **0.97** (was 0.95).
 
 ### Remaining Weaknesses
-1. **Light recall = 65.2%** — 8/23 light perfumes predicted as moderate (regressed from 82.6%
-   pre-Phase 9). Trade-off of base-dominant weights: light EDTs with sandalwood/musk in base
-   (e.g., Jo Malone Peony Blush Suede, English Pear) now over-predicted. Fix: reduce base
-   weight to 0.5, or add more labeled light examples.
-2. **Strong recall = 82.7%** — 26/150 strong perfumes predicted as moderate. Angel and La Nuit
-   Trésor moved from MISS (2.0h) to CLOSE (4.1h moderate) after Phase 9 — needs
-   `community_longevity_label="Strong"` override or Parfumo import for unlabeled orientals.
-3. **Label leakage** — 384 labeled perfumes use 100% label override in training; 90.1%
+1. **Moderate recall = 95.3%** — dropped from 98.1% (Phase 9) after retraining on 110K perfumes;
+   6 strong perfumes now predicted as moderate and 4 moderate predicted as light. More unlabeled
+   data dilutes the 384-label signal slightly.
+2. **Light recall = 78.3%** (18/23) — improved from 65.2% after Phase 10 retrain. 5 light
+   perfumes still predicted as moderate. Fix: reduce base weight from 0.6 to 0.5 in
+   `features.py`, or add more labeled light examples.
+3. **Strong recall = 86.7%** (130/150) — improved from 82.7%. 20 strong perfumes still
+   predicted as moderate. Main lever: add `community_longevity_label="Strong"` for unlabeled
+   orientals, or run `infer_pyramids.py` on 42K+ Parfumo-only records.
+4. **Label leakage** — 384 labeled perfumes use 100% label override in training; 90.9%
    accuracy is an upper bound. Unlabeled perfume predictions rely purely on note chemistry +
    community votes.
 4. **Inferred pyramid MAE = 0.87h** vs real pyramid 0.53h — Jaccard-similar notes don't
@@ -196,36 +198,37 @@ top/middle/base (5 each).
 
 Stats: 42,995 pyramids inferred in ~90s, 0 skipped.
 
-## Frontend Status (as of 2026-06-14)
+## Frontend Status (as of 2026-06-14, audited + completed)
 
 ### What works end-to-end (all components complete and wired):
 - **Search page** (`/search`) — browse DB, click card navigates to `/?name=X&brand=Y`
 - **Dashboard page** (`/`) — auto-triggers prediction from URL params (BUG 7 fixed)
-- **PerfumeSearch** — debounced autocomplete, context selectors, pre-fills from URL params
-- **ScoreCard** — Longevity (purple), all /10 scores dynamically colored (green >7, amber 4-7, red <4)
-- **RadarChart** — Season + Occasion spider (Recharts, wired to API)
-- **BarChart** — Time of day + Projection arc (Recharts, wired to API)
-- **PieChart** — Gender expression + Skin type distribution (Recharts, wired to API)
-- **ClimateChart** — Progress bars with temp range (inline in Dashboard)
-- **PersonFit** — Skin/Age/Personality horizontal bars (inline in Dashboard, mobile-responsive)
-- **GeoSection** — City tags grouped by climate (Tropical/Arid/Temperate/Cold)
-- **NLPConclusion** — Expert paragraph + confidence badge (High/Medium/Low with %) + model version
-- **Instagram Brief** — Bullet points with per-bullet Copy + Copy All buttons
+- **PerfumeSearch** — debounced autocomplete, context selectors (skin/season/time), pre-fills from URL params
+- **ScoreCard** — 8 cards: Longevity/Sillage/Versatility/BlindBuy/Compliment/CostPerWear/Proj1h/HeatPerf; dynamic color (green >7, amber 4-7, red <4)
+- **RadarChart** — 10-axis spider: Spring/Summer/Fall/Winter/Office/Date/Casual/Formal/Sport/Travel (Recharts, wired to API)
+- **BarChart** — Time of day (Morning/Afternoon/Evening/Night) + Projection arc (1h/3h/6h/8h) (Recharts)
+- **PieChart** — Gender expression (Masculine/Feminine/Unisex) + Skin type (Dry/Oily/Combo) dual pie (Recharts)
+- **ClimateChart** — Progress bars for Tropical/Arid/Temperate/Cold + optimal temp range (inline in Dashboard)
+- **PersonFit** — 4 sub-sections: Skin Type / Age Bracket / Personality / Gender Expression horizontal bars (inline in Dashboard, 4-column grid, mobile-responsive)
+- **GeoSection** — City badges grouped by climate type (Tropical/Arid/Temperate/Cold)
+- **NLPConclusion** — Expert paragraph + confidence badge (High >85% / Medium 60-85% / Low <60%) + model version badge
+- **Instagram Brief** — 5 bullet points parsed from NLP output, per-bullet Copy + Copy All buttons
 
 ### Deployment status:
-- **NOT yet deployed to Railway** — BACKEND_URL/FRONTEND_URL still point to localhost in .env
+- **NOT yet deployed to Railway** — push to GitHub triggers Railway auto-deploy
 - Railway services defined in `railway.toml` (backend + frontend)
 - `Dockerfile.frontend` uses `envsubst` to inject `$BACKEND_URL` at container start
 - Default `BACKEND_URL=http://backend.railway.internal:8000` (Railway private network)
 - To deploy: push to GitHub → Railway picks up → set `BACKEND_URL` env var in Railway frontend service
 - **Build is clean**: `npm run build` succeeds (187KB gzipped, chunk warning only — Recharts is large)
+- **vite.config.js** proxies `/api` → `http://localhost:8000` for local dev (no `.env` needed)
 
 ### Key files:
-- `frontend/src/pages/Dashboard.jsx` — main page with all sections
-- `frontend/src/pages/Search.jsx` — browse + navigate to dashboard
+- `frontend/src/pages/Dashboard.jsx` — main page; ClimateChart, GeoSection, PersonFit defined inline
+- `frontend/src/pages/Search.jsx` — browse page; navigates to `/?name=X&brand=Y`
 - `frontend/src/components/` — ScoreCard, RadarChart, BarChart, PieChart, NLPConclusion, PerfumeSearch
-- `frontend/src/api/client.js` — axios client, `VITE_API_URL` env var (defaults to `/api`)
-- `docker/nginx.conf` — nginx template with `${BACKEND_URL}` proxy
+- `frontend/src/api/client.js` — axios client, baseURL = `VITE_API_URL` env var or `/api`
+- `docker/nginx.conf` — nginx template with `${BACKEND_URL}` proxy for `/api`
 - `Dockerfile.frontend` — multi-stage: node build → nginx + envsubst
 
 ### Remaining frontend issues:
@@ -240,7 +243,7 @@ Stats: 42,995 pyramids inferred in ~90s, 0 skipped.
 - 42,831 new perfumes added; 12,290 existing updated; 0 errors
 - DB: 67,222 -> 110,053 perfumes | notes_chemistry: 1,619 -> 4,785 entries
 - Sauvage EDT: sc stayed at 2 (not in Parfumo dataset), conf=0.946 unchanged
-- Calibrator MAE improved: 0.57h -> 0.477h after retraining on 110K perfumes
+- Calibrator MAE improved: 0.57h -> 0.515h after retraining on 110K perfumes
 - **Next for confidence boost**: run `scripts/infer_pyramids.py` on the 42,831 new perfumes
   (none have pyramids yet — inferred pyramid would lift conf for these sc=1 records)
 
@@ -251,22 +254,23 @@ Stats: 42,995 pyramids inferred in ~90s, 0 skipped.
 - Retrain + recalibrate after (`test_model.py` then `calibrate_longevity.py`)
 
 ### Remaining Model Improvements
-- **Phase 9 complete** — retrain + calibration done (MAE 0.57h, 90.1% accuracy).
+- **Phase 10 complete** — retrain + calibration on 110K perfumes done (MAE 0.52h, 90.9% accuracy).
   Calibration pipeline: `python scripts/test_model.py` → `python scripts/calibrate_longevity.py`.
-- **Improve light recall (65.2%)** — 8 light perfumes now predicted as moderate. Options:
-  - Reduce base weight from 0.6 to 0.5 in `features.py` longevity_class computation
-  - Add more labeled "light" perfumes to the 384-set ground truth
-- **Improve strong recall (82.7%)** — main lever is Parfumo import (sc→3,
-  community_longevity_label for unlabeled strong orientals) or manual label additions.
-- **community_longevity_rating backfill at scale** — only 10 perfumes fixed from fragrances.csv
-  sample; Parfumo dataset import is the primary path to fixing this for popular perfumes.
+- **Infer pyramids for 42K+ Parfumo-only records** — run `scripts/infer_pyramids.py` (idempotent,
+  skips existing). Will boost confidence from 0.55 (no pyramid) to ~0.78 for sc=1 records.
+- **Improve light recall (78.3%)** — 5 light perfumes still predicted as moderate.
+  Fix: reduce base weight from 0.6 to 0.5 in `features.py` longevity_class computation.
+- **Improve strong recall (86.7%)** — 20 strong perfumes still predicted as moderate.
+  Main lever: manual `community_longevity_label="Strong"` additions for unlabeled orientals.
+- **community_longevity_rating backfill at scale** — ~100k perfumes at default 3.0.
 - **Improve predict route cold-start** — `routes/predict.py` falls back to seed JSON;
   update to load from DB instead.
 
 ## Do Not Do
 
 - **Do not attempt live Fragrantica scraping** — Cloudflare blocks it; this was already tried and abandoned.
-- **Do not re-run the full importer without checking** — the import is complete and idempotent, but re-running 70k rows against a remote DB takes ~90 min. Verify `SELECT COUNT(*) FROM perfumes` >= 67,222 before deciding to re-run.
+- **Do not re-run the full importer without checking** — the import is complete and idempotent, but re-running 70k rows against a remote DB takes ~90 min. Verify `SELECT COUNT(*) FROM perfumes` >= 110,053 before deciding to re-run.
+- **Do not re-run import_parfumo_fast.py** — it is NOT idempotent on source_count; each run increments source_count by 1 for all 42,839 matched perfumes. Already ran twice. The import ran for ~2.75 hours (9,877s) on the full dataset.
 - **Do not skip syntax/type checks before committing** — run mypy/pyright on changed files.
 - **Do not retrain models unless data has actually changed** — use `python scripts/test_model.py` from `backend/`.
 - **Do not re-run calibrate_longevity.py unless models were retrained** — calibrator is tied to the current pkl weights.

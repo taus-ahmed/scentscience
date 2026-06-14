@@ -1,0 +1,5916 @@
+{
+  "missing": [
+    {
+      "note": "ylang-ylang",
+      "freq": 7097
+    },
+    {
+      "note": "peony",
+      "freq": 5920
+    },
+    {
+      "note": "black currant",
+      "freq": 5710
+    },
+    {
+      "note": "pear",
+      "freq": 5697
+    },
+    {
+      "note": "incense",
+      "freq": 5550
+    },
+    {
+      "note": "raspberry",
+      "freq": 5007
+    },
+    {
+      "note": "magnolia",
+      "freq": 4574
+    },
+    {
+      "note": "agarwood (oud)",
+      "freq": 4531
+    },
+    {
+      "note": "heliotrope",
+      "freq": 4335
+    },
+    {
+      "note": "citruses",
+      "freq": 4196
+    },
+    {
+      "note": "tuberose",
+      "freq": 4185
+    },
+    {
+      "note": "gardenia",
+      "freq": 3554
+    },
+    {
+      "note": "woodsy notes",
+      "freq": 2958
+    },
+    {
+      "note": "tangerine",
+      "freq": 2903
+    },
+    {
+      "note": "virginia cedar",
+      "freq": 2897
+    },
+    {
+      "note": "violet leaf",
+      "freq": 2610
+    },
+    {
+      "note": "lily",
+      "freq": 2513
+    },
+    {
+      "note": "petitgrain",
+      "freq": 2484
+    },
+    {
+      "note": "carnation",
+      "freq": 2437
+    },
+    {
+      "note": "jasmine sambac",
+      "freq": 2378
+    },
+    {
+      "note": "litchi",
+      "freq": 2376
+    },
+    {
+      "note": "galbanum",
+      "freq": 2330
+    },
+    {
+      "note": "olibanum",
+      "freq": 2294
+    },
+    {
+      "note": "floral notes",
+      "freq": 2256
+    },
+    {
+      "note": "amalfi lemon",
+      "freq": 2190
+    },
+    {
+      "note": "cypress",
+      "freq": 2183
+    },
+    {
+      "note": "vanille",
+      "freq": 2141
+    },
+    {
+      "note": "moss",
+      "freq": 2133
+    },
+    {
+      "note": "osmanthus",
+      "freq": 2119
+    },
+    {
+      "note": "clary sage",
+      "freq": 2040
+    },
+    {
+      "note": "bulgarian rose",
+      "freq": 1968
+    },
+    {
+      "note": "bitter orange",
+      "freq": 1922
+    },
+    {
+      "note": "mimosa",
+      "freq": 1655
+    },
+    {
+      "note": "water lily",
+      "freq": 1612
+    },
+    {
+      "note": "cyclamen",
+      "freq": 1601
+    },
+    {
+      "note": "myrrh",
+      "freq": 1557
+    },
+    {
+      "note": "almond",
+      "freq": 1475
+    },
+    {
+      "note": "praline",
+      "freq": 1458
+    },
+    {
+      "note": "white flowers",
+      "freq": 1380
+    },
+    {
+      "note": "juniper berries",
+      "freq": 1365
+    },
+    {
+      "note": "ambrette (musk mallow)",
+      "freq": 1347
+    },
+    {
+      "note": "strawberry",
+      "freq": 1337
+    },
+    {
+      "note": "red apple",
+      "freq": 1313
+    },
+    {
+      "note": "turkish rose",
+      "freq": 1305
+    },
+    {
+      "note": "honeysuckle",
+      "freq": 1252
+    },
+    {
+      "note": "orris",
+      "freq": 1248
+    },
+    {
+      "note": "thyme",
+      "freq": 1232
+    },
+    {
+      "note": "passionfruit",
+      "freq": 1208
+    },
+    {
+      "note": "tea",
+      "freq": 1190
+    },
+    {
+      "note": "african orange flower",
+      "freq": 1182
+    },
+    {
+      "note": "lilac",
+      "freq": 1114
+    },
+    {
+      "note": "damask rose",
+      "freq": 1100
+    },
+    {
+      "note": "yuzu",
+      "freq": 1095
+    },
+    {
+      "note": "fruity notes",
+      "freq": 1092
+    },
+    {
+      "note": "coffee",
+      "freq": 1063
+    },
+    {
+      "note": "fig",
+      "freq": 1048
+    },
+    {
+      "note": "frangipani",
+      "freq": 1025
+    },
+    {
+      "note": "green leaves",
+      "freq": 1014
+    },
+    {
+      "note": "styrax",
+      "freq": 990
+    },
+    {
+      "note": "suede",
+      "freq": 988
+    },
+    {
+      "note": "hyacinth",
+      "freq": 984
+    },
+    {
+      "note": "rhubarb",
+      "freq": 945
+    },
+    {
+      "note": "rum",
+      "freq": 943
+    },
+    {
+      "note": "water notes",
+      "freq": 931
+    },
+    {
+      "note": "calabrian bergamot",
+      "freq": 923
+    },
+    {
+      "note": "powdery notes",
+      "freq": 906
+    },
+    {
+      "note": "cypriol oil or nagarmotha",
+      "freq": 893
+    },
+    {
+      "note": "milk",
+      "freq": 891
+    },
+    {
+      "note": "angelica",
+      "freq": 870
+    },
+    {
+      "note": "tiare flower",
+      "freq": 855
+    },
+    {
+      "note": "clove",
+      "freq": 843
+    },
+    {
+      "note": "mango",
+      "freq": 840
+    },
+    {
+      "note": "anise",
+      "freq": 835
+    },
+    {
+      "note": "blood orange",
+      "freq": 832
+    },
+    {
+      "note": "palisander rosewood",
+      "freq": 803
+    },
+    {
+      "note": "pink grapefruit",
+      "freq": 797
+    },
+    {
+      "note": "opoponax",
+      "freq": 790
+    },
+    {
+      "note": "watermelon",
+      "freq": 776
+    },
+    {
+      "note": "brazilian rosewood",
+      "freq": 766
+    },
+    {
+      "note": "haitian vetiver",
+      "freq": 748
+    },
+    {
+      "note": "citron",
+      "freq": 737
+    },
+    {
+      "note": "clementine",
+      "freq": 723
+    },
+    {
+      "note": "white woods",
+      "freq": 717
+    },
+    {
+      "note": "red currant",
+      "freq": 712
+    },
+    {
+      "note": "oak moss",
+      "freq": 700
+    },
+    {
+      "note": "nectarine",
+      "freq": 665
+    },
+    {
+      "note": "watery notes",
+      "freq": 662
+    },
+    {
+      "note": "cumin",
+      "freq": 660
+    },
+    {
+      "note": "cherry",
+      "freq": 646
+    },
+    {
+      "note": "egyptian jasmine",
+      "freq": 641
+    },
+    {
+      "note": "myrhh",
+      "freq": 625
+    },
+    {
+      "note": "tolu balsam",
+      "freq": 607
+    },
+    {
+      "note": "tarragon",
+      "freq": 603
+    },
+    {
+      "note": "castoreum",
+      "freq": 592
+    },
+    {
+      "note": "bourbon vanilla",
+      "freq": 567
+    },
+    {
+      "note": "sweet notes",
+      "freq": 565
+    },
+    {
+      "note": "red fruits",
+      "freq": 564
+    },
+    {
+      "note": "white amber",
+      "freq": 555
+    },
+    {
+      "note": "black tea",
+      "freq": 550
+    },
+    {
+      "note": "mate",
+      "freq": 544
+    },
+    {
+      "note": "hazelnut",
+      "freq": 544
+    },
+    {
+      "note": "rose de mai",
+      "freq": 541
+    },
+    {
+      "note": "white pepper",
+      "freq": 535
+    },
+    {
+      "note": "fruits",
+      "freq": 533
+    },
+    {
+      "note": "pomelo",
+      "freq": 532
+    },
+    {
+      "note": "peach blossom",
+      "freq": 529
+    },
+    {
+      "note": "rose water",
+      "freq": 525
+    },
+    {
+      "note": "may rose",
+      "freq": 521
+    },
+    {
+      "note": "grass",
+      "freq": 520
+    },
+    {
+      "note": "ivy",
+      "freq": 516
+    },
+    {
+      "note": "cherry blossom",
+      "freq": 513
+    },
+    {
+      "note": "licorice",
+      "freq": 513
+    },
+    {
+      "note": "chamomile",
+      "freq": 512
+    },
+    {
+      "note": "sicilian bergamot",
+      "freq": 506
+    },
+    {
+      "note": "immortelle",
+      "freq": 489
+    },
+    {
+      "note": "balsam fir",
+      "freq": 477
+    },
+    {
+      "note": "italian lemon",
+      "freq": 475
+    },
+    {
+      "note": "white peach",
+      "freq": 463
+    },
+    {
+      "note": "lily of the valley",
+      "freq": 459
+    },
+    {
+      "note": "apple blossom",
+      "freq": 457
+    },
+    {
+      "note": "driftwood",
+      "freq": 450
+    },
+    {
+      "note": "marigold",
+      "freq": 444
+    },
+    {
+      "note": "granny smith apple",
+      "freq": 444
+    },
+    {
+      "note": "hibiscus",
+      "freq": 440
+    },
+    {
+      "note": "pine tree",
+      "freq": 438
+    },
+    {
+      "note": "sea water",
+      "freq": 432
+    },
+    {
+      "note": "eucalyptus",
+      "freq": 424
+    },
+    {
+      "note": "flowers",
+      "freq": 421
+    },
+    {
+      "note": "sandalowood",
+      "freq": 419
+    },
+    {
+      "note": "ozonic notes",
+      "freq": 417
+    },
+    {
+      "note": "blueberry",
+      "freq": 416
+    },
+    {
+      "note": "oak",
+      "freq": 415
+    },
+    {
+      "note": "wormwood",
+      "freq": 415
+    },
+    {
+      "note": "marshmallow",
+      "freq": 413
+    },
+    {
+      "note": "big strawberry",
+      "freq": 410
+    },
+    {
+      "note": "kumquat",
+      "freq": 409
+    },
+    {
+      "note": "hawthorn",
+      "freq": 407
+    },
+    {
+      "note": "red rose",
+      "freq": 404
+    },
+    {
+      "note": "vanilla orchid",
+      "freq": 403
+    },
+    {
+      "note": "herbal notes",
+      "freq": 399
+    },
+    {
+      "note": "french labdanum",
+      "freq": 392
+    },
+    {
+      "note": "sweet orange",
+      "freq": 392
+    },
+    {
+      "note": "cotton flower",
+      "freq": 388
+    },
+    {
+      "note": "salt",
+      "freq": 383
+    },
+    {
+      "note": "cassia",
+      "freq": 378
+    },
+    {
+      "note": "coumarin",
+      "freq": 377
+    },
+    {
+      "note": "guava",
+      "freq": 376
+    },
+    {
+      "note": "aromatic notes",
+      "freq": 376
+    },
+    {
+      "note": "white tea",
+      "freq": 373
+    },
+    {
+      "note": "myrtle",
+      "freq": 370
+    },
+    {
+      "note": "brown sugar",
+      "freq": 368
+    },
+    {
+      "note": "precious woods",
+      "freq": 367
+    },
+    {
+      "note": "cognac",
+      "freq": 367
+    },
+    {
+      "note": "white cedar extract",
+      "freq": 364
+    },
+    {
+      "note": "sweet pea",
+      "freq": 355
+    },
+    {
+      "note": "vanila",
+      "freq": 350
+    },
+    {
+      "note": "pink peony",
+      "freq": 347
+    },
+    {
+      "note": "pimento",
+      "freq": 346
+    },
+    {
+      "note": "davana",
+      "freq": 345
+    },
+    {
+      "note": "bay leaf",
+      "freq": 345
+    },
+    {
+      "note": "rose petals",
+      "freq": 343
+    },
+    {
+      "note": "almond blossom",
+      "freq": 338
+    },
+    {
+      "note": "resins",
+      "freq": 338
+    },
+    {
+      "note": "kiwi",
+      "freq": 338
+    },
+    {
+      "note": "carrot seeds",
+      "freq": 338
+    },
+    {
+      "note": "teak wood",
+      "freq": 337
+    },
+    {
+      "note": "wild berries",
+      "freq": 337
+    },
+    {
+      "note": "pistachio",
+      "freq": 328
+    },
+    {
+      "note": "taif rose",
+      "freq": 322
+    },
+    {
+      "note": "hiacynth",
+      "freq": 319
+    },
+    {
+      "note": "white wood",
+      "freq": 318
+    },
+    {
+      "note": "solar notes",
+      "freq": 310
+    },
+    {
+      "note": "rice",
+      "freq": 308
+    },
+    {
+      "note": "coconut milk",
+      "freq": 307
+    },
+    {
+      "note": "tagetes",
+      "freq": 306
+    },
+    {
+      "note": "cucumber",
+      "freq": 303
+    },
+    {
+      "note": "pine",
+      "freq": 302
+    },
+    {
+      "note": "quince",
+      "freq": 298
+    },
+    {
+      "note": "italian mandarin",
+      "freq": 297
+    },
+    {
+      "note": "sour cherry",
+      "freq": 297
+    },
+    {
+      "note": "amyris",
+      "freq": 296
+    },
+    {
+      "note": "cranberry",
+      "freq": 294
+    },
+    {
+      "note": "vanilla absolute",
+      "freq": 292
+    },
+    {
+      "note": "fir",
+      "freq": 291
+    },
+    {
+      "note": "vetyver",
+      "freq": 290
+    },
+    {
+      "note": "australian sandalwood",
+      "freq": 290
+    },
+    {
+      "note": "grapes",
+      "freq": 289
+    },
+    {
+      "note": "sicilian mandarin",
+      "freq": 289
+    },
+    {
+      "note": "wild rose",
+      "freq": 287
+    },
+    {
+      "note": "gurjan balsam",
+      "freq": 278
+    },
+    {
+      "note": "beeswax",
+      "freq": 277
+    },
+    {
+      "note": "cacao pod",
+      "freq": 276
+    },
+    {
+      "note": "indian jasmine",
+      "freq": 275
+    },
+    {
+      "note": "bitter almond",
+      "freq": 275
+    },
+    {
+      "note": "indonesian patchouli leaf",
+      "freq": 270
+    },
+    {
+      "note": "wisteria",
+      "freq": 268
+    },
+    {
+      "note": "lime (linden) blossom",
+      "freq": 267
+    },
+    {
+      "note": "verbena",
+      "freq": 258
+    },
+    {
+      "note": "hay",
+      "freq": 254
+    },
+    {
+      "note": "toffee",
+      "freq": 252
+    },
+    {
+      "note": "white honey",
+      "freq": 250
+    },
+    {
+      "note": "lemon blossom",
+      "freq": 248
+    },
+    {
+      "note": "seaweed",
+      "freq": 243
+    },
+    {
+      "note": "syringa",
+      "freq": 240
+    },
+    {
+      "note": "carrot",
+      "freq": 239
+    },
+    {
+      "note": "lemon zest",
+      "freq": 236
+    },
+    {
+      "note": "passion flower",
+      "freq": 234
+    },
+    {
+      "note": "mastic or lentisque",
+      "freq": 231
+    },
+    {
+      "note": "wild strawberry",
+      "freq": 230
+    },
+    {
+      "note": "siam benzoin",
+      "freq": 229
+    },
+    {
+      "note": "champagne",
+      "freq": 228
+    },
+    {
+      "note": "peppermint",
+      "freq": 222
+    },
+    {
+      "note": "white chocolate",
+      "freq": 220
+    },
+    {
+      "note": "gooseberry",
+      "freq": 219
+    },
+    {
+      "note": "tulip",
+      "freq": 218
+    },
+    {
+      "note": "tomato leaf",
+      "freq": 217
+    },
+    {
+      "note": "resin",
+      "freq": 211
+    },
+    {
+      "note": "carambola (star fruit)",
+      "freq": 210
+    },
+    {
+      "note": "natural musk",
+      "freq": 209
+    },
+    {
+      "note": "sugar cane",
+      "freq": 209
+    },
+    {
+      "note": "lemongrass",
+      "freq": 206
+    },
+    {
+      "note": "dates",
+      "freq": 206
+    },
+    {
+      "note": "moroccan rose",
+      "freq": 201
+    },
+    {
+      "note": "sorbet",
+      "freq": 200
+    },
+    {
+      "note": "tahitian vanilla",
+      "freq": 198
+    },
+    {
+      "note": "indian oud",
+      "freq": 194
+    },
+    {
+      "note": "cashmere musk",
+      "freq": 193
+    },
+    {
+      "note": "animal notes",
+      "freq": 192
+    },
+    {
+      "note": "akigalawood",
+      "freq": 192
+    },
+    {
+      "note": "cannabis",
+      "freq": 190
+    },
+    {
+      "note": "fern",
+      "freq": 189
+    },
+    {
+      "note": "ginger flower",
+      "freq": 188
+    },
+    {
+      "note": "tonka",
+      "freq": 183
+    },
+    {
+      "note": "tincture of rose",
+      "freq": 181
+    },
+    {
+      "note": "bourbon geranium",
+      "freq": 180
+    },
+    {
+      "note": "green pear",
+      "freq": 179
+    },
+    {
+      "note": "whiskey",
+      "freq": 179
+    },
+    {
+      "note": "rose oil",
+      "freq": 179
+    },
+    {
+      "note": "tropical fruits",
+      "freq": 179
+    },
+    {
+      "note": "pear blossom",
+      "freq": 177
+    },
+    {
+      "note": "tuscan iris",
+      "freq": 175
+    },
+    {
+      "note": "guatemalan cardamom",
+      "freq": 175
+    },
+    {
+      "note": "white lily",
+      "freq": 173
+    },
+    {
+      "note": "grasse rose",
+      "freq": 173
+    },
+    {
+      "note": "brazilian orange",
+      "freq": 173
+    },
+    {
+      "note": "black amber",
+      "freq": 171
+    },
+    {
+      "note": "iris flower",
+      "freq": 166
+    },
+    {
+      "note": "banana",
+      "freq": 160
+    },
+    {
+      "note": "palo santo",
+      "freq": 158
+    },
+    {
+      "note": "meringue",
+      "freq": 156
+    },
+    {
+      "note": "gin",
+      "freq": 156
+    },
+    {
+      "note": "vanilla flower",
+      "freq": 156
+    },
+    {
+      "note": "orange peel",
+      "freq": 154
+    },
+    {
+      "note": "rhuburb",
+      "freq": 152
+    },
+    {
+      "note": "fig tree",
+      "freq": 152
+    },
+    {
+      "note": "tunisian neroli",
+      "freq": 151
+    },
+    {
+      "note": "absinthe",
+      "freq": 149
+    },
+    {
+      "note": "cambodian oud",
+      "freq": 149
+    },
+    {
+      "note": "laotian oud",
+      "freq": 149
+    },
+    {
+      "note": "pine needles",
+      "freq": 147
+    },
+    {
+      "note": "fennel",
+      "freq": 144
+    },
+    {
+      "note": "candy apple",
+      "freq": 144
+    },
+    {
+      "note": "marshamallow",
+      "freq": 144
+    },
+    {
+      "note": "paprika",
+      "freq": 143
+    },
+    {
+      "note": "lemon leaf",
+      "freq": 141
+    },
+    {
+      "note": "sand",
+      "freq": 140
+    },
+    {
+      "note": "oriental flower notes",
+      "freq": 140
+    },
+    {
+      "note": "mirabelle",
+      "freq": 138
+    },
+    {
+      "note": "red peony",
+      "freq": 138
+    },
+    {
+      "note": "exotic fruits",
+      "freq": 137
+    },
+    {
+      "note": "water jasmine",
+      "freq": 137
+    },
+    {
+      "note": "black vanilla husk",
+      "freq": 137
+    },
+    {
+      "note": "patchouli leaf",
+      "freq": 135
+    },
+    {
+      "note": "hinoki wood",
+      "freq": 134
+    },
+    {
+      "note": "exotic woods",
+      "freq": 132
+    },
+    {
+      "note": "exotic spices",
+      "freq": 130
+    },
+    {
+      "note": "cedar needles",
+      "freq": 129
+    },
+    {
+      "note": "texas cedar",
+      "freq": 129
+    },
+    {
+      "note": "indian tuberose",
+      "freq": 127
+    },
+    {
+      "note": "pine tree needles",
+      "freq": 127
+    },
+    {
+      "note": "tea rose",
+      "freq": 127
+    },
+    {
+      "note": "java vetiver oil",
+      "freq": 126
+    },
+    {
+      "note": "mineral notes",
+      "freq": 125
+    },
+    {
+      "note": "yellow mandarin",
+      "freq": 124
+    },
+    {
+      "note": "clover",
+      "freq": 123
+    },
+    {
+      "note": "cupcake",
+      "freq": 123
+    },
+    {
+      "note": "metallic notes",
+      "freq": 121
+    },
+    {
+      "note": "vanilla bean",
+      "freq": 121
+    },
+    {
+      "note": "marjoram",
+      "freq": 121
+    },
+    {
+      "note": "birch leaf",
+      "freq": 120
+    },
+    {
+      "note": "broom",
+      "freq": 119
+    },
+    {
+      "note": "crystal amber",
+      "freq": 119
+    },
+    {
+      "note": "pink rose",
+      "freq": 119
+    },
+    {
+      "note": "night blooming jasmine",
+      "freq": 118
+    },
+    {
+      "note": "green grass",
+      "freq": 117
+    },
+    {
+      "note": "macarons",
+      "freq": 117
+    },
+    {
+      "note": "water hyacinth",
+      "freq": 117
+    },
+    {
+      "note": "rose hip",
+      "freq": 114
+    },
+    {
+      "note": "agarwood",
+      "freq": 113
+    },
+    {
+      "note": "dreamwood",
+      "freq": 113
+    },
+    {
+      "note": "butter",
+      "freq": 112
+    },
+    {
+      "note": "black rose",
+      "freq": 112
+    },
+    {
+      "note": "sea buckthorn",
+      "freq": 112
+    },
+    {
+      "note": "nashi pear",
+      "freq": 111
+    },
+    {
+      "note": "oregano",
+      "freq": 109
+    },
+    {
+      "note": "wildflowers",
+      "freq": 108
+    },
+    {
+      "note": "vanilla pod",
+      "freq": 107
+    },
+    {
+      "note": "sunflower",
+      "freq": 106
+    },
+    {
+      "note": "custard",
+      "freq": 105
+    },
+    {
+      "note": "black currant blossom",
+      "freq": 103
+    },
+    {
+      "note": "sesame",
+      "freq": 102
+    },
+    {
+      "note": "cardamon",
+      "freq": 102
+    },
+    {
+      "note": "black cherry",
+      "freq": 102
+    },
+    {
+      "note": "berry fruits",
+      "freq": 101
+    },
+    {
+      "note": "coconut water",
+      "freq": 101
+    },
+    {
+      "note": "earthy notes",
+      "freq": 100
+    },
+    {
+      "note": "plum blossom",
+      "freq": 99
+    },
+    {
+      "note": "coconut nectar",
+      "freq": 99
+    },
+    {
+      "note": "tunisian orange blossom",
+      "freq": 98
+    },
+    {
+      "note": "tea leaf",
+      "freq": 98
+    },
+    {
+      "note": "green lilac",
+      "freq": 97
+    },
+    {
+      "note": "ice",
+      "freq": 97
+    },
+    {
+      "note": "aromatic spices",
+      "freq": 96
+    },
+    {
+      "note": "white sandalwood",
+      "freq": 95
+    },
+    {
+      "note": "cade oil",
+      "freq": 95
+    },
+    {
+      "note": "datura",
+      "freq": 95
+    },
+    {
+      "note": "red pepper",
+      "freq": 95
+    },
+    {
+      "note": "ceylon cinnamon",
+      "freq": 94
+    },
+    {
+      "note": "red chilli pepper",
+      "freq": 93
+    },
+    {
+      "note": "lemon tree",
+      "freq": 93
+    },
+    {
+      "note": "hyrax",
+      "freq": 92
+    },
+    {
+      "note": "ambrette",
+      "freq": 91
+    },
+    {
+      "note": "copahu balm",
+      "freq": 91
+    },
+    {
+      "note": "brandy",
+      "freq": 91
+    },
+    {
+      "note": "pitosporum",
+      "freq": 90
+    },
+    {
+      "note": "grapefruit blossom",
+      "freq": 89
+    },
+    {
+      "note": "chinese osmanthus",
+      "freq": 89
+    },
+    {
+      "note": "red thyme",
+      "freq": 89
+    },
+    {
+      "note": "pataqueira",
+      "freq": 89
+    },
+    {
+      "note": "ebony wood",
+      "freq": 88
+    },
+    {
+      "note": "sicilian orange",
+      "freq": 88
+    },
+    {
+      "note": "chili pepper",
+      "freq": 88
+    },
+    {
+      "note": "turmeric",
+      "freq": 88
+    },
+    {
+      "note": "black musk",
+      "freq": 88
+    },
+    {
+      "note": "palmarosa",
+      "freq": 88
+    },
+    {
+      "note": "spanish labdanum",
+      "freq": 87
+    },
+    {
+      "note": "olive tree",
+      "freq": 86
+    },
+    {
+      "note": "dew drop",
+      "freq": 86
+    },
+    {
+      "note": "bamboo leaf",
+      "freq": 86
+    },
+    {
+      "note": "currant buds",
+      "freq": 85
+    },
+    {
+      "note": "bellflower",
+      "freq": 85
+    },
+    {
+      "note": "bourbon vetiver",
+      "freq": 85
+    },
+    {
+      "note": "amaryllis",
+      "freq": 84
+    },
+    {
+      "note": "rhubarb leaf",
+      "freq": 84
+    },
+    {
+      "note": "pink freesia",
+      "freq": 84
+    },
+    {
+      "note": "black locust",
+      "freq": 84
+    },
+    {
+      "note": "civetta",
+      "freq": 84
+    },
+    {
+      "note": "dyer\u0092s greenweed",
+      "freq": 83
+    },
+    {
+      "note": "almond milk",
+      "freq": 82
+    },
+    {
+      "note": "dry wood",
+      "freq": 82
+    },
+    {
+      "note": "white orchid",
+      "freq": 82
+    },
+    {
+      "note": "pitahaya",
+      "freq": 82
+    },
+    {
+      "note": "mexican chocolate",
+      "freq": 81
+    },
+    {
+      "note": "skin",
+      "freq": 81
+    },
+    {
+      "note": "clearwood",
+      "freq": 80
+    },
+    {
+      "note": "poppy",
+      "freq": 79
+    },
+    {
+      "note": "ac\u00e1cia",
+      "freq": 79
+    },
+    {
+      "note": "mountain air",
+      "freq": 79
+    },
+    {
+      "note": "oriental notes",
+      "freq": 78
+    },
+    {
+      "note": "tamarind",
+      "freq": 78
+    },
+    {
+      "note": "costus",
+      "freq": 78
+    },
+    {
+      "note": "raspberry leaf",
+      "freq": 77
+    },
+    {
+      "note": "cactus flower",
+      "freq": 77
+    },
+    {
+      "note": "mexican vanilla",
+      "freq": 75
+    },
+    {
+      "note": "litsea cubeba",
+      "freq": 74
+    },
+    {
+      "note": "madagascar vetiver",
+      "freq": 74
+    },
+    {
+      "note": "green pepper",
+      "freq": 74
+    },
+    {
+      "note": "black currant leaf",
+      "freq": 74
+    },
+    {
+      "note": "palm leaf",
+      "freq": 74
+    },
+    {
+      "note": "madagascar pepper",
+      "freq": 74
+    },
+    {
+      "note": "spun sugar",
+      "freq": 72
+    },
+    {
+      "note": "orange leaf",
+      "freq": 72
+    },
+    {
+      "note": "cashmirwood",
+      "freq": 71
+    },
+    {
+      "note": "camphor",
+      "freq": 71
+    },
+    {
+      "note": "night blooming cereus",
+      "freq": 71
+    },
+    {
+      "note": "liquor",
+      "freq": 71
+    },
+    {
+      "note": "mandarin leaf",
+      "freq": 70
+    },
+    {
+      "note": "acai berry",
+      "freq": 70
+    },
+    {
+      "note": "copaiba balm",
+      "freq": 69
+    },
+    {
+      "note": "star jasmine",
+      "freq": 69
+    },
+    {
+      "note": "cistus incanus",
+      "freq": 68
+    },
+    {
+      "note": "buchu or agathosma",
+      "freq": 68
+    },
+    {
+      "note": "red cedar",
+      "freq": 68
+    },
+    {
+      "note": "balsamic notes",
+      "freq": 68
+    },
+    {
+      "note": "cinnamon leaf",
+      "freq": 68
+    },
+    {
+      "note": "camelia",
+      "freq": 68
+    },
+    {
+      "note": "apricot blossom",
+      "freq": 68
+    },
+    {
+      "note": "accord eudora\u00ae",
+      "freq": 68
+    },
+    {
+      "note": "white iris",
+      "freq": 67
+    },
+    {
+      "note": "spruce",
+      "freq": 67
+    },
+    {
+      "note": "watercress",
+      "freq": 67
+    },
+    {
+      "note": "calamus",
+      "freq": 67
+    },
+    {
+      "note": "rose geranium",
+      "freq": 67
+    },
+    {
+      "note": "truffle",
+      "freq": 67
+    },
+    {
+      "note": "mango blossom",
+      "freq": 66
+    },
+    {
+      "note": "fig nectar",
+      "freq": 66
+    },
+    {
+      "note": "fenugreek",
+      "freq": 66
+    },
+    {
+      "note": "blackcurrant syrup",
+      "freq": 65
+    },
+    {
+      "note": "cactus",
+      "freq": 65
+    },
+    {
+      "note": "petitgrain paraguay",
+      "freq": 65
+    },
+    {
+      "note": "blue lotus",
+      "freq": 64
+    },
+    {
+      "note": "lemon peel",
+      "freq": 64
+    },
+    {
+      "note": "mandarin blossom",
+      "freq": 64
+    },
+    {
+      "note": "laurels",
+      "freq": 64
+    },
+    {
+      "note": "aloe vera",
+      "freq": 63
+    },
+    {
+      "note": "ink",
+      "freq": 63
+    },
+    {
+      "note": "rain notes",
+      "freq": 63
+    },
+    {
+      "note": "jasmine tea",
+      "freq": 62
+    },
+    {
+      "note": "wild jasmine",
+      "freq": 62
+    },
+    {
+      "note": "ice cream",
+      "freq": 62
+    },
+    {
+      "note": "wheat",
+      "freq": 62
+    },
+    {
+      "note": "dahlia",
+      "freq": 61
+    },
+    {
+      "note": "popcorn",
+      "freq": 61
+    },
+    {
+      "note": "celery",
+      "freq": 61
+    },
+    {
+      "note": "white suede",
+      "freq": 60
+    },
+    {
+      "note": "thailand oud",
+      "freq": 59
+    },
+    {
+      "note": "white tobacco",
+      "freq": 59
+    },
+    {
+      "note": "pear leaf",
+      "freq": 59
+    },
+    {
+      "note": "violet root",
+      "freq": 59
+    },
+    {
+      "note": "soil tincture",
+      "freq": 58
+    },
+    {
+      "note": "wild orchid",
+      "freq": 58
+    },
+    {
+      "note": "synthetic civet",
+      "freq": 58
+    },
+    {
+      "note": "syrup",
+      "freq": 58
+    },
+    {
+      "note": "snowdrops",
+      "freq": 57
+    },
+    {
+      "note": "marine notes",
+      "freq": 57
+    },
+    {
+      "note": "camellia",
+      "freq": 57
+    },
+    {
+      "note": "white grapefruit",
+      "freq": 57
+    },
+    {
+      "note": "walnut",
+      "freq": 57
+    },
+    {
+      "note": "baie rose",
+      "freq": 57
+    },
+    {
+      "note": "copal",
+      "freq": 57
+    },
+    {
+      "note": "west indian bay",
+      "freq": 57
+    },
+    {
+      "note": "dried plum",
+      "freq": 56
+    },
+    {
+      "note": "stephanotis",
+      "freq": 56
+    },
+    {
+      "note": "moroccan jasmine",
+      "freq": 56
+    },
+    {
+      "note": "daisy",
+      "freq": 56
+    },
+    {
+      "note": "hortensia",
+      "freq": 56
+    },
+    {
+      "note": "banana leaf",
+      "freq": 56
+    },
+    {
+      "note": "sequoia",
+      "freq": 55
+    },
+    {
+      "note": "graperfuit",
+      "freq": 55
+    },
+    {
+      "note": "black elder",
+      "freq": 54
+    },
+    {
+      "note": "mangosteen",
+      "freq": 54
+    },
+    {
+      "note": "creme brulee",
+      "freq": 54
+    },
+    {
+      "note": "natural vanilla",
+      "freq": 53
+    },
+    {
+      "note": "ambrox super",
+      "freq": 53
+    },
+    {
+      "note": "white oud",
+      "freq": 53
+    },
+    {
+      "note": "shiso",
+      "freq": 53
+    },
+    {
+      "note": "black fig",
+      "freq": 53
+    },
+    {
+      "note": "light amber",
+      "freq": 53
+    },
+    {
+      "note": "holly",
+      "freq": 52
+    },
+    {
+      "note": "ebony tree",
+      "freq": 52
+    },
+    {
+      "note": "african geranium",
+      "freq": 51
+    },
+    {
+      "note": "earl grey tea",
+      "freq": 51
+    },
+    {
+      "note": "pink lotus",
+      "freq": 51
+    },
+    {
+      "note": "tropical fruit",
+      "freq": 51
+    },
+    {
+      "note": "red poppy",
+      "freq": 51
+    },
+    {
+      "note": "ambrarome",
+      "freq": 51
+    },
+    {
+      "note": "milk mousse",
+      "freq": 50
+    },
+    {
+      "note": "algae",
+      "freq": 50
+    },
+    {
+      "note": "lavender extract",
+      "freq": 50
+    },
+    {
+      "note": "timur",
+      "freq": 50
+    },
+    {
+      "note": "casablanca lily",
+      "freq": 50
+    },
+    {
+      "note": "false jasmine",
+      "freq": 50
+    },
+    {
+      "note": "lipstick",
+      "freq": 50
+    },
+    {
+      "note": "mace",
+      "freq": 49
+    },
+    {
+      "note": "cinammon",
+      "freq": 49
+    },
+    {
+      "note": "maple",
+      "freq": 49
+    },
+    {
+      "note": "yellow freesia",
+      "freq": 49
+    },
+    {
+      "note": "bourbon pepper",
+      "freq": 49
+    },
+    {
+      "note": "javanol",
+      "freq": 49
+    },
+    {
+      "note": "mignonette",
+      "freq": 49
+    },
+    {
+      "note": "indian spices",
+      "freq": 49
+    },
+    {
+      "note": "blonde woods",
+      "freq": 48
+    },
+    {
+      "note": "calabrian mandarin",
+      "freq": 47
+    },
+    {
+      "note": "forest fruits",
+      "freq": 47
+    },
+    {
+      "note": "bitter orange blossom",
+      "freq": 47
+    },
+    {
+      "note": "hibiscus seed",
+      "freq": 47
+    },
+    {
+      "note": "maple sap",
+      "freq": 47
+    },
+    {
+      "note": "white currant",
+      "freq": 47
+    },
+    {
+      "note": "red wine",
+      "freq": 47
+    },
+    {
+      "note": "citrus leaf",
+      "freq": 47
+    },
+    {
+      "note": "massoia",
+      "freq": 47
+    },
+    {
+      "note": "goji berries",
+      "freq": 46
+    },
+    {
+      "note": "mysore sandalwood",
+      "freq": 46
+    },
+    {
+      "note": "cabreuva",
+      "freq": 46
+    },
+    {
+      "note": "matcha tea",
+      "freq": 46
+    },
+    {
+      "note": "italian cypress",
+      "freq": 46
+    },
+    {
+      "note": "turkey red rose",
+      "freq": 46
+    },
+    {
+      "note": "vodka",
+      "freq": 46
+    },
+    {
+      "note": "linen",
+      "freq": 46
+    },
+    {
+      "note": "tahitian tiare flower",
+      "freq": 46
+    },
+    {
+      "note": "chocolate flower",
+      "freq": 46
+    },
+    {
+      "note": "himalayan cedar",
+      "freq": 45
+    },
+    {
+      "note": "cetalox",
+      "freq": 45
+    },
+    {
+      "note": "sandal",
+      "freq": 45
+    },
+    {
+      "note": "dewberry",
+      "freq": 45
+    },
+    {
+      "note": "silk",
+      "freq": 45
+    },
+    {
+      "note": "coriander leaf",
+      "freq": 45
+    },
+    {
+      "note": "iran galbanum",
+      "freq": 45
+    },
+    {
+      "note": "sweet almond",
+      "freq": 44
+    },
+    {
+      "note": "blood grapefruit",
+      "freq": 44
+    },
+    {
+      "note": "coconut leaf",
+      "freq": 44
+    },
+    {
+      "note": "blackwood",
+      "freq": 44
+    },
+    {
+      "note": "bellini",
+      "freq": 43
+    },
+    {
+      "note": "loukhoum",
+      "freq": 43
+    },
+    {
+      "note": "gentiana",
+      "freq": 43
+    },
+    {
+      "note": "ambrofix\u0099",
+      "freq": 43
+    },
+    {
+      "note": "candied orange",
+      "freq": 43
+    },
+    {
+      "note": "mojito",
+      "freq": 43
+    },
+    {
+      "note": "exotic floral notes",
+      "freq": 42
+    },
+    {
+      "note": "black cardamom",
+      "freq": 42
+    },
+    {
+      "note": "marzipan",
+      "freq": 42
+    },
+    {
+      "note": "italian orange",
+      "freq": 42
+    },
+    {
+      "note": "asafoetida",
+      "freq": 42
+    },
+    {
+      "note": "black leather",
+      "freq": 42
+    },
+    {
+      "note": "turkish rose oil",
+      "freq": 42
+    },
+    {
+      "note": "juniper berry",
+      "freq": 42
+    },
+    {
+      "note": "amaretto",
+      "freq": 41
+    },
+    {
+      "note": "damask plum",
+      "freq": 41
+    },
+    {
+      "note": "pumpkin",
+      "freq": 41
+    },
+    {
+      "note": "honeycomb",
+      "freq": 41
+    },
+    {
+      "note": "velvet",
+      "freq": 41
+    },
+    {
+      "note": "allspice",
+      "freq": 41
+    },
+    {
+      "note": "vine",
+      "freq": 41
+    },
+    {
+      "note": "neroli essence",
+      "freq": 40
+    },
+    {
+      "note": "hinoki",
+      "freq": 40
+    },
+    {
+      "note": "finger lime",
+      "freq": 40
+    },
+    {
+      "note": "coca-cola",
+      "freq": 40
+    },
+    {
+      "note": "siberian pine",
+      "freq": 40
+    },
+    {
+      "note": "parma violet",
+      "freq": 39
+    },
+    {
+      "note": "japanese cherry blossom",
+      "freq": 39
+    },
+    {
+      "note": "white violet",
+      "freq": 39
+    },
+    {
+      "note": "raspberry bloom",
+      "freq": 39
+    },
+    {
+      "note": "italian orris root",
+      "freq": 39
+    },
+    {
+      "note": "water fruit",
+      "freq": 39
+    },
+    {
+      "note": "lime blossom",
+      "freq": 38
+    },
+    {
+      "note": "amyl salicylate",
+      "freq": 38
+    },
+    {
+      "note": "chrysanthemum",
+      "freq": 38
+    },
+    {
+      "note": "pineapple leaf",
+      "freq": 38
+    },
+    {
+      "note": "strawberry leaf",
+      "freq": 38
+    },
+    {
+      "note": "roasted coffee beans",
+      "freq": 37
+    },
+    {
+      "note": "italian iris",
+      "freq": 37
+    },
+    {
+      "note": "silk tree blossom",
+      "freq": 37
+    },
+    {
+      "note": "moroccan cedar",
+      "freq": 37
+    },
+    {
+      "note": "plum tree",
+      "freq": 37
+    },
+    {
+      "note": "myrrh oil",
+      "freq": 37
+    },
+    {
+      "note": "gingerbread",
+      "freq": 37
+    },
+    {
+      "note": "petalia",
+      "freq": 36
+    },
+    {
+      "note": "egyptian musk",
+      "freq": 36
+    },
+    {
+      "note": "peat",
+      "freq": 36
+    },
+    {
+      "note": "iced lemon",
+      "freq": 36
+    },
+    {
+      "note": "candied almond",
+      "freq": 36
+    },
+    {
+      "note": "russian leather",
+      "freq": 35
+    },
+    {
+      "note": "apple tree",
+      "freq": 35
+    },
+    {
+      "note": "pink nerium oleander",
+      "freq": 35
+    },
+    {
+      "note": "biscuit",
+      "freq": 35
+    },
+    {
+      "note": "seagrass",
+      "freq": 35
+    },
+    {
+      "note": "cascalone",
+      "freq": 35
+    },
+    {
+      "note": "indian saffron",
+      "freq": 35
+    },
+    {
+      "note": "tahitian vetiver",
+      "freq": 35
+    },
+    {
+      "note": "egyptian balsam",
+      "freq": 35
+    },
+    {
+      "note": "florida grapefruit",
+      "freq": 34
+    },
+    {
+      "note": "grenadine",
+      "freq": 34
+    },
+    {
+      "note": "almond tree",
+      "freq": 34
+    },
+    {
+      "note": "limoncello",
+      "freq": 34
+    },
+    {
+      "note": "candied fruits",
+      "freq": 34
+    },
+    {
+      "note": "nougat",
+      "freq": 34
+    },
+    {
+      "note": "vanilla sugar",
+      "freq": 33
+    },
+    {
+      "note": "french rose",
+      "freq": 33
+    },
+    {
+      "note": "cake",
+      "freq": 33
+    },
+    {
+      "note": "tyger lily",
+      "freq": 33
+    },
+    {
+      "note": "white lotus",
+      "freq": 33
+    },
+    {
+      "note": "nasturtium",
+      "freq": 33
+    },
+    {
+      "note": "sour cherry blossom",
+      "freq": 33
+    },
+    {
+      "note": "red algae",
+      "freq": 33
+    },
+    {
+      "note": "water mint",
+      "freq": 33
+    },
+    {
+      "note": "henna",
+      "freq": 33
+    },
+    {
+      "note": "celery seeds",
+      "freq": 33
+    },
+    {
+      "note": "priprioca",
+      "freq": 33
+    },
+    {
+      "note": "muscenone",
+      "freq": 33
+    },
+    {
+      "note": "mirabelle plum",
+      "freq": 32
+    },
+    {
+      "note": "ambrettolide",
+      "freq": 32
+    },
+    {
+      "note": "mahonial",
+      "freq": 32
+    },
+    {
+      "note": "black",
+      "freq": 32
+    },
+    {
+      "note": "french orange flower",
+      "freq": 32
+    },
+    {
+      "note": "yellow plum",
+      "freq": 32
+    },
+    {
+      "note": "mulberry",
+      "freq": 32
+    },
+    {
+      "note": "singapore patchouli",
+      "freq": 31
+    },
+    {
+      "note": "larch",
+      "freq": 31
+    },
+    {
+      "note": "rock rose",
+      "freq": 31
+    },
+    {
+      "note": "white ginger lily",
+      "freq": 31
+    },
+    {
+      "note": "sweet grass",
+      "freq": 31
+    },
+    {
+      "note": "indole",
+      "freq": 31
+    },
+    {
+      "note": "cheesecake",
+      "freq": 31
+    },
+    {
+      "note": "chinese peony",
+      "freq": 31
+    },
+    {
+      "note": "orange oil",
+      "freq": 31
+    },
+    {
+      "note": "green anjou pears",
+      "freq": 31
+    },
+    {
+      "note": "blackberry blossom",
+      "freq": 31
+    },
+    {
+      "note": "cherry liqueur",
+      "freq": 31
+    },
+    {
+      "note": "nard himalayan (jatamansi)",
+      "freq": 30
+    },
+    {
+      "note": "vermouth",
+      "freq": 30
+    },
+    {
+      "note": "hellebore flower",
+      "freq": 30
+    },
+    {
+      "note": "malt",
+      "freq": 30
+    },
+    {
+      "note": "avocado",
+      "freq": 30
+    },
+    {
+      "note": "ash",
+      "freq": 29
+    },
+    {
+      "note": "nectarine blossom",
+      "freq": 29
+    },
+    {
+      "note": "lorenox",
+      "freq": 29
+    },
+    {
+      "note": "amber xtreme",
+      "freq": 29
+    },
+    {
+      "note": "heather",
+      "freq": 29
+    },
+    {
+      "note": "chinese jasmine",
+      "freq": 29
+    },
+    {
+      "note": "wallflower",
+      "freq": 29
+    },
+    {
+      "note": "orcanox\u0099",
+      "freq": 28
+    },
+    {
+      "note": "arum lily",
+      "freq": 28
+    },
+    {
+      "note": "floral fruity notes",
+      "freq": 28
+    },
+    {
+      "note": "blue hyacinth",
+      "freq": 28
+    },
+    {
+      "note": "co2 extracts",
+      "freq": 28
+    },
+    {
+      "note": "panacotta",
+      "freq": 28
+    },
+    {
+      "note": "pimento seeds",
+      "freq": 28
+    },
+    {
+      "note": "marmalade",
+      "freq": 28
+    },
+    {
+      "note": "dulce de leche",
+      "freq": 28
+    },
+    {
+      "note": "diamond orchid",
+      "freq": 28
+    },
+    {
+      "note": "oily notes",
+      "freq": 28
+    },
+    {
+      "note": "bubble gum",
+      "freq": 27
+    },
+    {
+      "note": "liatris",
+      "freq": 27
+    },
+    {
+      "note": "chinese cedar",
+      "freq": 27
+    },
+    {
+      "note": "madagascar cloves",
+      "freq": 27
+    },
+    {
+      "note": "chinese cinnamon wood",
+      "freq": 27
+    },
+    {
+      "note": "papaya flower",
+      "freq": 27
+    },
+    {
+      "note": "raisin",
+      "freq": 27
+    },
+    {
+      "note": "citrus blossom",
+      "freq": 27
+    },
+    {
+      "note": "calamansi",
+      "freq": 27
+    },
+    {
+      "note": "candied ginger",
+      "freq": 27
+    },
+    {
+      "note": "primrose",
+      "freq": 27
+    },
+    {
+      "note": "karo karounde",
+      "freq": 27
+    },
+    {
+      "note": "rhododendron",
+      "freq": 27
+    },
+    {
+      "note": "lip gloss",
+      "freq": 27
+    },
+    {
+      "note": "brazil nut",
+      "freq": 26
+    },
+    {
+      "note": "magnolia petals",
+      "freq": 26
+    },
+    {
+      "note": "silver fir",
+      "freq": 26
+    },
+    {
+      "note": "green lily",
+      "freq": 26
+    },
+    {
+      "note": "campari",
+      "freq": 26
+    },
+    {
+      "note": "gourmand accord",
+      "freq": 26
+    },
+    {
+      "note": "boronia",
+      "freq": 26
+    },
+    {
+      "note": "boysenberry",
+      "freq": 26
+    },
+    {
+      "note": "lime (linden blossom)",
+      "freq": 25
+    },
+    {
+      "note": "snow",
+      "freq": 25
+    },
+    {
+      "note": "champagne ros\u00e9",
+      "freq": 25
+    },
+    {
+      "note": "prunella",
+      "freq": 25
+    },
+    {
+      "note": "confetti (sugared almonds)",
+      "freq": 25
+    },
+    {
+      "note": "dark woodsy notes",
+      "freq": 25
+    },
+    {
+      "note": "olive blossom",
+      "freq": 25
+    },
+    {
+      "note": "transparent woods",
+      "freq": 25
+    },
+    {
+      "note": "pink jasmine",
+      "freq": 24
+    },
+    {
+      "note": "vinyl",
+      "freq": 24
+    },
+    {
+      "note": "tonic water",
+      "freq": 24
+    },
+    {
+      "note": "silkwood blossom",
+      "freq": 24
+    },
+    {
+      "note": "nettle",
+      "freq": 24
+    },
+    {
+      "note": "pebbles",
+      "freq": 24
+    },
+    {
+      "note": "pi\u00f1a colada",
+      "freq": 24
+    },
+    {
+      "note": "pink lily",
+      "freq": 24
+    },
+    {
+      "note": "pomarose",
+      "freq": 24
+    },
+    {
+      "note": "pansy",
+      "freq": 24
+    },
+    {
+      "note": "oriental woodsy notes",
+      "freq": 24
+    },
+    {
+      "note": "japanese loquat",
+      "freq": 24
+    },
+    {
+      "note": "sicilian citruses",
+      "freq": 24
+    },
+    {
+      "note": "cereals",
+      "freq": 24
+    },
+    {
+      "note": "spanish jasmine",
+      "freq": 24
+    },
+    {
+      "note": "kulfi",
+      "freq": 24
+    },
+    {
+      "note": "pitanga",
+      "freq": 24
+    },
+    {
+      "note": "water flowers",
+      "freq": 24
+    },
+    {
+      "note": "water pepper",
+      "freq": 24
+    },
+    {
+      "note": "pear ice cream",
+      "freq": 23
+    },
+    {
+      "note": "curry tree",
+      "freq": 23
+    },
+    {
+      "note": "black iris",
+      "freq": 23
+    },
+    {
+      "note": "butterfly orchid",
+      "freq": 23
+    },
+    {
+      "note": "hyssop",
+      "freq": 23
+    },
+    {
+      "note": "star apple",
+      "freq": 23
+    },
+    {
+      "note": "blue sage",
+      "freq": 23
+    },
+    {
+      "note": "pandanus",
+      "freq": 23
+    },
+    {
+      "note": "spearmint",
+      "freq": 23
+    },
+    {
+      "note": "italian tangerine",
+      "freq": 23
+    },
+    {
+      "note": "indian ginger",
+      "freq": 23
+    },
+    {
+      "note": "green tangerine",
+      "freq": 23
+    },
+    {
+      "note": "brazilian redwood",
+      "freq": 22
+    },
+    {
+      "note": "pink tulip",
+      "freq": 22
+    },
+    {
+      "note": "white leather",
+      "freq": 22
+    },
+    {
+      "note": "mirabilis",
+      "freq": 22
+    },
+    {
+      "note": "green mango",
+      "freq": 22
+    },
+    {
+      "note": "mugane",
+      "freq": 22
+    },
+    {
+      "note": "thuja",
+      "freq": 22
+    },
+    {
+      "note": "caviar",
+      "freq": 22
+    },
+    {
+      "note": "bran",
+      "freq": 22
+    },
+    {
+      "note": "galanga",
+      "freq": 22
+    },
+    {
+      "note": "red litchi",
+      "freq": 22
+    },
+    {
+      "note": "soybean",
+      "freq": 22
+    },
+    {
+      "note": "blue lavender",
+      "freq": 22
+    },
+    {
+      "note": "italian jasmine",
+      "freq": 22
+    },
+    {
+      "note": "green tea flower",
+      "freq": 22
+    },
+    {
+      "note": "rose leaf",
+      "freq": 22
+    },
+    {
+      "note": "flax",
+      "freq": 22
+    },
+    {
+      "note": "cappuccino",
+      "freq": 22
+    },
+    {
+      "note": "plumeria",
+      "freq": 22
+    },
+    {
+      "note": "liv tyler rose",
+      "freq": 22
+    },
+    {
+      "note": "boxwood",
+      "freq": 22
+    },
+    {
+      "note": "santolina",
+      "freq": 21
+    },
+    {
+      "note": "californian lemon",
+      "freq": 21
+    },
+    {
+      "note": "mandora",
+      "freq": 21
+    },
+    {
+      "note": "indian mandarin",
+      "freq": 21
+    },
+    {
+      "note": "white wine",
+      "freq": 21
+    },
+    {
+      "note": "thanaka wood",
+      "freq": 21
+    },
+    {
+      "note": "beetroot",
+      "freq": 21
+    },
+    {
+      "note": "paradisone",
+      "freq": 21
+    },
+    {
+      "note": "madagascar ylang-ylang",
+      "freq": 21
+    },
+    {
+      "note": "lady of the night flower",
+      "freq": 21
+    },
+    {
+      "note": "kyara incense",
+      "freq": 21
+    },
+    {
+      "note": "pink litchi",
+      "freq": 21
+    },
+    {
+      "note": "kashmir wood",
+      "freq": 21
+    },
+    {
+      "note": "olive",
+      "freq": 21
+    },
+    {
+      "note": "california orange",
+      "freq": 21
+    },
+    {
+      "note": "coconut blossom",
+      "freq": 21
+    },
+    {
+      "note": "tangelo",
+      "freq": 21
+    },
+    {
+      "note": "green almond",
+      "freq": 20
+    },
+    {
+      "note": "marron glace",
+      "freq": 20
+    },
+    {
+      "note": "guarana",
+      "freq": 20
+    },
+    {
+      "note": "bonbon",
+      "freq": 20
+    },
+    {
+      "note": "buddleia",
+      "freq": 20
+    },
+    {
+      "note": "maltol",
+      "freq": 20
+    },
+    {
+      "note": "white magnolia",
+      "freq": 20
+    },
+    {
+      "note": "cedarmoss",
+      "freq": 20
+    },
+    {
+      "note": "leatherwood",
+      "freq": 20
+    },
+    {
+      "note": "dandelion",
+      "freq": 20
+    },
+    {
+      "note": "almond cream",
+      "freq": 20
+    },
+    {
+      "note": "cedar essence",
+      "freq": 20
+    },
+    {
+      "note": "oolong tea",
+      "freq": 20
+    },
+    {
+      "note": "hemlock",
+      "freq": 19
+    },
+    {
+      "note": "lime peel",
+      "freq": 19
+    },
+    {
+      "note": "sinfonide",
+      "freq": 19
+    },
+    {
+      "note": "white bergamot",
+      "freq": 19
+    },
+    {
+      "note": "palm tree",
+      "freq": 19
+    },
+    {
+      "note": "nutmeg flower",
+      "freq": 19
+    },
+    {
+      "note": "cloudberry",
+      "freq": 19
+    },
+    {
+      "note": "wine lees",
+      "freq": 19
+    },
+    {
+      "note": "monoi oil",
+      "freq": 18
+    },
+    {
+      "note": "lotus leaf",
+      "freq": 18
+    },
+    {
+      "note": "calypsone",
+      "freq": 18
+    },
+    {
+      "note": "ambertonic",
+      "freq": 18
+    },
+    {
+      "note": "rice basmati",
+      "freq": 18
+    },
+    {
+      "note": "citrus",
+      "freq": 18
+    },
+    {
+      "note": "stems greens",
+      "freq": 18
+    },
+    {
+      "note": "agave",
+      "freq": 18
+    },
+    {
+      "note": "green nard",
+      "freq": 18
+    },
+    {
+      "note": "breu-branco",
+      "freq": 18
+    },
+    {
+      "note": "martini",
+      "freq": 17
+    },
+    {
+      "note": "egyptian pelargonium",
+      "freq": 17
+    },
+    {
+      "note": "rubber",
+      "freq": 17
+    },
+    {
+      "note": "bergamot leaf",
+      "freq": 17
+    },
+    {
+      "note": "mushroom",
+      "freq": 17
+    },
+    {
+      "note": "strelitzia",
+      "freq": 17
+    },
+    {
+      "note": "coton candy",
+      "freq": 17
+    },
+    {
+      "note": "tequila",
+      "freq": 17
+    },
+    {
+      "note": "white nerium oleander",
+      "freq": 17
+    },
+    {
+      "note": "vetiver root",
+      "freq": 17
+    },
+    {
+      "note": "beech",
+      "freq": 17
+    },
+    {
+      "note": "cedar leaves",
+      "freq": 17
+    },
+    {
+      "note": "red lily",
+      "freq": 16
+    },
+    {
+      "note": "lemonade",
+      "freq": 16
+    },
+    {
+      "note": "cypress leaf",
+      "freq": 16
+    },
+    {
+      "note": "mimosa absolute",
+      "freq": 16
+    },
+    {
+      "note": "rooibos tea",
+      "freq": 16
+    },
+    {
+      "note": "orchard blossom",
+      "freq": 16
+    },
+    {
+      "note": "scent trek\u00ae",
+      "freq": 16
+    },
+    {
+      "note": "paramela",
+      "freq": 16
+    },
+    {
+      "note": "barley",
+      "freq": 16
+    },
+    {
+      "note": "reed",
+      "freq": 16
+    },
+    {
+      "note": "valerian",
+      "freq": 16
+    },
+    {
+      "note": "reseda",
+      "freq": 16
+    },
+    {
+      "note": "indonesian nutmeg",
+      "freq": 16
+    },
+    {
+      "note": "basil leaf",
+      "freq": 16
+    },
+    {
+      "note": "pimento leaf",
+      "freq": 16
+    },
+    {
+      "note": "chinese oud",
+      "freq": 16
+    },
+    {
+      "note": "portulaca or pigweed",
+      "freq": 16
+    },
+    {
+      "note": "ginseng",
+      "freq": 15
+    },
+    {
+      "note": "sylkolide",
+      "freq": 15
+    },
+    {
+      "note": "clove leaf",
+      "freq": 15
+    },
+    {
+      "note": "massoia wood",
+      "freq": 15
+    },
+    {
+      "note": "gorse",
+      "freq": 15
+    },
+    {
+      "note": "argentinian lemon",
+      "freq": 15
+    },
+    {
+      "note": "dark patchouli",
+      "freq": 15
+    },
+    {
+      "note": "boletus edulis",
+      "freq": 15
+    },
+    {
+      "note": "asphalt",
+      "freq": 15
+    },
+    {
+      "note": "oak tree",
+      "freq": 15
+    },
+    {
+      "note": "macadamia",
+      "freq": 15
+    },
+    {
+      "note": "white carnation",
+      "freq": 15
+    },
+    {
+      "note": "georgywood",
+      "freq": 15
+    },
+    {
+      "note": "japanese plum",
+      "freq": 15
+    },
+    {
+      "note": "red sandalwood",
+      "freq": 15
+    },
+    {
+      "note": "mangosteen blossom",
+      "freq": 15
+    },
+    {
+      "note": "fire",
+      "freq": 15
+    },
+    {
+      "note": "karo-korund",
+      "freq": 15
+    },
+    {
+      "note": "icing pink",
+      "freq": 15
+    },
+    {
+      "note": "lemon balm",
+      "freq": 15
+    },
+    {
+      "note": "cherimoya",
+      "freq": 15
+    },
+    {
+      "note": "indian vanilla",
+      "freq": 15
+    },
+    {
+      "note": "white rum",
+      "freq": 15
+    },
+    {
+      "note": "buttercream",
+      "freq": 15
+    },
+    {
+      "note": "black licorice",
+      "freq": 14
+    },
+    {
+      "note": "tiramisu",
+      "freq": 14
+    },
+    {
+      "note": "jackfruit",
+      "freq": 14
+    },
+    {
+      "note": "apple tree blossom",
+      "freq": 14
+    },
+    {
+      "note": "ground cherry",
+      "freq": 14
+    },
+    {
+      "note": "lysylang",
+      "freq": 14
+    },
+    {
+      "note": "poplar (populus) buds",
+      "freq": 14
+    },
+    {
+      "note": "croissant",
+      "freq": 14
+    },
+    {
+      "note": "japanese osmanthus",
+      "freq": 14
+    },
+    {
+      "note": "tahitian gardenia",
+      "freq": 14
+    },
+    {
+      "note": "nerium oleander",
+      "freq": 14
+    },
+    {
+      "note": "yellow rose",
+      "freq": 14
+    },
+    {
+      "note": "ambretone",
+      "freq": 14
+    },
+    {
+      "note": "wild orange",
+      "freq": 14
+    },
+    {
+      "note": "yarrow",
+      "freq": 14
+    },
+    {
+      "note": "vanillin",
+      "freq": 14
+    },
+    {
+      "note": "grapefruit leaf",
+      "freq": 14
+    },
+    {
+      "note": "black basil",
+      "freq": 13
+    },
+    {
+      "note": "barberry",
+      "freq": 13
+    },
+    {
+      "note": "pear wood",
+      "freq": 13
+    },
+    {
+      "note": "blood",
+      "freq": 13
+    },
+    {
+      "note": "black locust honey",
+      "freq": 13
+    },
+    {
+      "note": "chinotto",
+      "freq": 13
+    },
+    {
+      "note": "african violet",
+      "freq": 13
+    },
+    {
+      "note": "mandarin",
+      "freq": 13
+    },
+    {
+      "note": "wasabi",
+      "freq": 13
+    },
+    {
+      "note": "citrus leaves",
+      "freq": 13
+    },
+    {
+      "note": "african ginger",
+      "freq": 13
+    },
+    {
+      "note": "milk chocolate",
+      "freq": 13
+    },
+    {
+      "note": "lactones",
+      "freq": 13
+    },
+    {
+      "note": "lilybelle\u00ae",
+      "freq": 13
+    },
+    {
+      "note": "grape leaves",
+      "freq": 13
+    },
+    {
+      "note": "coca",
+      "freq": 13
+    },
+    {
+      "note": "wood resin",
+      "freq": 13
+    },
+    {
+      "note": "apple leaf",
+      "freq": 13
+    },
+    {
+      "note": "mayflower",
+      "freq": 13
+    },
+    {
+      "note": "genet",
+      "freq": 13
+    },
+    {
+      "note": "evernyl",
+      "freq": 13
+    },
+    {
+      "note": "betel pepper",
+      "freq": 13
+    },
+    {
+      "note": "shamama attar",
+      "freq": 13
+    },
+    {
+      "note": "mango tree",
+      "freq": 13
+    },
+    {
+      "note": "salicylic acid",
+      "freq": 13
+    },
+    {
+      "note": "amazon lily",
+      "freq": 13
+    },
+    {
+      "note": "bearberry",
+      "freq": 13
+    },
+    {
+      "note": "lydia broom",
+      "freq": 12
+    },
+    {
+      "note": "fruity",
+      "freq": 12
+    },
+    {
+      "note": "helvetolide",
+      "freq": 12
+    },
+    {
+      "note": "bourbon rose",
+      "freq": 12
+    },
+    {
+      "note": "white tabacco",
+      "freq": 12
+    },
+    {
+      "note": "suntan lotion",
+      "freq": 12
+    },
+    {
+      "note": "bigarade",
+      "freq": 12
+    },
+    {
+      "note": "nettle blossom",
+      "freq": 12
+    },
+    {
+      "note": "elderberry",
+      "freq": 12
+    },
+    {
+      "note": "parsley",
+      "freq": 12
+    },
+    {
+      "note": "masala chai",
+      "freq": 12
+    },
+    {
+      "note": "tayberry",
+      "freq": 12
+    },
+    {
+      "note": "brioche",
+      "freq": 12
+    },
+    {
+      "note": "cookie",
+      "freq": 12
+    },
+    {
+      "note": "cocobolo",
+      "freq": 12
+    },
+    {
+      "note": "iris leaf",
+      "freq": 12
+    },
+    {
+      "note": "fruit tea",
+      "freq": 12
+    },
+    {
+      "note": "calissons d'aix",
+      "freq": 12
+    },
+    {
+      "note": "milk cream",
+      "freq": 11
+    },
+    {
+      "note": "pineapple blossom",
+      "freq": 11
+    },
+    {
+      "note": "guava blossom",
+      "freq": 11
+    },
+    {
+      "note": "mock orange",
+      "freq": 11
+    },
+    {
+      "note": "clay",
+      "freq": 11
+    },
+    {
+      "note": "banana flower",
+      "freq": 11
+    },
+    {
+      "note": "french violet",
+      "freq": 11
+    },
+    {
+      "note": "curacao",
+      "freq": 11
+    },
+    {
+      "note": "white hyacinth",
+      "freq": 11
+    },
+    {
+      "note": "citruses water",
+      "freq": 11
+    },
+    {
+      "note": "liquidambar",
+      "freq": 11
+    },
+    {
+      "note": "green coconut",
+      "freq": 11
+    },
+    {
+      "note": "french narcissus",
+      "freq": 11
+    },
+    {
+      "note": "acerola",
+      "freq": 11
+    },
+    {
+      "note": "cacao butter",
+      "freq": 11
+    },
+    {
+      "note": "italian violet",
+      "freq": 10
+    },
+    {
+      "note": "iris petals",
+      "freq": 10
+    },
+    {
+      "note": "slate",
+      "freq": 10
+    },
+    {
+      "note": "plum wood",
+      "freq": 10
+    },
+    {
+      "note": "hog plum",
+      "freq": 10
+    },
+    {
+      "note": "red tea",
+      "freq": 10
+    },
+    {
+      "note": "mamey",
+      "freq": 10
+    },
+    {
+      "note": "fish",
+      "freq": 10
+    },
+    {
+      "note": "aglaia",
+      "freq": 10
+    },
+    {
+      "note": "rangoon creeper",
+      "freq": 10
+    },
+    {
+      "note": "indian pepper",
+      "freq": 10
+    },
+    {
+      "note": "talc",
+      "freq": 10
+    },
+    {
+      "note": "mystikal",
+      "freq": 10
+    },
+    {
+      "note": "rice flower",
+      "freq": 10
+    },
+    {
+      "note": "play-doh",
+      "freq": 10
+    },
+    {
+      "note": "gray musk",
+      "freq": 10
+    },
+    {
+      "note": "brazilian mandarin",
+      "freq": 10
+    },
+    {
+      "note": "tomato",
+      "freq": 10
+    },
+    {
+      "note": "choya loban",
+      "freq": 10
+    },
+    {
+      "note": "coriander extract",
+      "freq": 10
+    },
+    {
+      "note": "cyperus esculentus",
+      "freq": 10
+    },
+    {
+      "note": "forget me not",
+      "freq": 10
+    },
+    {
+      "note": "amber oil",
+      "freq": 10
+    },
+    {
+      "note": "storax",
+      "freq": 10
+    },
+    {
+      "note": "darjeeling black tea",
+      "freq": 10
+    },
+    {
+      "note": "peanut",
+      "freq": 10
+    },
+    {
+      "note": "rosebud",
+      "freq": 10
+    },
+    {
+      "note": "egyptian sage",
+      "freq": 10
+    },
+    {
+      "note": "cream soda",
+      "freq": 10
+    },
+    {
+      "note": "jabuticaba",
+      "freq": 10
+    },
+    {
+      "note": "indonesian jasmine",
+      "freq": 10
+    },
+    {
+      "note": "red currant leaf",
+      "freq": 10
+    },
+    {
+      "note": "french pastries",
+      "freq": 9
+    },
+    {
+      "note": "peppertree",
+      "freq": 9
+    },
+    {
+      "note": "sake",
+      "freq": 9
+    },
+    {
+      "note": "jasmolactone",
+      "freq": 9
+    },
+    {
+      "note": "red amber",
+      "freq": 9
+    },
+    {
+      "note": "aluminum",
+      "freq": 9
+    },
+    {
+      "note": "iced tea",
+      "freq": 9
+    },
+    {
+      "note": "gasoline",
+      "freq": 9
+    },
+    {
+      "note": "neoprene",
+      "freq": 9
+    },
+    {
+      "note": "angels trumpet",
+      "freq": 9
+    },
+    {
+      "note": "chinese plum",
+      "freq": 9
+    },
+    {
+      "note": "flower petals",
+      "freq": 9
+    },
+    {
+      "note": "chayote",
+      "freq": 9
+    },
+    {
+      "note": "cacha\u00e7a",
+      "freq": 9
+    },
+    {
+      "note": "yellow champaca",
+      "freq": 9
+    },
+    {
+      "note": "petroleum",
+      "freq": 9
+    },
+    {
+      "note": "coffee blossom",
+      "freq": 9
+    },
+    {
+      "note": "coral amber",
+      "freq": 9
+    },
+    {
+      "note": "red fruits smoothie",
+      "freq": 9
+    },
+    {
+      "note": "western skunk cabbage",
+      "freq": 9
+    },
+    {
+      "note": "saffiano leather",
+      "freq": 9
+    },
+    {
+      "note": "ginkgo",
+      "freq": 9
+    },
+    {
+      "note": "ambrocenide",
+      "freq": 9
+    },
+    {
+      "note": "pepper oil",
+      "freq": 9
+    },
+    {
+      "note": "assam oud",
+      "freq": 9
+    },
+    {
+      "note": "bark",
+      "freq": 9
+    },
+    {
+      "note": "arbutus (madrona",
+      "freq": 9
+    },
+    {
+      "note": "bearberry tree)",
+      "freq": 9
+    },
+    {
+      "note": "coral reef",
+      "freq": 9
+    },
+    {
+      "note": "dried rose",
+      "freq": 9
+    },
+    {
+      "note": "laburnum",
+      "freq": 9
+    },
+    {
+      "note": "white pear",
+      "freq": 9
+    },
+    {
+      "note": "hibiscus blossom",
+      "freq": 9
+    },
+    {
+      "note": "paper",
+      "freq": 9
+    },
+    {
+      "note": "rosebay willowherb",
+      "freq": 9
+    },
+    {
+      "note": "yellow narcissus",
+      "freq": 8
+    },
+    {
+      "note": "eglantine rose",
+      "freq": 8
+    },
+    {
+      "note": "fuchsia",
+      "freq": 8
+    },
+    {
+      "note": "coal",
+      "freq": 8
+    },
+    {
+      "note": "norlimbanol\u0099",
+      "freq": 8
+    },
+    {
+      "note": "darjeeling tea",
+      "freq": 8
+    },
+    {
+      "note": "wild lavender",
+      "freq": 8
+    },
+    {
+      "note": "rose oxide",
+      "freq": 8
+    },
+    {
+      "note": "jacaranda",
+      "freq": 8
+    },
+    {
+      "note": "pepperwood or hercules club",
+      "freq": 8
+    },
+    {
+      "note": "white cherry",
+      "freq": 8
+    },
+    {
+      "note": "red currant blossom",
+      "freq": 8
+    },
+    {
+      "note": "iris butter",
+      "freq": 8
+    },
+    {
+      "note": "kyphi",
+      "freq": 8
+    },
+    {
+      "note": "lantana",
+      "freq": 8
+    },
+    {
+      "note": "nail polish",
+      "freq": 8
+    },
+    {
+      "note": "white heliotrope",
+      "freq": 8
+    },
+    {
+      "note": "blue rose",
+      "freq": 8
+    },
+    {
+      "note": "safraleine",
+      "freq": 8
+    },
+    {
+      "note": "gunpowder",
+      "freq": 8
+    },
+    {
+      "note": "sicilian bitter orange",
+      "freq": 8
+    },
+    {
+      "note": "lapsang souchong tea",
+      "freq": 8
+    },
+    {
+      "note": "ginger leaf",
+      "freq": 8
+    },
+    {
+      "note": "shiikuwasha",
+      "freq": 8
+    },
+    {
+      "note": "olive leaf",
+      "freq": 8
+    },
+    {
+      "note": "jasmine leaf",
+      "freq": 8
+    },
+    {
+      "note": "calla lily",
+      "freq": 8
+    },
+    {
+      "note": "punch",
+      "freq": 8
+    },
+    {
+      "note": "red myrrh",
+      "freq": 8
+    },
+    {
+      "note": "tansy",
+      "freq": 8
+    },
+    {
+      "note": "physcool\u00ae",
+      "freq": 8
+    },
+    {
+      "note": "sandalwood flower",
+      "freq": 8
+    },
+    {
+      "note": "geranium macrorrhizum (zdravetz)",
+      "freq": 8
+    },
+    {
+      "note": "rice pudding",
+      "freq": 8
+    },
+    {
+      "note": "fig blossom",
+      "freq": 8
+    },
+    {
+      "note": "yellow fruits",
+      "freq": 8
+    },
+    {
+      "note": "tea tree oil",
+      "freq": 8
+    },
+    {
+      "note": "concrete",
+      "freq": 8
+    },
+    {
+      "note": "mimosa leaves",
+      "freq": 8
+    },
+    {
+      "note": "wild strawberry leaf",
+      "freq": 7
+    },
+    {
+      "note": "rosa rubiginosa",
+      "freq": 7
+    },
+    {
+      "note": "pomegranate blossom",
+      "freq": 7
+    },
+    {
+      "note": "pea",
+      "freq": 7
+    },
+    {
+      "note": "nutty notes",
+      "freq": 7
+    },
+    {
+      "note": "greengage",
+      "freq": 7
+    },
+    {
+      "note": "pancake",
+      "freq": 7
+    },
+    {
+      "note": "coffee co2",
+      "freq": 7
+    },
+    {
+      "note": "borage",
+      "freq": 7
+    },
+    {
+      "note": "white camelia",
+      "freq": 7
+    },
+    {
+      "note": "hot iron",
+      "freq": 7
+    },
+    {
+      "note": "oat",
+      "freq": 7
+    },
+    {
+      "note": "water violet",
+      "freq": 7
+    },
+    {
+      "note": "varnish accord",
+      "freq": 7
+    },
+    {
+      "note": "galbanum leaf",
+      "freq": 7
+    },
+    {
+      "note": "pink violet",
+      "freq": 7
+    },
+    {
+      "note": "mariposa lily",
+      "freq": 7
+    },
+    {
+      "note": "williams pear",
+      "freq": 7
+    },
+    {
+      "note": "white almond",
+      "freq": 7
+    },
+    {
+      "note": "burnt match",
+      "freq": 7
+    },
+    {
+      "note": "aquozone",
+      "freq": 7
+    },
+    {
+      "note": "edelweiss",
+      "freq": 7
+    },
+    {
+      "note": "arnica",
+      "freq": 7
+    },
+    {
+      "note": "hamanasu or japanese rose",
+      "freq": 7
+    },
+    {
+      "note": "tangerine blossom",
+      "freq": 7
+    },
+    {
+      "note": "blackberry leaf",
+      "freq": 7
+    },
+    {
+      "note": "daiquiri",
+      "freq": 7
+    },
+    {
+      "note": "cananga",
+      "freq": 7
+    },
+    {
+      "note": "red nectarine",
+      "freq": 7
+    },
+    {
+      "note": "geosmin",
+      "freq": 7
+    },
+    {
+      "note": "linden blossom",
+      "freq": 7
+    },
+    {
+      "note": "roselle",
+      "freq": 7
+    },
+    {
+      "note": "candied lemon",
+      "freq": 7
+    },
+    {
+      "note": "asian lily",
+      "freq": 7
+    },
+    {
+      "note": "nympheal\u0099",
+      "freq": 7
+    },
+    {
+      "note": "mirabella plum",
+      "freq": 7
+    },
+    {
+      "note": "poinsettia",
+      "freq": 7
+    },
+    {
+      "note": "boozy notes",
+      "freq": 7
+    },
+    {
+      "note": "cactus juice",
+      "freq": 7
+    },
+    {
+      "note": "white tea blossom",
+      "freq": 7
+    },
+    {
+      "note": "rose jam",
+      "freq": 7
+    },
+    {
+      "note": "applejack",
+      "freq": 7
+    },
+    {
+      "note": "citruses with sugar",
+      "freq": 7
+    },
+    {
+      "note": "bread",
+      "freq": 7
+    },
+    {
+      "note": "orangewood",
+      "freq": 7
+    },
+    {
+      "note": "seashells",
+      "freq": 7
+    },
+    {
+      "note": "bergamot blossom",
+      "freq": 7
+    },
+    {
+      "note": "creosote bush",
+      "freq": 6
+    },
+    {
+      "note": "plastic",
+      "freq": 6
+    },
+    {
+      "note": "maninka",
+      "freq": 6
+    },
+    {
+      "note": "white ginger",
+      "freq": 6
+    },
+    {
+      "note": "almond wood",
+      "freq": 6
+    },
+    {
+      "note": "madagascar sandalwood",
+      "freq": 6
+    },
+    {
+      "note": "red peach",
+      "freq": 6
+    },
+    {
+      "note": "princess tree or paulownia",
+      "freq": 6
+    },
+    {
+      "note": "bourbon whiskey",
+      "freq": 6
+    },
+    {
+      "note": "carnation leaves",
+      "freq": 6
+    },
+    {
+      "note": "cherry extract",
+      "freq": 6
+    },
+    {
+      "note": "surf wax",
+      "freq": 6
+    },
+    {
+      "note": "white honeysuckle",
+      "freq": 6
+    },
+    {
+      "note": "graphite",
+      "freq": 6
+    },
+    {
+      "note": "ravensara",
+      "freq": 6
+    },
+    {
+      "note": "sweet pepper",
+      "freq": 6
+    },
+    {
+      "note": "nag champa",
+      "freq": 6
+    },
+    {
+      "note": "white peach blossom",
+      "freq": 6
+    },
+    {
+      "note": "cassia bourbon",
+      "freq": 6
+    },
+    {
+      "note": "hazel bloosom",
+      "freq": 6
+    },
+    {
+      "note": "coral limestone",
+      "freq": 6
+    },
+    {
+      "note": "jade flower",
+      "freq": 6
+    },
+    {
+      "note": "wisteria flower",
+      "freq": 6
+    },
+    {
+      "note": "rose mallow",
+      "freq": 6
+    },
+    {
+      "note": "chinese litchi",
+      "freq": 6
+    },
+    {
+      "note": "longan berries",
+      "freq": 6
+    },
+    {
+      "note": "white dahlia",
+      "freq": 6
+    },
+    {
+      "note": "lamprocapnos",
+      "freq": 6
+    },
+    {
+      "note": "pomegranate seed",
+      "freq": 6
+    },
+    {
+      "note": "fringed pink",
+      "freq": 6
+    },
+    {
+      "note": "orchid pink leopard",
+      "freq": 6
+    },
+    {
+      "note": "black hemlock or tsuga",
+      "freq": 6
+    },
+    {
+      "note": "cornflower or sultan seeds",
+      "freq": 6
+    },
+    {
+      "note": "blue curacao",
+      "freq": 6
+    },
+    {
+      "note": "pearadise\u00ae",
+      "freq": 6
+    },
+    {
+      "note": "bulrush",
+      "freq": 6
+    },
+    {
+      "note": "ho wood",
+      "freq": 6
+    },
+    {
+      "note": "elm",
+      "freq": 6
+    },
+    {
+      "note": "chinese orange",
+      "freq": 6
+    },
+    {
+      "note": "violet woodsorrel",
+      "freq": 6
+    },
+    {
+      "note": "erigeron (fleabane)",
+      "freq": 6
+    },
+    {
+      "note": "pink paprika",
+      "freq": 5
+    },
+    {
+      "note": "iris pallida",
+      "freq": 5
+    },
+    {
+      "note": "creamy flowers",
+      "freq": 5
+    },
+    {
+      "note": "indian mimosa",
+      "freq": 5
+    },
+    {
+      "note": "white willow",
+      "freq": 5
+    },
+    {
+      "note": "rhum agricole",
+      "freq": 5
+    },
+    {
+      "note": "silver pine",
+      "freq": 5
+    },
+    {
+      "note": "cosmone",
+      "freq": 5
+    },
+    {
+      "note": "melilot or sweet clover",
+      "freq": 5
+    },
+    {
+      "note": "black gardenia",
+      "freq": 5
+    },
+    {
+      "note": "soap",
+      "freq": 5
+    },
+    {
+      "note": "fabric",
+      "freq": 5
+    },
+    {
+      "note": "lichen",
+      "freq": 5
+    },
+    {
+      "note": "chocolate truffle",
+      "freq": 5
+    },
+    {
+      "note": "snowberry",
+      "freq": 5
+    },
+    {
+      "note": "hinoki incense",
+      "freq": 5
+    },
+    {
+      "note": "dragon blood resin",
+      "freq": 5
+    },
+    {
+      "note": "somalian opoponax",
+      "freq": 5
+    },
+    {
+      "note": "myrica",
+      "freq": 5
+    },
+    {
+      "note": "green orange",
+      "freq": 5
+    },
+    {
+      "note": "sapodilla",
+      "freq": 5
+    },
+    {
+      "note": "serenolide",
+      "freq": 5
+    },
+    {
+      "note": "black clover",
+      "freq": 5
+    },
+    {
+      "note": "mousse de saxe",
+      "freq": 5
+    },
+    {
+      "note": "red freesia",
+      "freq": 5
+    },
+    {
+      "note": "balsamic vinegar",
+      "freq": 5
+    },
+    {
+      "note": "opium",
+      "freq": 5
+    },
+    {
+      "note": "fig wood bark",
+      "freq": 5
+    },
+    {
+      "note": "canadian fir",
+      "freq": 5
+    },
+    {
+      "note": "burning cherry",
+      "freq": 5
+    },
+    {
+      "note": "cilantro",
+      "freq": 5
+    },
+    {
+      "note": "canadian balsam",
+      "freq": 5
+    },
+    {
+      "note": "belambra tree",
+      "freq": 5
+    },
+    {
+      "note": "loganberry",
+      "freq": 5
+    },
+    {
+      "note": "mocha",
+      "freq": 5
+    },
+    {
+      "note": "acerola blossom",
+      "freq": 5
+    },
+    {
+      "note": "sulphur",
+      "freq": 5
+    },
+    {
+      "note": "cherry tree",
+      "freq": 5
+    },
+    {
+      "note": "butterscotch",
+      "freq": 5
+    },
+    {
+      "note": "yogurt",
+      "freq": 5
+    },
+    {
+      "note": "american apple",
+      "freq": 5
+    },
+    {
+      "note": "buddha wood",
+      "freq": 5
+    },
+    {
+      "note": "indonesian pepper",
+      "freq": 5
+    },
+    {
+      "note": "yellow water lily",
+      "freq": 5
+    },
+    {
+      "note": "columbian coffee",
+      "freq": 5
+    },
+    {
+      "note": "pepperwood\u0099",
+      "freq": 5
+    },
+    {
+      "note": "lantana leaves",
+      "freq": 5
+    },
+    {
+      "note": "lemon leaf oil",
+      "freq": 5
+    },
+    {
+      "note": "garden dill",
+      "freq": 5
+    },
+    {
+      "note": "moon flower",
+      "freq": 5
+    },
+    {
+      "note": "desert rose",
+      "freq": 5
+    },
+    {
+      "note": "pollen",
+      "freq": 5
+    },
+    {
+      "note": "ishpink",
+      "freq": 5
+    },
+    {
+      "note": "ocotea quixos",
+      "freq": 5
+    },
+    {
+      "note": "baobab",
+      "freq": 4
+    },
+    {
+      "note": "frosted berries",
+      "freq": 4
+    },
+    {
+      "note": "kir royal",
+      "freq": 4
+    },
+    {
+      "note": "bubbaloo",
+      "freq": 4
+    },
+    {
+      "note": "cypriol",
+      "freq": 4
+    },
+    {
+      "note": "corall orchid",
+      "freq": 4
+    },
+    {
+      "note": "spray paint",
+      "freq": 4
+    },
+    {
+      "note": "sarsaparilla",
+      "freq": 4
+    },
+    {
+      "note": "chinese tea",
+      "freq": 4
+    },
+    {
+      "note": "cascarilla",
+      "freq": 4
+    },
+    {
+      "note": "ravenala",
+      "freq": 4
+    },
+    {
+      "note": "pink hyacinth",
+      "freq": 4
+    },
+    {
+      "note": "propolis",
+      "freq": 4
+    },
+    {
+      "note": "himalayan poppy",
+      "freq": 4
+    },
+    {
+      "note": "peruvian pepper",
+      "freq": 4
+    },
+    {
+      "note": "cobblestone",
+      "freq": 4
+    },
+    {
+      "note": "moroccan lemon",
+      "freq": 4
+    },
+    {
+      "note": "cottonwood (poplar)",
+      "freq": 4
+    },
+    {
+      "note": "lotus petals",
+      "freq": 4
+    },
+    {
+      "note": "eau de vie",
+      "freq": 4
+    },
+    {
+      "note": "silk vine or milk broom",
+      "freq": 4
+    },
+    {
+      "note": "sainfoins",
+      "freq": 4
+    },
+    {
+      "note": "arctic bramble",
+      "freq": 4
+    },
+    {
+      "note": "sycamore",
+      "freq": 4
+    },
+    {
+      "note": "satinwood",
+      "freq": 4
+    },
+    {
+      "note": "japanese cypress",
+      "freq": 4
+    },
+    {
+      "note": "cantaloupe",
+      "freq": 4
+    },
+    {
+      "note": "vanilla caviar",
+      "freq": 4
+    },
+    {
+      "note": "cep",
+      "freq": 4
+    },
+    {
+      "note": "molasses",
+      "freq": 4
+    },
+    {
+      "note": "hazelnut cocoa spread",
+      "freq": 4
+    },
+    {
+      "note": "feijoa fruit",
+      "freq": 4
+    },
+    {
+      "note": "laminaria",
+      "freq": 4
+    },
+    {
+      "note": "seriguela",
+      "freq": 4
+    },
+    {
+      "note": "kaffir lime",
+      "freq": 4
+    },
+    {
+      "note": "daylily",
+      "freq": 4
+    },
+    {
+      "note": "canel\u00e9",
+      "freq": 4
+    },
+    {
+      "note": "coranol",
+      "freq": 4
+    },
+    {
+      "note": "lava",
+      "freq": 4
+    },
+    {
+      "note": "juicy apricot",
+      "freq": 4
+    },
+    {
+      "note": "egyptian rosewood",
+      "freq": 4
+    },
+    {
+      "note": "ouzo",
+      "freq": 4
+    },
+    {
+      "note": "calycanthus",
+      "freq": 4
+    },
+    {
+      "note": "cashalox",
+      "freq": 4
+    },
+    {
+      "note": "pelargonium leaf",
+      "freq": 4
+    },
+    {
+      "note": "sand lily",
+      "freq": 4
+    },
+    {
+      "note": "periwinkle",
+      "freq": 4
+    },
+    {
+      "note": "prickly pear",
+      "freq": 4
+    },
+    {
+      "note": "cashew",
+      "freq": 4
+    },
+    {
+      "note": "black pomegranate",
+      "freq": 4
+    },
+    {
+      "note": "chinese black tea",
+      "freq": 4
+    },
+    {
+      "note": "japanese green tea",
+      "freq": 4
+    },
+    {
+      "note": "sicilian citrus",
+      "freq": 4
+    },
+    {
+      "note": "macchiato",
+      "freq": 4
+    },
+    {
+      "note": "canadian pine",
+      "freq": 4
+    },
+    {
+      "note": "methyl pamplemousse",
+      "freq": 4
+    },
+    {
+      "note": "cosmos flower",
+      "freq": 4
+    },
+    {
+      "note": "frosted apple",
+      "freq": 4
+    },
+    {
+      "note": "corn",
+      "freq": 3
+    },
+    {
+      "note": "chive",
+      "freq": 3
+    },
+    {
+      "note": "dried apricot",
+      "freq": 3
+    },
+    {
+      "note": "ultravanil\u0099",
+      "freq": 3
+    },
+    {
+      "note": "azalea",
+      "freq": 3
+    },
+    {
+      "note": "skeleton flower (diphylleia grayi)",
+      "freq": 3
+    },
+    {
+      "note": "liatrix",
+      "freq": 3
+    },
+    {
+      "note": "pamplewood",
+      "freq": 3
+    },
+    {
+      "note": "limewood",
+      "freq": 3
+    },
+    {
+      "note": "rye",
+      "freq": 3
+    },
+    {
+      "note": "althaea",
+      "freq": 3
+    },
+    {
+      "note": "rangpur",
+      "freq": 3
+    },
+    {
+      "note": "vietnamese oud",
+      "freq": 3
+    },
+    {
+      "note": "white mimosa",
+      "freq": 3
+    },
+    {
+      "note": "frosted orange",
+      "freq": 3
+    },
+    {
+      "note": "wisteria petals",
+      "freq": 3
+    },
+    {
+      "note": "green coriander",
+      "freq": 3
+    },
+    {
+      "note": "red tulip",
+      "freq": 3
+    },
+    {
+      "note": "green orchid",
+      "freq": 3
+    },
+    {
+      "note": "factor x",
+      "freq": 3
+    },
+    {
+      "note": "gladiolus",
+      "freq": 3
+    },
+    {
+      "note": "stone",
+      "freq": 3
+    },
+    {
+      "note": "roasted nuts",
+      "freq": 3
+    },
+    {
+      "note": "white blossom",
+      "freq": 3
+    },
+    {
+      "note": "red mulberry",
+      "freq": 3
+    },
+    {
+      "note": "turkish coffee beans",
+      "freq": 3
+    },
+    {
+      "note": "kephalis",
+      "freq": 3
+    },
+    {
+      "note": "white cyclamen",
+      "freq": 3
+    },
+    {
+      "note": "freesia petals",
+      "freq": 3
+    },
+    {
+      "note": "toast",
+      "freq": 3
+    },
+    {
+      "note": "soursop",
+      "freq": 3
+    },
+    {
+      "note": "choya nakh",
+      "freq": 3
+    },
+    {
+      "note": "australian blue cypress",
+      "freq": 3
+    },
+    {
+      "note": "agave nectar",
+      "freq": 3
+    },
+    {
+      "note": "mahonia",
+      "freq": 3
+    },
+    {
+      "note": "sideritis",
+      "freq": 3
+    },
+    {
+      "note": "mountain tea",
+      "freq": 3
+    },
+    {
+      "note": "pistachio blossom",
+      "freq": 3
+    },
+    {
+      "note": "privet",
+      "freq": 3
+    },
+    {
+      "note": "prunol",
+      "freq": 3
+    },
+    {
+      "note": "white cardamom",
+      "freq": 3
+    },
+    {
+      "note": "red vanill-orchid",
+      "freq": 3
+    },
+    {
+      "note": "tomato flower",
+      "freq": 3
+    },
+    {
+      "note": "rose juliette greco",
+      "freq": 3
+    },
+    {
+      "note": "antillone\u0099",
+      "freq": 3
+    },
+    {
+      "note": "bay essence",
+      "freq": 3
+    },
+    {
+      "note": "indian tea",
+      "freq": 3
+    },
+    {
+      "note": "spinach",
+      "freq": 3
+    },
+    {
+      "note": "wild peony",
+      "freq": 3
+    },
+    {
+      "note": "ditax wood",
+      "freq": 3
+    },
+    {
+      "note": "nard",
+      "freq": 3
+    },
+    {
+      "note": "teakwood essence",
+      "freq": 3
+    },
+    {
+      "note": "mitti attar",
+      "freq": 3
+    },
+    {
+      "note": "tucum\u00e3",
+      "freq": 3
+    },
+    {
+      "note": "kopi luwak coffee",
+      "freq": 3
+    },
+    {
+      "note": "crithmum",
+      "freq": 3
+    },
+    {
+      "note": "dark plum wu mei",
+      "freq": 3
+    },
+    {
+      "note": "damascone",
+      "freq": 3
+    },
+    {
+      "note": "daphne",
+      "freq": 3
+    },
+    {
+      "note": "naturalcalm\u0099",
+      "freq": 3
+    },
+    {
+      "note": "caipirinha",
+      "freq": 3
+    },
+    {
+      "note": "sparkling wine",
+      "freq": 3
+    },
+    {
+      "note": "trees",
+      "freq": 3
+    },
+    {
+      "note": "italian melon",
+      "freq": 3
+    },
+    {
+      "note": "buttercup",
+      "freq": 3
+    },
+    {
+      "note": "guaiacol",
+      "freq": 3
+    },
+    {
+      "note": "fougassette",
+      "freq": 3
+    },
+    {
+      "note": "bigarane\u0099",
+      "freq": 3
+    },
+    {
+      "note": "panettone",
+      "freq": 3
+    },
+    {
+      "note": "dill",
+      "freq": 3
+    },
+    {
+      "note": "khella",
+      "freq": 3
+    },
+    {
+      "note": "cork",
+      "freq": 3
+    },
+    {
+      "note": "thistle",
+      "freq": 3
+    },
+    {
+      "note": "argan",
+      "freq": 3
+    },
+    {
+      "note": "japanese pepper",
+      "freq": 3
+    },
+    {
+      "note": "frosted melon",
+      "freq": 3
+    },
+    {
+      "note": "chimonanthus or wintersweet",
+      "freq": 3
+    },
+    {
+      "note": "japanese pink lotus",
+      "freq": 3
+    },
+    {
+      "note": "moscow mule",
+      "freq": 2
+    },
+    {
+      "note": "red willow",
+      "freq": 2
+    },
+    {
+      "note": "alyssum",
+      "freq": 2
+    },
+    {
+      "note": "frosted mango",
+      "freq": 2
+    },
+    {
+      "note": "indian lotus",
+      "freq": 2
+    },
+    {
+      "note": "butomus umbellatus",
+      "freq": 2
+    },
+    {
+      "note": "st. john's wort",
+      "freq": 2
+    },
+    {
+      "note": "valencia orange flower",
+      "freq": 2
+    },
+    {
+      "note": "hoary stock",
+      "freq": 2
+    },
+    {
+      "note": "apple mint",
+      "freq": 2
+    },
+    {
+      "note": "red cyclamen",
+      "freq": 2
+    },
+    {
+      "note": "egyptian rose",
+      "freq": 2
+    },
+    {
+      "note": "indian woods",
+      "freq": 2
+    },
+    {
+      "note": "californian gardenia",
+      "freq": 2
+    },
+    {
+      "note": "limnophila aromatica",
+      "freq": 2
+    },
+    {
+      "note": "fig honey",
+      "freq": 2
+    },
+    {
+      "note": "sweat",
+      "freq": 2
+    },
+    {
+      "note": "indian white pepper",
+      "freq": 2
+    },
+    {
+      "note": "yellow flowers",
+      "freq": 2
+    },
+    {
+      "note": "japanese orange",
+      "freq": 2
+    },
+    {
+      "note": "buckwheat tea",
+      "freq": 2
+    },
+    {
+      "note": "water peony",
+      "freq": 2
+    },
+    {
+      "note": "instant film accord",
+      "freq": 2
+    },
+    {
+      "note": "acetylfuran",
+      "freq": 2
+    },
+    {
+      "note": "white chocolate truffle",
+      "freq": 2
+    },
+    {
+      "note": "mai tai cocktail",
+      "freq": 2
+    },
+    {
+      "note": "head space waterfall",
+      "freq": 2
+    },
+    {
+      "note": "iodine",
+      "freq": 2
+    },
+    {
+      "note": "plum wine",
+      "freq": 2
+    },
+    {
+      "note": "musk vodka",
+      "freq": 2
+    },
+    {
+      "note": "gianduia",
+      "freq": 2
+    },
+    {
+      "note": "mistletoe",
+      "freq": 2
+    },
+    {
+      "note": "magnolan",
+      "freq": 2
+    },
+    {
+      "note": "apple juice",
+      "freq": 2
+    },
+    {
+      "note": "carambola blossom",
+      "freq": 2
+    },
+    {
+      "note": "cookie dough",
+      "freq": 2
+    },
+    {
+      "note": "kadam",
+      "freq": 2
+    },
+    {
+      "note": "sclarene",
+      "freq": 2
+    },
+    {
+      "note": "pistachio leaf",
+      "freq": 2
+    },
+    {
+      "note": "katsura leaf",
+      "freq": 2
+    },
+    {
+      "note": "holly flower",
+      "freq": 2
+    },
+    {
+      "note": "mimosa petals",
+      "freq": 2
+    },
+    {
+      "note": "gajumaru banyan",
+      "freq": 2
+    },
+    {
+      "note": "bengal pepper",
+      "freq": 2
+    },
+    {
+      "note": "curry",
+      "freq": 2
+    },
+    {
+      "note": "jellybean",
+      "freq": 2
+    },
+    {
+      "note": "frosting [glac\u00e9]",
+      "freq": 2
+    },
+    {
+      "note": "sea daffodil",
+      "freq": 2
+    },
+    {
+      "note": "mezcal",
+      "freq": 2
+    },
+    {
+      "note": "campion flower",
+      "freq": 2
+    },
+    {
+      "note": "rumex",
+      "freq": 2
+    },
+    {
+      "note": "indonesian myrrh",
+      "freq": 2
+    },
+    {
+      "note": "golden lily",
+      "freq": 2
+    },
+    {
+      "note": "dodecanal",
+      "freq": 2
+    },
+    {
+      "note": "pink flamingo heliconia",
+      "freq": 2
+    },
+    {
+      "note": "daim",
+      "freq": 2
+    },
+    {
+      "note": "oak leaves",
+      "freq": 2
+    },
+    {
+      "note": "island musk",
+      "freq": 2
+    },
+    {
+      "note": "english rose",
+      "freq": 2
+    },
+    {
+      "note": "orange cassia tree",
+      "freq": 2
+    },
+    {
+      "note": "terranol",
+      "freq": 2
+    },
+    {
+      "note": "medlar",
+      "freq": 2
+    },
+    {
+      "note": "karmaflor\u00ae",
+      "freq": 2
+    },
+    {
+      "note": "trimofix\u00ae",
+      "freq": 2
+    },
+    {
+      "note": "wet plaster",
+      "freq": 2
+    },
+    {
+      "note": "watery cyclamen",
+      "freq": 2
+    },
+    {
+      "note": "green forest",
+      "freq": 2
+    },
+    {
+      "note": "chinese grapefruit",
+      "freq": 2
+    },
+    {
+      "note": "lemon soda",
+      "freq": 2
+    },
+    {
+      "note": "satureja",
+      "freq": 2
+    },
+    {
+      "note": "safflower",
+      "freq": 2
+    },
+    {
+      "note": "hivernal\u00ae",
+      "freq": 2
+    },
+    {
+      "note": "eucalyptus blossom",
+      "freq": 2
+    },
+    {
+      "note": "jujube blossom",
+      "freq": 2
+    },
+    {
+      "note": "artichoke",
+      "freq": 2
+    },
+    {
+      "note": "royal lily",
+      "freq": 2
+    },
+    {
+      "note": "hollyhock",
+      "freq": 2
+    },
+    {
+      "note": "walnut milk",
+      "freq": 2
+    },
+    {
+      "note": "cosmopolitan cocktail",
+      "freq": 2
+    },
+    {
+      "note": "mascarpone cheese",
+      "freq": 2
+    },
+    {
+      "note": "ambrostar\u0099",
+      "freq": 2
+    },
+    {
+      "note": "belladonna",
+      "freq": 2
+    },
+    {
+      "note": "cherry milk",
+      "freq": 2
+    },
+    {
+      "note": "cassowary fruit",
+      "freq": 2
+    },
+    {
+      "note": "woodruff or galium odoratum",
+      "freq": 2
+    },
+    {
+      "note": "cocktail fruits",
+      "freq": 2
+    },
+    {
+      "note": "dianthus",
+      "freq": 2
+    },
+    {
+      "note": "cubeb or tailed pepper",
+      "freq": 2
+    },
+    {
+      "note": "hat straw",
+      "freq": 2
+    },
+    {
+      "note": "breadnut",
+      "freq": 2
+    },
+    {
+      "note": "tulsi",
+      "freq": 2
+    },
+    {
+      "note": "hatkora lemon",
+      "freq": 2
+    },
+    {
+      "note": "grape seed",
+      "freq": 2
+    },
+    {
+      "note": "flouve",
+      "freq": 2
+    },
+    {
+      "note": "azteca lily",
+      "freq": 2
+    },
+    {
+      "note": "red fruits sorbet",
+      "freq": 2
+    },
+    {
+      "note": "carob tree",
+      "freq": 2
+    },
+    {
+      "note": "virginian patchouli",
+      "freq": 2
+    },
+    {
+      "note": "cinnamon flower",
+      "freq": 2
+    },
+    {
+      "note": "bulgarian light tobacco",
+      "freq": 2
+    },
+    {
+      "note": "lychee",
+      "freq": 2
+    },
+    {
+      "note": "chocolate fudge",
+      "freq": 2
+    },
+    {
+      "note": "baileys irish cream",
+      "freq": 2
+    },
+    {
+      "note": "white royal lily",
+      "freq": 2
+    },
+    {
+      "note": "rose thorn",
+      "freq": 2
+    },
+    {
+      "note": "grapefruit peel",
+      "freq": 2
+    },
+    {
+      "note": "gerbera",
+      "freq": 2
+    },
+    {
+      "note": "ducke",
+      "freq": 1
+    },
+    {
+      "note": "ornithogalum",
+      "freq": 1
+    },
+    {
+      "note": "japanese orchid",
+      "freq": 1
+    },
+    {
+      "note": "african freesia petals",
+      "freq": 1
+    },
+    {
+      "note": "araucaria",
+      "freq": 1
+    },
+    {
+      "note": "coffee tincture",
+      "freq": 1
+    },
+    {
+      "note": "solomon's seal",
+      "freq": 1
+    },
+    {
+      "note": "crinum lily",
+      "freq": 1
+    },
+    {
+      "note": "pinot noir grapes",
+      "freq": 1
+    },
+    {
+      "note": "orchid black diamond",
+      "freq": 1
+    },
+    {
+      "note": "melissa flower",
+      "freq": 1
+    },
+    {
+      "note": "lupin",
+      "freq": 1
+    },
+    {
+      "note": "soy milk",
+      "freq": 1
+    },
+    {
+      "note": "taro",
+      "freq": 1
+    },
+    {
+      "note": "tulle accord",
+      "freq": 1
+    },
+    {
+      "note": "muskrat",
+      "freq": 1
+    },
+    {
+      "note": "black diamond",
+      "freq": 1
+    },
+    {
+      "note": "carambola",
+      "freq": 1
+    },
+    {
+      "note": "alpinia",
+      "freq": 1
+    },
+    {
+      "note": "bakhoor",
+      "freq": 1
+    },
+    {
+      "note": "bushman candle",
+      "freq": 1
+    },
+    {
+      "note": "limetta",
+      "freq": 1
+    },
+    {
+      "note": "chinese apricot",
+      "freq": 1
+    },
+    {
+      "note": "moroccan mimosa",
+      "freq": 1
+    },
+    {
+      "note": "white datura",
+      "freq": 1
+    },
+    {
+      "note": "zefir",
+      "freq": 1
+    },
+    {
+      "note": "california redwood",
+      "freq": 1
+    },
+    {
+      "note": "hassaku",
+      "freq": 1
+    },
+    {
+      "note": "green sap",
+      "freq": 1
+    },
+    {
+      "note": "muhuhu",
+      "freq": 1
+    },
+    {
+      "note": "bougainvillea",
+      "freq": 1
+    },
+    {
+      "note": "pine tar",
+      "freq": 1
+    },
+    {
+      "note": "orange blossom absolute",
+      "freq": 1
+    },
+    {
+      "note": "turnera diffusa (damiana)",
+      "freq": 1
+    },
+    {
+      "note": "chinese pink peony",
+      "freq": 1
+    },
+    {
+      "note": "madeira",
+      "freq": 1
+    },
+    {
+      "note": "moroccan",
+      "freq": 1
+    },
+    {
+      "note": "israeli basil",
+      "freq": 1
+    },
+    {
+      "note": "coffee tree",
+      "freq": 1
+    },
+    {
+      "note": "rambutan",
+      "freq": 1
+    },
+    {
+      "note": "pisco sour cocktal",
+      "freq": 1
+    },
+    {
+      "note": "aqual",
+      "freq": 1
+    },
+    {
+      "note": "hexyl acetate",
+      "freq": 1
+    },
+    {
+      "note": "vinyl guaiacol",
+      "freq": 1
+    },
+    {
+      "note": "grass tree",
+      "freq": 1
+    },
+    {
+      "note": "choya ral",
+      "freq": 1
+    },
+    {
+      "note": "nigerian ginger",
+      "freq": 1
+    },
+    {
+      "note": "wolfberry",
+      "freq": 1
+    },
+    {
+      "note": "palestinian sweet lime",
+      "freq": 1
+    },
+    {
+      "note": "vanilla leaves",
+      "freq": 1
+    },
+    {
+      "note": "egyptian tuberose",
+      "freq": 1
+    },
+    {
+      "note": "ember",
+      "freq": 1
+    },
+    {
+      "note": "snake plant",
+      "freq": 1
+    },
+    {
+      "note": "oysters",
+      "freq": 1
+    },
+    {
+      "note": "mugwort",
+      "freq": 1
+    },
+    {
+      "note": "cocoa",
+      "freq": 1
+    },
+    {
+      "note": "katrafay",
+      "freq": 1
+    },
+    {
+      "note": "genipapo",
+      "freq": 1
+    },
+    {
+      "note": "strawberry syrup",
+      "freq": 1
+    },
+    {
+      "note": "california cedar",
+      "freq": 1
+    },
+    {
+      "note": "siam resin",
+      "freq": 1
+    },
+    {
+      "note": "siam",
+      "freq": 1
+    },
+    {
+      "note": "poivrol",
+      "freq": 1
+    },
+    {
+      "note": "tuscan cypress",
+      "freq": 1
+    },
+    {
+      "note": "indonesian carnation",
+      "freq": 1
+    },
+    {
+      "note": "siam wood",
+      "freq": 1
+    },
+    {
+      "note": "jelly",
+      "freq": 1
+    },
+    {
+      "note": "californian fig",
+      "freq": 1
+    },
+    {
+      "note": "saw palmetto",
+      "freq": 1
+    },
+    {
+      "note": "goldenrod",
+      "freq": 1
+    },
+    {
+      "note": "linaloe berry",
+      "freq": 1
+    },
+    {
+      "note": "yohimbe",
+      "freq": 1
+    },
+    {
+      "note": "caoutchouc",
+      "freq": 1
+    },
+    {
+      "note": "cacao blossom",
+      "freq": 1
+    },
+    {
+      "note": "malva",
+      "freq": 1
+    },
+    {
+      "note": "polygonum",
+      "freq": 1
+    },
+    {
+      "note": "chutney",
+      "freq": 1
+    },
+    {
+      "note": "yellow poppy",
+      "freq": 1
+    },
+    {
+      "note": "sumac",
+      "freq": 1
+    },
+    {
+      "note": "vanilla bahiana",
+      "freq": 1
+    },
+    {
+      "note": "sp3 carbon",
+      "freq": 1
+    },
+    {
+      "note": "citron leaf",
+      "freq": 1
+    },
+    {
+      "note": "transparent flowers",
+      "freq": 1
+    },
+    {
+      "note": "protea",
+      "freq": 1
+    },
+    {
+      "note": "capiti\u00fa",
+      "freq": 1
+    },
+    {
+      "note": "nutella",
+      "freq": 1
+    },
+    {
+      "note": "redwood flower",
+      "freq": 1
+    },
+    {
+      "note": "buriti",
+      "freq": 1
+    },
+    {
+      "note": "malaysian oud",
+      "freq": 1
+    },
+    {
+      "note": "starfish",
+      "freq": 1
+    },
+    {
+      "note": "tamarisk",
+      "freq": 1
+    },
+    {
+      "note": "peach cream",
+      "freq": 1
+    },
+    {
+      "note": "floral bouquet",
+      "freq": 1
+    },
+    {
+      "note": "yuzu flower",
+      "freq": 1
+    },
+    {
+      "note": "gariguette strawberry",
+      "freq": 1
+    },
+    {
+      "note": "hawaiian fruits",
+      "freq": 1
+    }
+  ]
+}
