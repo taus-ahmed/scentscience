@@ -35,15 +35,33 @@ def _load_notes_db() -> dict[str, dict]:
     if _notes_db is not None:
         return _notes_db
     path = os.path.join(os.path.dirname(__file__), "..", "data", "notes_chemistry.json")
-    with open(path, "r") as f:
+    with open(path, "r", encoding="utf-8") as f:
         notes_list = json.load(f)
     _notes_db = {n["name"].lower(): n for n in notes_list}
     return _notes_db
 
 
+def _normalize_note_name(name: str) -> str:
+    """Normalize Windows-1252 encoding artifacts that appear as garbled bytes in note names."""
+    name = name.replace('\x99', '®').replace('\x92', "'").replace('\x96', '–')
+    return name.strip()
+
+
 def _get_note(name: str) -> dict | None:
     db = _load_notes_db()
-    return db.get(name.lower())
+    normalized = _normalize_note_name(name)
+    result = db.get(normalized.lower())
+    if result is None:
+        result = db.get(normalized.title().lower())
+    if result is None:
+        # Strip trailing trademark/registered symbols and retry
+        # Handles e.g. "Pepperwood\x99" → "Pepperwood®" → "pepperwood" → found
+        stripped = normalized.rstrip('®™').strip()
+        if stripped != normalized:
+            result = db.get(stripped.lower())
+            if result is None:
+                result = db.get(stripped.title().lower())
+    return result
 
 
 def _note_vec(note: dict) -> np.ndarray:
@@ -84,7 +102,7 @@ def compute_note_coverage(top: list, middle: list, base: list) -> float:
     if not all_notes:
         return 0.5  # unknown coverage — use neutral default
     db = _load_notes_db()
-    known = sum(1 for n in all_notes if n.lower() in db)
+    known = sum(1 for n in all_notes if _get_note(n) is not None)
     return known / len(all_notes)
 
 
@@ -99,6 +117,18 @@ def _weighted_avg(note_names: list[str], field: str, weight: float, default: flo
     return total_value, total_weight
 
 
+def _notes_from_accords(accords: list[str]) -> list[str]:
+    """Return a synthetic middle-note list derived from accord tags (deduped, highest-weight first)."""
+    from ml.accord_notes import ACCORD_NOTES
+    seen: dict[str, float] = {}
+    for accord in accords:
+        mapping = ACCORD_NOTES.get(accord.lower().strip(), {})
+        for note, weight in mapping.items():
+            seen[note] = max(seen.get(note, 0.0), weight)
+    # Sort by weight descending, return top-20 notes
+    return [n for n, _ in sorted(seen.items(), key=lambda x: -x[1])][:20]
+
+
 def build_feature_vector(perfume: dict[str, Any]) -> np.ndarray:
     """
     Build a fixed-length feature vector from a perfume dict.
@@ -106,9 +136,20 @@ def build_feature_vector(perfume: dict[str, Any]) -> np.ndarray:
     concentration, community_longevity_rating, community_sillage_rating,
     community_overall_rating, season_*_votes, occasion_*_votes.
     """
-    top = perfume.get("top_notes", [])
-    mid = perfume.get("middle_notes", [])
-    base = perfume.get("base_notes", [])
+    top = list(perfume.get("top_notes", []) or [])
+    mid = list(perfume.get("middle_notes", []) or [])
+    base = list(perfume.get("base_notes", []) or [])
+    accords = list(perfume.get("accords", []) or [])
+    brand = (perfume.get("brand", "") or "").strip()
+
+    # Fallback 1: when pyramid is empty, synthesize notes from accord tags
+    has_real_notes = bool(top or mid or base)
+    if not has_real_notes and accords:
+        mid = _notes_from_accords(accords)
+        logger.debug("Accord-derived synthetic notes for %r: %s", perfume.get("name"), mid)
+
+    # Track whether we still have no notes (for brand DNA fallback below)
+    has_any_notes = bool(top or mid or base)
 
     all_note_names = set(top + mid + base)
     missing = {n for n in all_note_names if not _get_note(n)}
@@ -149,6 +190,17 @@ def build_feature_vector(perfume: dict[str, Any]) -> np.ndarray:
                 lc_total += note.get("longevity_class", 3) * w
                 lc_w += w
     note_features.append(lc_total / lc_w if lc_w > 0 else 3.0)
+
+    # Fallback 2: brand DNA prior — when no notes AND no accords, nudge chemistry
+    # toward the brand's typical profile at 30% weight rather than pure defaults.
+    if not has_any_notes and brand:
+        from ml.brand_dna import get_brand_prior
+        brand_prior = get_brand_prior(brand)
+        if brand_prior is not None:
+            PRIOR_W = 0.3
+            for i in range(len(note_features)):
+                default_val = 5.0 if i < len(note_features) - 1 else 3.0
+                note_features[i] = (1.0 - PRIOR_W) * default_val + PRIOR_W * float(brand_prior[i])
 
     # Concentration multiplier
     conc = perfume.get("concentration", "EDT")
