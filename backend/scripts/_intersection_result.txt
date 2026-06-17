@@ -1,0 +1,18 @@
+﻿Loading ledecanteur IDs...
+  131,930 unique IDs in ledecanteur dataset
+Loading DB fragrantica_url values...
+.venv\Scripts\python.exe : Traceback (most recent call last):
+At line:1 char:70
++ ... NG="utf-8"; .venv\Scripts\python.exe scripts/_check_intersection.py 2 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "E:\scentscience\backend\scripts\_check_intersection.py", line 28, in <module>
+psycopg2.OperationalError: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+

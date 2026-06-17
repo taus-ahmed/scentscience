@@ -1,4 +1,41 @@
-"""Cross-validate and sanity-check model predictions."""
+"""Cross-validate and sanity-check model predictions.
+
+Confidence formula — current tiers (all values are additive):
+
+  BASE:            always +0.10
+
+  SOURCE COUNT:
+    sc >= 6     →  +0.25
+    sc  4-5     →  +0.22
+    sc  3       →  +0.18
+    sc  2       →  +0.13
+    sc  1       →  +0.05
+
+  PYRAMID:
+    real (not inferred)  →  +0.25
+    inferred             →  +0.15
+    none                 →  +0.00
+
+  NOTE COVERAGE:   fraction × 0.30  (0.00 – 0.30)
+
+  RATING MULT (continuous log scale, applied to sum above):
+    rc = 0         →  × 0.80
+    rc = 200       →  × 1.00
+    rc = 1 000     →  × 1.08
+    rc = 10 000+   →  × 1.20
+    formula: lf = clamp((log10(rc) - 1) / 3, 0, 1); mult = 0.85 + 0.35 * lf
+
+  COMMUNITY BONUS (additive, post-mult):
+    total_votes >= 50 000  →  +0.04
+    total_votes >= 20 000  →  +0.03
+    total_votes >= 10 000  →  +0.02
+    total_votes >=  2 000  →  +0.01
+    else                   →  +0.00
+
+  HARD CAP:  min(base_score + community_bonus, 0.97)
+
+  Max achievable: 0.97 (sc≥3, real pyramid, 100% coverage, rc>10k, votes>50k)
+"""
 
 import math
 
