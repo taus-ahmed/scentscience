@@ -114,17 +114,17 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
         )}
       </div>
 
-      {/* Context selectors */}
-      <div className="flex flex-wrap gap-2">
-        <select style={SELECT_STYLE} className="flex-1 min-w-[110px] px-2 py-1.5 text-xs sm:text-sm" value={skinType} onChange={e => setSkinType(e.target.value)}>
+      {/* Context selectors — always 3 equal columns */}
+      <div className="grid grid-cols-3 gap-2">
+        <select style={SELECT_STYLE} className="w-full px-2 py-1.5 text-xs sm:text-sm" value={skinType} onChange={e => setSkinType(e.target.value)}>
           <option value="">Skin type</option>
           {SKIN_TYPES.filter(Boolean).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
         </select>
-        <select style={SELECT_STYLE} className="flex-1 min-w-[100px] px-2 py-1.5 text-xs sm:text-sm" value={season} onChange={e => setSeason(e.target.value)}>
+        <select style={SELECT_STYLE} className="w-full px-2 py-1.5 text-xs sm:text-sm" value={season} onChange={e => setSeason(e.target.value)}>
           <option value="">Season</option>
           {SEASONS.filter(Boolean).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
         </select>
-        <select style={SELECT_STYLE} className="flex-1 min-w-[110px] px-2 py-1.5 text-xs sm:text-sm" value={timeOfDay} onChange={e => setTimeOfDay(e.target.value)}>
+        <select style={SELECT_STYLE} className="w-full px-2 py-1.5 text-xs sm:text-sm" value={timeOfDay} onChange={e => setTimeOfDay(e.target.value)}>
           <option value="">Time of day</option>
           {TIMES.filter(Boolean).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
         </select>

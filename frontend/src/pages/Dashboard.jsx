@@ -97,15 +97,15 @@ export default function Dashboard() {
       </div>
 
       {result && p && (
-        <div className="max-w-6xl mx-auto px-3 pb-16 sm:px-5 md:px-6">
+        <div className="max-w-6xl mx-auto px-4 pb-16 sm:px-6 md:px-8">
 
           {/* Perfume Identity Card */}
           <div style={PERFUME_CARD_STYLE} className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-8 p-4 sm:p-6 mb-6 sm:mb-8">
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="text-sm font-semibold mb-0.5" style={{ color: '#a78bfa' }}>
                 {result.perfume.brand}
               </div>
-              <div className="text-2xl sm:text-3xl font-black text-white leading-tight">
+              <div className="text-2xl sm:text-3xl font-black text-white leading-tight break-words">
                 {result.perfume.name}
               </div>
               <div className="text-xs mt-1" style={{ color: '#6b7280' }}>
@@ -284,8 +284,8 @@ function PersonFit({ predictions: p }) {
       <p className="text-xs font-bold uppercase tracking-wide mb-4 sm:mb-5" style={{ color: '#9ca3af' }}>
         Person Fit Analysis
       </p>
-      {/* 2 cols on mobile, 4 cols on md+ */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+      {/* 1 col on mobile, 2 cols on sm, 4 cols on md+ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
         <div>
           <p className="text-xs uppercase tracking-wider mb-2.5" style={{ color: '#6b7280' }}>SKIN TYPE</p>
           {skinData.map(d => <Bar key={d.label} {...d} />)}

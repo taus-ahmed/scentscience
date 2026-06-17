@@ -14,4 +14,11 @@ body {
 
 input, select, button {
   font-family: inherit;
+  touch-action: manipulation;
+}
+
+/* Prevent horizontal overflow on small viewports */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
 }
