@@ -30,3 +30,5 @@ rapidfuzz==3.10.0
 # Utils
 python-multipart==0.0.12
 aiofiles==24.1.0
+slowapi==0.1.9
+cachetools==5.3.3

@@ -3,7 +3,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 from config import get_settings
+from limiter import limiter
 from models.database import init_db
 from routes import predict, perfumes, notes
 
@@ -23,6 +26,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_url, "http://localhost:5173", "http://localhost:3000"],
@@ -39,6 +45,12 @@ app.include_router(notes.router, prefix="/api")
 @app.get("/health")
 async def health():
     return {"status": "ok", "version": settings.model_version}
+
+
+@app.get("/api/health")
+async def api_health():
+    from routes.predict import _models_cache
+    return {"status": "ok", "models_loaded": _models_cache is not None}
 
 
 # Serve React frontend — must be mounted after all API/health routes

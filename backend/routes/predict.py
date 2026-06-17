@@ -1,10 +1,13 @@
 import asyncio
+import hashlib
+import json
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from pydantic import BaseModel
 from typing import Optional
+from cachetools import TTLCache
 
 from models.database import get_db
 from models.perfume import Perfume
@@ -14,9 +17,12 @@ from ml.nlp import generate_nlp_conclusion
 from ml.validators import validate_predictions
 from ml.features import apply_context_modifiers, compute_note_coverage
 from config import get_settings
+from limiter import limiter
 
 router = APIRouter()
 settings = get_settings()
+
+predict_cache: TTLCache = TTLCache(maxsize=1000, ttl=3600)
 
 _models_cache: dict | None = None
 _models_lock: asyncio.Lock | None = None
@@ -85,8 +91,24 @@ def _perfume_to_dict(p: Perfume) -> dict:
     }
 
 
+def _predict_cache_key(req: PredictRequest) -> str:
+    data = {
+        "name": req.perfume_name.lower().strip(),
+        "brand": (req.brand or "").lower().strip(),
+        "skin_type": (req.context.skin_type if req.context else None) or "",
+        "season": (req.context.season if req.context else None) or "",
+        "time_of_day": (req.context.time_of_day if req.context else None) or "",
+    }
+    return hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
+
+
 @router.post("/predict")
-async def predict_endpoint(req: PredictRequest, db: AsyncSession = Depends(get_db)):
+@limiter.limit("30/minute")
+async def predict_endpoint(request: Request, req: PredictRequest, db: AsyncSession = Depends(get_db)):
+    key = _predict_cache_key(req)
+    if key in predict_cache:
+        return predict_cache[key]
+
     # 1. Fuzzy search perfume in DB
     from rapidfuzz import process, fuzz
 
@@ -181,7 +203,7 @@ async def predict_endpoint(req: PredictRequest, db: AsyncSession = Depends(get_d
     await db.commit()
     await db.refresh(pred_row)
 
-    return {
+    result = {
         "perfume": {
             "id": matched_perfume.id,
             "name": matched_perfume.name,
@@ -193,3 +215,5 @@ async def predict_endpoint(req: PredictRequest, db: AsyncSession = Depends(get_d
         "prediction_id": pred_row.id,
         "match_score": match[1],
     }
+    predict_cache[key] = result
+    return result
