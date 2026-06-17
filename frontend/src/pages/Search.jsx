@@ -2,35 +2,22 @@ import React, { useState } from 'react'
 import { searchPerfumes } from '../api/client.js'
 import { useNavigate } from 'react-router-dom'
 
-const s = {
-  page: { minHeight: '100vh', background: '#0a0a0f', padding: '2rem' },
-  title: { fontSize: '1.8rem', fontWeight: 800, color: '#fff', marginBottom: '1.5rem' },
-  inputRow: { display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' },
-  input: {
-    flex: 1, minWidth: '200px', padding: '0.75rem 1rem',
-    background: '#111827', border: '1px solid #374151', borderRadius: '8px',
-    color: '#fff', fontSize: '0.95rem',
-  },
-  btn: {
-    padding: '0.75rem 1.5rem', background: '#7c3aed', color: '#fff',
-    border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600,
-  },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' },
-  card: {
-    background: '#111827', border: '1px solid #1f2937', borderRadius: '12px',
-    padding: '1.25rem', cursor: 'pointer', transition: 'border-color 0.2s',
-  },
-  cardName: { fontSize: '1.1rem', fontWeight: 700, color: '#fff', marginBottom: '0.25rem' },
-  cardBrand: { color: '#a78bfa', fontSize: '0.85rem', marginBottom: '0.75rem' },
-  badge: {
-    display: 'inline-block', padding: '0.15rem 0.5rem',
-    background: '#1f2937', borderRadius: '999px',
-    fontSize: '0.7rem', color: '#94a3b8', marginRight: '0.3rem',
-  },
-  ratings: { display: 'flex', gap: '1rem', marginTop: '0.75rem' },
-  ratingItem: { color: '#6b7280', fontSize: '0.75rem' },
-  ratingVal: { color: '#e5e7eb', fontWeight: 700 },
-  empty: { color: '#4b5563', textAlign: 'center', marginTop: '4rem', fontSize: '1rem' },
+const INPUT_STYLE = {
+  background: '#111827', border: '1px solid #374151', borderRadius: '8px',
+  color: '#fff', fontSize: '0.95rem',
+}
+const BTN_STYLE = {
+  background: '#7c3aed', color: '#fff',
+  border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600,
+}
+const CARD_STYLE = {
+  background: '#111827', border: '1px solid #1f2937', borderRadius: '12px', cursor: 'pointer',
+  transition: 'border-color 0.2s',
+}
+const BADGE_STYLE = {
+  display: 'inline-block', padding: '0.15rem 0.5rem',
+  background: '#1f2937', borderRadius: '999px',
+  fontSize: '0.7rem', color: '#94a3b8', marginRight: '0.3rem',
 }
 
 export default function Search() {
@@ -45,7 +32,7 @@ export default function Search() {
     setLoading(true)
     try {
       const data = await searchPerfumes(query, brand)
-      setResults(data)
+      setResults(data || [])
     } finally {
       setLoading(false)
     }
@@ -56,50 +43,72 @@ export default function Search() {
   }
 
   return (
-    <div style={s.page}>
-      <h1 style={s.title}>Browse Perfumes</h1>
-      <div style={s.inputRow}>
+    <div className="min-h-screen px-4 py-6 sm:px-6 sm:py-8 md:px-8" style={{ background: '#0a0a0f' }}>
+      <h1 className="text-2xl sm:text-3xl font-black text-white mb-4 sm:mb-6">Browse Perfumes</h1>
+
+      {/* Search inputs — stacked on mobile, row on sm+ */}
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-6 sm:mb-8">
         <input
-          style={s.input} placeholder="Search by name..." value={query}
-          onChange={e => setQuery(e.target.value)} onKeyDown={handleKeyDown}
+          style={INPUT_STYLE}
+          className="w-full sm:flex-1 px-3 py-2.5 sm:px-4 sm:py-3"
+          placeholder="Search by name…"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <input
-          style={s.input} placeholder="Filter by brand..." value={brand}
-          onChange={e => setBrand(e.target.value)} onKeyDown={handleKeyDown}
+          style={INPUT_STYLE}
+          className="w-full sm:w-48 px-3 py-2.5 sm:px-4 sm:py-3"
+          placeholder="Filter by brand…"
+          value={brand}
+          onChange={e => setBrand(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
-        <button style={s.btn} onClick={handleSearch} disabled={loading}>
+        <button
+          style={BTN_STYLE}
+          className="w-full sm:w-auto px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base"
+          onClick={handleSearch}
+          disabled={loading}
+        >
           {loading ? 'Searching…' : 'Search'}
         </button>
       </div>
 
       {results.length === 0 && !loading && (
-        <p style={s.empty}>Search for a perfume above to browse the database.</p>
+        <p className="text-center mt-12 sm:mt-16 text-sm sm:text-base" style={{ color: '#4b5563' }}>
+          Search for a perfume above to browse the database.
+        </p>
       )}
 
-      <div style={s.grid}>
+      {/* Results grid — 1 col on mobile, 2 on sm, 3 on lg */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {results.map(p => (
           <div
-            key={p.id} style={s.card}
+            key={p.id}
+            style={CARD_STYLE}
+            className="p-4 sm:p-5"
             onClick={() => navigate(`/?name=${encodeURIComponent(p.name)}&brand=${encodeURIComponent(p.brand)}`)}
             onMouseEnter={e => e.currentTarget.style.borderColor = '#4c1d95'}
             onMouseLeave={e => e.currentTarget.style.borderColor = '#1f2937'}
           >
-            <div style={s.cardName}>{p.name}</div>
-            <div style={s.cardBrand}>{p.brand} · {p.concentration}</div>
-            <div>
+            <div className="text-base sm:text-lg font-bold text-white mb-1">{p.name}</div>
+            <div className="text-sm mb-2 sm:mb-3" style={{ color: '#a78bfa' }}>
+              {p.brand} · {p.concentration}
+            </div>
+            <div className="mb-2 sm:mb-3">
               {(p.accords || []).slice(0, 3).map(a => (
-                <span key={a} style={s.badge}>{a}</span>
+                <span key={a} style={BADGE_STYLE}>{a}</span>
               ))}
             </div>
-            <div style={s.ratings}>
-              <div style={s.ratingItem}>
-                Longevity <span style={s.ratingVal}>{p.community_longevity_rating?.toFixed(1)}</span>
+            <div className="flex gap-3 sm:gap-4">
+              <div className="text-xs" style={{ color: '#6b7280' }}>
+                Longevity <span className="font-bold" style={{ color: '#e5e7eb' }}>{p.community_longevity_rating?.toFixed(1)}</span>
               </div>
-              <div style={s.ratingItem}>
-                Sillage <span style={s.ratingVal}>{p.community_sillage_rating?.toFixed(1)}</span>
+              <div className="text-xs" style={{ color: '#6b7280' }}>
+                Sillage <span className="font-bold" style={{ color: '#e5e7eb' }}>{p.community_sillage_rating?.toFixed(1)}</span>
               </div>
-              <div style={s.ratingItem}>
-                Overall <span style={s.ratingVal}>{p.community_overall_rating?.toFixed(1)}</span>
+              <div className="text-xs" style={{ color: '#6b7280' }}>
+                Overall <span className="font-bold" style={{ color: '#e5e7eb' }}>{p.community_overall_rating?.toFixed(1)}</span>
               </div>
             </div>
           </div>

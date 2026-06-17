@@ -8,37 +8,22 @@ import PieChart from '../components/PieChart.jsx'
 import NLPConclusion from '../components/NLPConclusion.jsx'
 import { predictPerfume } from '../api/client.js'
 
-const s = {
-  page: { minHeight: '100vh', background: 'linear-gradient(180deg, #0a0a0f 0%, #0f0f1f 100%)' },
-  hero: { padding: '3rem 2rem 2rem', textAlign: 'center' },
-  title: { fontSize: '2.8rem', fontWeight: 900, color: '#fff', letterSpacing: '-1px', marginBottom: '0.5rem' },
-  sub: { color: '#6b7280', fontSize: '1rem', marginBottom: '2.5rem' },
-  badge: {
-    display: 'inline-block', padding: '0.25rem 0.75rem', borderRadius: '999px',
-    background: '#1e1b4b', color: '#a78bfa', fontSize: '0.75rem', fontWeight: 600,
-    marginRight: '0.5rem', marginBottom: '2rem',
-  },
-  content: { maxWidth: '1200px', margin: '0 auto', padding: '0 1rem 4rem' },
-  perfumeCard: {
-    background: 'linear-gradient(135deg, #1e1b4b 0%, #1a1a3e 100%)',
-    borderRadius: '16px', padding: '1.5rem 2rem',
-    border: '1px solid #312e81', marginBottom: '2rem',
-    display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap',
-  },
-  perfumeName: { fontSize: '2rem', fontWeight: 800, color: '#fff' },
-  perfumeBrand: { color: '#a78bfa', fontSize: '1rem', fontWeight: 600 },
-  accordBadge: {
-    display: 'inline-block', padding: '0.2rem 0.6rem',
-    background: '#312e81', borderRadius: '999px',
-    fontSize: '0.72rem', color: '#c4b5fd', marginRight: '0.4rem', marginBottom: '0.3rem',
-  },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem', marginBottom: '2rem' },
-  chartsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2rem' },
-  sectionTitle: { fontSize: '1rem', fontWeight: 700, color: '#94a3b8', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' },
-  error: { color: '#f87171', background: '#1c1c2e', padding: '1rem', borderRadius: '8px', marginTop: '1rem' },
+const PAGE_BG = { background: 'linear-gradient(180deg, #0a0a0f 0%, #0f0f1f 100%)' }
+const BADGE_STYLE = {
+  display: 'inline-block', padding: '0.25rem 0.75rem', borderRadius: '999px',
+  background: '#1e1b4b', color: '#a78bfa', fontSize: '0.75rem', fontWeight: 600,
+  marginRight: '0.5rem', marginBottom: '0.5rem',
+}
+const PERFUME_CARD_STYLE = {
+  background: 'linear-gradient(135deg, #1e1b4b 0%, #1a1a3e 100%)',
+  borderRadius: '16px', border: '1px solid #312e81',
+}
+const ACCORD_BADGE = {
+  display: 'inline-block', padding: '0.2rem 0.6rem',
+  background: '#312e81', borderRadius: '999px',
+  fontSize: '0.72rem', color: '#c4b5fd', marginRight: '0.4rem', marginBottom: '0.3rem',
 }
 
-// Color-code /10 scores: green >7, amber 4-7, red <4
 const scoreColor = (v) => {
   if (v == null || isNaN(v)) return '#a78bfa'
   if (v > 7) return '#34d399'
@@ -66,7 +51,6 @@ export default function Dashboard() {
     }
   }
 
-  // BUG 7 fix: auto-trigger prediction when navigated from Search (?name=X&brand=Y)
   useEffect(() => {
     const name = searchParams.get('name')
     const brand = searchParams.get('brand')
@@ -85,43 +69,61 @@ export default function Dashboard() {
   const defaultBrand = searchParams.get('brand') || ''
 
   return (
-    <div style={s.page}>
-      <div style={s.hero}>
-        <h1 style={s.title}>Fragrance Intelligence</h1>
-        <p style={s.sub}>ML-powered prediction engine — 35+ performance outputs from a single perfume</p>
-        <span style={s.badge}>XGBoost Model</span>
-        <span style={s.badge}>Claude NLP</span>
-        <span style={s.badge}>35+ Predictions</span>
+    <div style={PAGE_BG} className="min-h-screen">
+      {/* Hero */}
+      <div className="px-4 pt-8 pb-6 text-center sm:px-8 sm:pt-12 sm:pb-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">
+          Fragrance Intelligence
+        </h1>
+        <p className="text-sm sm:text-base mb-6 sm:mb-8" style={{ color: '#6b7280' }}>
+          ML-powered prediction engine — 35+ performance outputs from a single perfume
+        </p>
+        <div className="mb-4 sm:mb-6">
+          <span style={BADGE_STYLE}>XGBoost Model</span>
+          <span style={BADGE_STYLE}>Claude NLP</span>
+          <span style={BADGE_STYLE}>35+ Predictions</span>
+        </div>
         <PerfumeSearch
           onSearch={handleSearch}
           loading={loading}
           defaultName={defaultName}
           defaultBrand={defaultBrand}
         />
-        {error && <p style={s.error}>{error}</p>}
+        {error && (
+          <p className="mt-4 px-4 py-3 rounded-lg text-sm text-left max-w-2xl mx-auto" style={{ color: '#f87171', background: '#1c1c2e' }}>
+            {error}
+          </p>
+        )}
       </div>
 
       {result && p && (
-        <div style={s.content}>
+        <div className="max-w-6xl mx-auto px-3 pb-16 sm:px-5 md:px-6">
+
           {/* Perfume Identity Card */}
-          <div style={s.perfumeCard}>
-            <div>
-              <div style={s.perfumeBrand}>{result.perfume.brand}</div>
-              <div style={s.perfumeName}>{result.perfume.name}</div>
-              <div style={{ color: '#6b7280', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+          <div style={PERFUME_CARD_STYLE} className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-8 p-4 sm:p-6 mb-6 sm:mb-8">
+            <div className="min-w-0">
+              <div className="text-sm font-semibold mb-0.5" style={{ color: '#a78bfa' }}>
+                {result.perfume.brand}
+              </div>
+              <div className="text-2xl sm:text-3xl font-black text-white leading-tight">
+                {result.perfume.name}
+              </div>
+              <div className="text-xs mt-1" style={{ color: '#6b7280' }}>
                 {result.perfume.concentration}
               </div>
             </div>
-            <div>
+            <div className="flex-shrink-0">
               {(result.perfume.accords || []).map(a => (
-                <span key={a} style={s.accordBadge}>{a}</span>
+                <span key={a} style={ACCORD_BADGE}>{a}</span>
               ))}
             </div>
           </div>
 
-          {/* Score Cards */}
-          <p style={s.sectionTitle}>Key Metrics</p>
-          <div style={s.grid}>
+          {/* Score Cards — 2 cols mobile, 4 cols desktop */}
+          <p className="text-xs font-bold uppercase tracking-widest mb-3 sm:mb-4" style={{ color: '#94a3b8' }}>
+            Key Metrics
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8">
             <ScoreCard label="Longevity" value={`${p.longevity_hours?.toFixed(1)}h`} sub="on skin" color="#a78bfa" />
             <ScoreCard label="Sillage" value={p.sillage_score?.toFixed(1)} sub="/10" color={scoreColor(p.sillage_score)} />
             <ScoreCard label="Versatility" value={p.versatility_score?.toFixed(1)} sub="/10" color={scoreColor(p.versatility_score)} />
@@ -132,13 +134,15 @@ export default function Dashboard() {
             <ScoreCard label="Heat Perf." value={p.heat_amplification?.toFixed(1)} sub="/10" color={scoreColor(p.heat_amplification)} />
           </div>
 
-          {/* Charts */}
-          <p style={s.sectionTitle}>Performance Charts</p>
-          <div style={s.chartsGrid}>
+          {/* Charts — 1 col mobile, 2 cols md+ */}
+          <p className="text-xs font-bold uppercase tracking-widest mb-3 sm:mb-4" style={{ color: '#94a3b8' }}>
+            Performance Charts
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-3 sm:mb-4 md:mb-6">
             <RadarChart predictions={p} />
             <BarChart predictions={p} />
           </div>
-          <div style={s.chartsGrid}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
             <PieChart predictions={p} />
             <ClimateChart predictions={p} />
           </div>
@@ -165,30 +169,30 @@ export default function Dashboard() {
 
 function ClimateChart({ predictions: p }) {
   const data = [
-    { name: 'Tropical', value: parseFloat(p.climate_tropical?.toFixed(1)), color: '#f59e0b' },
-    { name: 'Arid', value: parseFloat(p.climate_arid?.toFixed(1)), color: '#fb923c' },
-    { name: 'Temperate', value: parseFloat(p.climate_temperate?.toFixed(1)), color: '#34d399' },
-    { name: 'Cold', value: parseFloat(p.climate_cold?.toFixed(1)), color: '#60a5fa' },
+    { name: 'Tropical', value: parseFloat((p.climate_tropical ?? 0).toFixed(1)), color: '#f59e0b' },
+    { name: 'Arid', value: parseFloat((p.climate_arid ?? 0).toFixed(1)), color: '#fb923c' },
+    { name: 'Temperate', value: parseFloat((p.climate_temperate ?? 0).toFixed(1)), color: '#34d399' },
+    { name: 'Cold', value: parseFloat((p.climate_cold ?? 0).toFixed(1)), color: '#60a5fa' },
   ]
   return (
-    <div style={{ background: '#111827', borderRadius: '12px', padding: '1.5rem', border: '1px solid #1f2937' }}>
-      <p style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase' }}>
+    <div className="rounded-xl p-4 sm:p-6" style={{ background: '#111827', border: '1px solid #1f2937' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mb-3 sm:mb-4" style={{ color: '#9ca3af' }}>
         Climate Performance
       </p>
       {data.map(d => (
-        <div key={d.name} style={{ marginBottom: '0.75rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
-            <span style={{ color: '#d1d5db', fontSize: '0.85rem' }}>{d.name}</span>
-            <span style={{ color: d.color, fontWeight: 700, fontSize: '0.85rem' }}>{d.value}/10</span>
+        <div key={d.name} className="mb-3">
+          <div className="flex justify-between mb-1">
+            <span className="text-sm" style={{ color: '#d1d5db' }}>{d.name}</span>
+            <span className="text-sm font-bold" style={{ color: d.color }}>{d.value}/10</span>
           </div>
-          <div style={{ background: '#1f2937', borderRadius: '999px', height: '6px' }}>
-            <div style={{ background: d.color, width: `${(d.value / 10) * 100}%`, height: '100%', borderRadius: '999px', transition: 'width 0.8s ease' }} />
+          <div className="h-1.5 rounded-full" style={{ background: '#1f2937' }}>
+            <div className="h-full rounded-full transition-all duration-700" style={{ background: d.color, width: `${(d.value / 10) * 100}%` }} />
           </div>
         </div>
       ))}
-      <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#1f2937', borderRadius: '8px' }}>
-        <span style={{ color: '#6b7280', fontSize: '0.78rem' }}>Optimal: </span>
-        <span style={{ color: '#e5e7eb', fontSize: '0.78rem', fontWeight: 600 }}>
+      <div className="mt-3 px-3 py-2 rounded-lg text-xs" style={{ background: '#1f2937' }}>
+        <span style={{ color: '#6b7280' }}>Optimal: </span>
+        <span className="font-semibold" style={{ color: '#e5e7eb' }}>
           {p.temp_optimal_min_c?.toFixed(0)}°C – {p.temp_optimal_max_c?.toFixed(0)}°C
         </span>
       </div>
@@ -207,27 +211,24 @@ function GeoSection({ predictions: p }) {
   if (!hasAny) return null
 
   return (
-    <div style={{ background: '#111827', borderRadius: '12px', padding: '1.5rem', border: '1px solid #1f2937', marginBottom: '2rem' }}>
-      <p style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase' }}>
+    <div className="rounded-xl p-4 sm:p-6 mb-6 sm:mb-8" style={{ background: '#111827', border: '1px solid #1f2937' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mb-3 sm:mb-4" style={{ color: '#9ca3af' }}>
         Recommended Cities
       </p>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {sections.map(({ key, label, color }) => {
           const cities = p[key] || []
           if (!cities.length) return null
           return (
             <div key={key}>
-              <p style={{ color, fontSize: '0.72rem', fontWeight: 700, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color }}>
                 {label}
               </p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+              <div className="flex flex-wrap gap-1.5">
                 {cities.map(city => (
-                  <span key={city} style={{
-                    padding: '0.2rem 0.6rem',
+                  <span key={city} className="px-2 py-0.5 rounded-full text-xs" style={{
                     background: `${color}18`,
                     border: `1px solid ${color}40`,
-                    borderRadius: '999px',
-                    fontSize: '0.75rem',
                     color: '#d1d5db',
                   }}>
                     {city}
@@ -266,47 +267,39 @@ function PersonFit({ predictions: p }) {
     { label: 'Unisex', value: p.gender_unisex, color: '#34d399' },
   ]
 
-  const s2 = {
-    section: { background: '#111827', borderRadius: '12px', padding: '1.5rem', border: '1px solid #1f2937', marginBottom: '2rem' },
-    title: { color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1.25rem', textTransform: 'uppercase' },
-    grid3: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1.5rem' },
-    barRow: { marginBottom: '0.6rem' },
-    barLabel: { display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem' },
-    barLabelText: { color: '#d1d5db', fontSize: '0.8rem' },
-    barVal: { fontWeight: 700, fontSize: '0.8rem' },
-    barBg: { background: '#1f2937', borderRadius: '999px', height: '5px' },
-  }
-
   const Bar = ({ label, value, color = '#a78bfa' }) => (
-    <div style={s2.barRow}>
-      <div style={s2.barLabel}>
-        <span style={s2.barLabelText}>{label}</span>
-        <span style={{ ...s2.barVal, color }}>{value?.toFixed(1)}</span>
+    <div className="mb-2.5">
+      <div className="flex justify-between mb-1">
+        <span className="text-xs" style={{ color: '#d1d5db' }}>{label}</span>
+        <span className="text-xs font-bold" style={{ color }}>{value?.toFixed(1)}</span>
       </div>
-      <div style={s2.barBg}>
-        <div style={{ background: color, width: `${(value / 10) * 100}%`, height: '100%', borderRadius: '999px' }} />
+      <div className="h-1 rounded-full" style={{ background: '#1f2937' }}>
+        <div className="h-full rounded-full" style={{ background: color, width: `${((value ?? 0) / 10) * 100}%` }} />
       </div>
     </div>
   )
 
   return (
-    <div style={s2.section}>
-      <p style={s2.title}>Person Fit Analysis</p>
-      <div style={s2.grid3}>
+    <div className="rounded-xl p-4 sm:p-6 mb-6 sm:mb-8" style={{ background: '#111827', border: '1px solid #1f2937' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mb-4 sm:mb-5" style={{ color: '#9ca3af' }}>
+        Person Fit Analysis
+      </p>
+      {/* 2 cols on mobile, 4 cols on md+ */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
         <div>
-          <p style={{ color: '#6b7280', fontSize: '0.75rem', marginBottom: '0.75rem' }}>SKIN TYPE</p>
+          <p className="text-xs uppercase tracking-wider mb-2.5" style={{ color: '#6b7280' }}>SKIN TYPE</p>
           {skinData.map(d => <Bar key={d.label} {...d} />)}
         </div>
         <div>
-          <p style={{ color: '#6b7280', fontSize: '0.75rem', marginBottom: '0.75rem' }}>AGE BRACKET</p>
+          <p className="text-xs uppercase tracking-wider mb-2.5" style={{ color: '#6b7280' }}>AGE BRACKET</p>
           {ageData.map(d => <Bar key={d.label} {...d} color="#fbbf24" />)}
         </div>
         <div>
-          <p style={{ color: '#6b7280', fontSize: '0.75rem', marginBottom: '0.75rem' }}>PERSONALITY</p>
+          <p className="text-xs uppercase tracking-wider mb-2.5" style={{ color: '#6b7280' }}>PERSONALITY</p>
           {personData.map(d => <Bar key={d.label} {...d} />)}
         </div>
         <div>
-          <p style={{ color: '#6b7280', fontSize: '0.75rem', marginBottom: '0.75rem' }}>GENDER EXPRESSION</p>
+          <p className="text-xs uppercase tracking-wider mb-2.5" style={{ color: '#6b7280' }}>GENDER EXPRESSION</p>
           {genderData.map(d => <Bar key={d.label} {...d} />)}
         </div>
       </div>

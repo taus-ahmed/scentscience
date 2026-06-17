@@ -17,8 +17,8 @@ export default function PieChart({ predictions: p }) {
   ]
 
   return (
-    <div style={{ background: '#111827', borderRadius: '12px', padding: '1.5rem', border: '1px solid #1f2937' }}>
-      <p style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', textTransform: 'uppercase' }}>
+    <div className="rounded-xl p-4 sm:p-6" style={{ background: '#111827', border: '1px solid #1f2937' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: '#9ca3af' }}>
         Gender Expression Fit
       </p>
       <ResponsiveContainer width="100%" height={140}>
@@ -34,7 +34,7 @@ export default function PieChart({ predictions: p }) {
         </RePieChart>
       </ResponsiveContainer>
 
-      <p style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, margin: '0.5rem 0', textTransform: 'uppercase' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mt-2 mb-2" style={{ color: '#9ca3af' }}>
         Skin Type Distribution
       </p>
       <ResponsiveContainer width="100%" height={140}>

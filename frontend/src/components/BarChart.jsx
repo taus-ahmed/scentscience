@@ -12,7 +12,6 @@ export default function BarChart({ predictions: p }) {
     { name: 'Night', value: p.time_night, color: '#3b82f6' },
   ]
 
-  // Projection arc
   const projData = [
     { name: '1h', value: p.proj_1hr },
     { name: '3h', value: p.proj_3hr },
@@ -21,8 +20,8 @@ export default function BarChart({ predictions: p }) {
   ]
 
   return (
-    <div style={{ background: '#111827', borderRadius: '12px', padding: '1.5rem', border: '1px solid #1f2937' }}>
-      <p style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', textTransform: 'uppercase' }}>
+    <div className="rounded-xl p-4 sm:p-6" style={{ background: '#111827', border: '1px solid #1f2937' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: '#9ca3af' }}>
         Time of Day Performance
       </p>
       <ResponsiveContainer width="100%" height={130}>
@@ -40,7 +39,7 @@ export default function BarChart({ predictions: p }) {
         </ReBarChart>
       </ResponsiveContainer>
 
-      <p style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700, margin: '1rem 0 0.5rem', textTransform: 'uppercase' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mt-4 mb-2" style={{ color: '#9ca3af' }}>
         Projection Arc
       </p>
       <ResponsiveContainer width="100%" height={110}>

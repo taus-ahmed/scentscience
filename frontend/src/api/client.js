@@ -14,4 +14,7 @@ export const searchPerfumes = (q, brand) =>
 export const getNotes = (family) =>
   api.get('/notes', { params: { family } }).then(r => r.data)
 
+export const sendChat = (message, context = {}) =>
+  api.post('/chat', { message, context }).then(r => r.data)
+
 export default api

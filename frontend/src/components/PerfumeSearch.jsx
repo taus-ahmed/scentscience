@@ -5,33 +5,23 @@ const SKIN_TYPES = ['', 'dry', 'oily', 'combination']
 const SEASONS = ['', 'spring', 'summer', 'fall', 'winter']
 const TIMES = ['', 'morning', 'afternoon', 'evening', 'night']
 
-const s = {
-  wrapper: { maxWidth: '700px', margin: '0 auto' },
-  mainRow: { display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' },
-  input: {
-    flex: 1, minWidth: '180px', padding: '0.875rem 1.25rem',
-    background: '#111827', border: '1px solid #374151', borderRadius: '12px',
-    color: '#fff', fontSize: '1rem', outline: 'none',
-  },
-  btn: {
-    padding: '0.875rem 1.75rem', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-    border: 'none', borderRadius: '12px', color: '#fff',
-    fontWeight: 700, cursor: 'pointer', fontSize: '1rem', whiteSpace: 'nowrap',
-  },
-  contextRow: { display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' },
-  select: {
-    padding: '0.4rem 0.75rem', background: '#111827', border: '1px solid #374151',
-    borderRadius: '8px', color: '#9ca3af', fontSize: '0.8rem', cursor: 'pointer',
-  },
-  suggestions: {
-    position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10,
-    background: '#1f2937', border: '1px solid #374151', borderRadius: '8px',
-    overflow: 'hidden', marginTop: '4px',
-  },
-  suggestion: {
-    padding: '0.75rem 1rem', cursor: 'pointer', borderBottom: '1px solid #374151',
-    color: '#e5e7eb', fontSize: '0.9rem',
-  },
+const INPUT_STYLE = {
+  background: '#111827', border: '1px solid #374151', borderRadius: '12px',
+  color: '#fff', fontSize: '1rem', outline: 'none',
+}
+const BTN_STYLE = {
+  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+  border: 'none', borderRadius: '12px', color: '#fff',
+  fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
+}
+const SELECT_STYLE = {
+  background: '#111827', border: '1px solid #374151',
+  borderRadius: '8px', color: '#9ca3af', cursor: 'pointer',
+}
+const SUGGESTIONS_STYLE = {
+  position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10,
+  background: '#1f2937', border: '1px solid #374151', borderRadius: '8px',
+  overflow: 'hidden', marginTop: '4px',
 }
 
 export default function PerfumeSearch({ onSearch, loading, defaultName = '', defaultBrand = '' }) {
@@ -71,29 +61,46 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
   }
 
   return (
-    <div style={s.wrapper}>
-      <div style={{ position: 'relative' }}>
-        <div style={s.mainRow}>
+    <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
+      <div className="relative">
+        {/* Main input row — stacks on mobile, side-by-side on sm+ */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-2 sm:mb-3">
           <input
-            style={s.input} placeholder="Enter perfume name (e.g. Sauvage, Aventus…)"
-            value={name} onChange={e => setName(e.target.value)}
+            style={INPUT_STYLE}
+            className="w-full sm:flex-1 px-4 py-3 sm:py-3.5 text-sm sm:text-base"
+            placeholder="Enter perfume name (e.g. Sauvage, Aventus…)"
+            value={name}
+            onChange={e => setName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && submit()}
             onFocus={() => suggestions.length && setShowSuggestions(true)}
           />
-          <input
-            style={{ ...s.input, flex: '0 0 160px' }} placeholder="Brand (optional)"
-            value={brand} onChange={e => setBrand(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && submit()}
-          />
-          <button style={s.btn} onClick={submit} disabled={loading || !name}>
-            {loading ? '…' : 'Predict'}
-          </button>
+          <div className="flex gap-2">
+            <input
+              style={INPUT_STYLE}
+              className="flex-1 sm:w-36 sm:flex-none px-4 py-3 sm:py-3.5 text-sm sm:text-base"
+              placeholder="Brand"
+              value={brand}
+              onChange={e => setBrand(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && submit()}
+            />
+            <button
+              style={BTN_STYLE}
+              className="px-5 py-3 sm:px-6 sm:py-3.5 text-sm sm:text-base rounded-xl"
+              onClick={submit}
+              disabled={loading || !name}
+            >
+              {loading ? '…' : 'Predict'}
+            </button>
+          </div>
         </div>
 
         {showSuggestions && suggestions.length > 0 && (
-          <div style={s.suggestions}>
+          <div style={SUGGESTIONS_STYLE}>
             {suggestions.map(sg => (
-              <div key={sg.id} style={s.suggestion}
+              <div
+                key={sg.id}
+                className="px-4 py-3 cursor-pointer border-b text-sm"
+                style={{ borderColor: '#374151', color: '#e5e7eb' }}
                 onClick={() => pickSuggestion(sg)}
                 onMouseEnter={e => e.currentTarget.style.background = '#374151'}
                 onMouseLeave={e => e.currentTarget.style.background = ''}
@@ -107,16 +114,17 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
         )}
       </div>
 
-      <div style={s.contextRow}>
-        <select style={s.select} value={skinType} onChange={e => setSkinType(e.target.value)}>
+      {/* Context selectors */}
+      <div className="flex flex-wrap gap-2">
+        <select style={SELECT_STYLE} className="flex-1 min-w-[110px] px-2 py-1.5 text-xs sm:text-sm" value={skinType} onChange={e => setSkinType(e.target.value)}>
           <option value="">Skin type</option>
           {SKIN_TYPES.filter(Boolean).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
         </select>
-        <select style={s.select} value={season} onChange={e => setSeason(e.target.value)}>
+        <select style={SELECT_STYLE} className="flex-1 min-w-[100px] px-2 py-1.5 text-xs sm:text-sm" value={season} onChange={e => setSeason(e.target.value)}>
           <option value="">Season</option>
           {SEASONS.filter(Boolean).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
         </select>
-        <select style={s.select} value={timeOfDay} onChange={e => setTimeOfDay(e.target.value)}>
+        <select style={SELECT_STYLE} className="flex-1 min-w-[110px] px-2 py-1.5 text-xs sm:text-sm" value={timeOfDay} onChange={e => setTimeOfDay(e.target.value)}>
           <option value="">Time of day</option>
           {TIMES.filter(Boolean).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
         </select>
