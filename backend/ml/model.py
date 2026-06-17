@@ -306,9 +306,10 @@ def predict(perfume: dict, models: dict | None = None, skip_calibration: bool = 
     sd_idx = int(round(result.pop("social_distance_idx", 1)))
     result["social_distance"] = SOCIAL_DISTANCE_MAP.get(sd_idx, "personal")
 
-    # Temp range not clipped to 0-10
-    result["temp_optimal_min_c"] = float(result.get("temp_optimal_min_c", 10))
-    result["temp_optimal_max_c"] = float(result.get("temp_optimal_max_c", 25))
+    # Temp range derived from dominant climate (ML outputs are clipped 0-10 by loop above)
+    t_min, t_max = _temp_range_from_climate(result)
+    result["temp_optimal_min_c"] = t_min
+    result["temp_optimal_max_c"] = t_max
 
     # Longevity hours not clipped to 10
     raw_long = float(np.clip(result.get("longevity_hours", 6), 0, 24))
@@ -344,15 +345,52 @@ def _describe_dry_down(perfume: dict) -> str:
     return f"Soft and clean — {names}"
 
 
-def _geo_cities(result: dict) -> dict:
-    tropical = result.get("climate_tropical", 5)
-    arid = result.get("climate_arid", 5)
-    cold = result.get("climate_cold", 5)
-    temperate = result.get("climate_temperate", 5)
+_CLIMATE_CITIES: dict[str, list[str]] = {
+    "tropical": ["Singapore", "Bangkok", "Miami", "São Paulo"],
+    "arid": ["Dubai", "Riyadh", "Phoenix", "Las Vegas"],
+    "cold": ["Stockholm", "Oslo", "Helsinki", "Toronto", "Moscow"],
+    "temperate": ["London", "Paris", "New York", "Tokyo", "Berlin"],
+}
 
-    return {
-        "geo_tropical_cities": ["Miami", "Singapore", "Bangkok", "Lagos"] if tropical > 6 else ["Miami"],
-        "geo_arid_cities": ["Dubai", "Phoenix", "Riyadh", "Las Vegas"] if arid > 6 else ["Dubai"],
-        "geo_cold_cities": ["Moscow", "Stockholm", "Toronto", "Oslo"] if cold > 6 else ["Stockholm"],
-        "geo_temperate_cities": ["London", "Paris", "New York", "Tokyo"] if temperate > 6 else ["London", "Paris"],
+_CLIMATE_TEMP_RANGES: dict[str, tuple[int, int]] = {
+    "cold": (5, 12),
+    "temperate": (12, 22),
+    "tropical": (22, 32),
+    "arid": (25, 40),
+}
+
+
+def _temp_range_from_climate(result: dict) -> tuple[int, int]:
+    scores = {
+        "tropical": result.get("climate_tropical", 5),
+        "arid": result.get("climate_arid", 5),
+        "cold": result.get("climate_cold", 5),
+        "temperate": result.get("climate_temperate", 5),
     }
+    best = max(scores, key=lambda k: scores[k])
+    return _CLIMATE_TEMP_RANGES[best]
+
+
+def _geo_cities(result: dict) -> dict:
+    scores = {
+        "tropical": result.get("climate_tropical", 5),
+        "arid": result.get("climate_arid", 5),
+        "cold": result.get("climate_cold", 5),
+        "temperate": result.get("climate_temperate", 5),
+    }
+
+    qualifying = {k: v for k, v in scores.items() if v > 5.0}
+    if not qualifying:
+        best = max(scores, key=lambda k: scores[k])
+        qualifying = {best: scores[best]}
+
+    output: dict[str, list[str]] = {
+        "geo_tropical_cities": [],
+        "geo_arid_cities": [],
+        "geo_cold_cities": [],
+        "geo_temperate_cities": [],
+    }
+    for climate, score in qualifying.items():
+        n = 2 if score > 7 else 1
+        output[f"geo_{climate}_cities"] = _CLIMATE_CITIES[climate][:n]
+    return output
