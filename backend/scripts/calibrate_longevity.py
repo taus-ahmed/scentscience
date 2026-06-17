@@ -1,11 +1,11 @@
 """
-Phase 5: Platt/isotonic calibration of longevity_hours on 384 labeled perfumes.
+Phase 5: Platt/isotonic calibration of longevity_hours on labeled perfumes.
 
 Fits sklearn IsotonicRegression on (predicted_hours, true_label_hours) pairs.
 Saves calibrator to ml/models/longevity_calibrator.pkl.
-Run from backend/: python scripts/calibrate_longevity.py
+Run from backend/: python scripts/calibrate_longevity.py [--sample N]
 """
-import asyncio, sys, pickle
+import argparse, asyncio, sys, pickle
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -14,7 +14,7 @@ if _env.exists():
     from dotenv import load_dotenv; load_dotenv(_env)
 
 import numpy as np
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 from models.database import AsyncSessionLocal, init_db
 from models.perfume import Perfume
@@ -50,8 +50,8 @@ def p_dict(p: Perfume) -> dict:
     }
 
 
-async def collect_labeled() -> list[tuple[float, float]]:
-    """Return (raw_predicted_hours, true_hours) for 384 labeled perfumes.
+async def collect_labeled(sample: int = 2000) -> list[tuple[float, float]]:
+    """Return (raw_predicted_hours, true_hours) for up to `sample` labeled perfumes.
 
     Uses skip_calibration=True so the isotonic regression is always fit on
     the raw model output, not on a previously-calibrated value.  Without this,
@@ -66,7 +66,10 @@ async def collect_labeled() -> list[tuple[float, float]]:
     pairs = []
     async with AsyncSessionLocal() as s:
         q = await s.execute(
-            select(Perfume).where(Perfume.community_longevity_label.isnot(None))
+            select(Perfume)
+            .where(Perfume.community_longevity_label.isnot(None))
+            .order_by(func.random())
+            .limit(sample)
         )
         labeled = q.scalars().all()
 
@@ -107,7 +110,12 @@ def fit_calibrator(pairs: list[tuple[float, float]]):
 
 
 def main():
-    pairs = asyncio.run(collect_labeled())
+    parser = argparse.ArgumentParser(description="Calibrate longevity isotonic regression")
+    parser.add_argument("--sample", type=int, default=2000,
+                        help="Max labeled perfumes to use (default: 2000)")
+    args = parser.parse_args()
+
+    pairs = asyncio.run(collect_labeled(sample=args.sample))
     print(f"Collected {len(pairs)} (predicted, true) pairs")
 
     if len(pairs) < 20:
