@@ -131,17 +131,24 @@ def _generate_labels(perfume: dict, group: str) -> np.ndarray:
         proj_3hr = min(10.0, sillage * decay * 0.8)
         proj_6hr = min(10.0, sillage * (decay ** 2) * 0.6)
         proj_8hr = min(10.0, sillage * (decay ** 3) * 0.4)
-        peak = 1.0 if volatility > 7 else (2.5 if volatility > 4 else 0.5)
+        peak = 3.0 * (1.0 - volatility / 10.0)
         heat_amp = (heat_perf * 0.7 + community_overall * 0.3) * conc_mult
         return np.array([proj_1hr, proj_3hr, proj_6hr, proj_8hr,
                          longevity_hours, sillage, peak, min(10, heat_amp)])
 
     elif group == "environmental":
-        # Season — blend community votes with note chemistry
-        sp = season_spring_d * 10 * 0.6 + cold_perf * 0.4
-        su = season_summer_d * 10 * 0.6 + heat_perf * 0.4
-        fa = season_fall_d * 10 * 0.6 + (cold_perf + dry_perf) / 2 * 0.4
-        wi = season_winter_d * 10 * 0.6 + cold_perf * 0.4
+        # Season — blend community votes with note chemistry, fallback to pure chemistry when votes absent
+        season_vote_sum = season_spring_d + season_summer_d + season_fall_d + season_winter_d
+        if season_vote_sum > 0:
+            sp = season_spring_d * 10 * 0.6 + cold_perf * 0.4
+            su = season_summer_d * 10 * 0.6 + heat_perf * 0.4
+            fa = season_fall_d * 10 * 0.6 + (cold_perf + dry_perf) / 2 * 0.4
+            wi = season_winter_d * 10 * 0.6 + cold_perf * 0.4
+        else:
+            su = max(1.0, min(10.0, 5.0 + (volatility - 5) * 0.6 - (heat_perf - 5) * 0.4))
+            wi = max(1.0, min(10.0, 5.0 + (heat_perf - 5) * 0.5 + (longevity_class - 3) * 0.3))
+            sp = max(1.0, min(10.0, 5.0 + (volatility - 5) * 0.3))
+            fa = max(1.0, min(10.0, 5.0 + (heat_perf - 5) * 0.3 + (longevity_class - 3) * 0.2))
         # Climate
         tropical = (heat_perf * 0.5 + humidity_perf * 0.5) * conc_mult * 0.8
         arid = (heat_perf * 0.6 + dry_perf * 0.4) * conc_mult * 0.8
@@ -153,16 +160,20 @@ def _generate_labels(perfume: dict, group: str) -> np.ndarray:
         hum_perf = humidity_perf * conc_mult * 0.9
         indoor = (skin_bonding * 0.5 + longevity_hours * 0.3 + projection * 0.2)
         outdoor = ((heat_perf + cold_perf) / 2 * 0.5 + projection * 0.5) * conc_mult * 0.8
-        # Time of day
-        tm = 5.0 + (cold_perf - 5) * 0.3
-        ta = 5.0 + (heat_perf - 5) * 0.3
-        te = 5.0 + projection * 0.2
-        tn = 5.0 + sillage * 0.2
-        return np.clip(
+        # Time of day — evening/night correlate with longevity+heat, morning/afternoon with volatility
+        tm = 5.0 + (volatility - 5) * 0.4 - (longevity_hours - 5) * 0.2
+        ta = 5.0 + (volatility - 5) * 0.3 + (heat_perf - 5) * 0.2
+        te = 5.0 + (longevity_hours - 5) * 0.4 + (heat_perf - 5) * 0.3
+        tn = 5.0 + (longevity_hours - 5) * 0.4 + (skin_bonding - 5) * 0.3
+        arr = np.clip(
             [sp, su, fa, wi, tropical, arid, temperate, cold_clim,
              temp_min, temp_max, hum_perf, indoor, outdoor, tm, ta, te, tn],
-            -10, 10
+            0, 10
         )
+        # Temp values have wider valid ranges — re-clip after the blanket pass
+        arr[8] = np.clip(temp_min, -10, 35)
+        arr[9] = np.clip(temp_max, 5, 45)
+        return arr
 
     elif group == "person":
         dry_s = dry_skin * conc_mult * 0.9
@@ -187,18 +198,33 @@ def _generate_labels(perfume: dict, group: str) -> np.ndarray:
         )
 
     elif group == "occasion":
-        office = occ_office_d * 10 * 0.7 + (longevity_hours / 12 * 10) * 0.3
-        date = occ_evening_d * 10 * 0.5 + (sillage + projection) / 2 * 0.5
-        casual = occ_daily_d * 10 * 0.6 + (10 - projection) * 0.4
-        formal = occ_evening_d * 10 * 0.5 + longevity_hours / 12 * 10 * 0.5
-        sport = occ_sport_d * 10 * 0.6 + occ_beach_d * 10 * 0.4
-        travel = (occ_beach_d + occ_daily_d) / 2 * 10 * 0.7 + longevity_hours / 12 * 10 * 0.3
+        occ_vote_sum = (occ_office_d + occ_evening_d + occ_daily_d +
+                        occ_sport_d + occ_beach_d + occ_night_d)
+        if occ_vote_sum > 0:
+            office = occ_office_d * 10 * 0.7 + (longevity_hours / 12 * 10) * 0.3
+            date = occ_evening_d * 10 * 0.5 + (sillage + projection) / 2 * 0.5
+            casual = occ_daily_d * 10 * 0.6 + (10 - projection) * 0.4
+            formal = occ_evening_d * 10 * 0.5 + longevity_hours / 12 * 10 * 0.5
+            sport = occ_sport_d * 10 * 0.6 + occ_beach_d * 10 * 0.4
+            travel = (occ_beach_d + occ_daily_d) / 2 * 10 * 0.7 + longevity_hours / 12 * 10 * 0.3
+        else:
+            office = max(1.0, min(8.0, 5.0 - abs(sillage - 5) * 0.4))
+            date = max(1.0, min(10.0, 4.0 + sillage * 0.3))
+            casual = max(1.0, min(8.0, 5.0 + volatility * 0.1))
+            formal = max(1.0, min(8.0, 3.0 + longevity_hours * 0.3))
+            sport = max(0.0, min(6.0, 2.0 + volatility * 0.2 - sillage * 0.1))
+            vers_proxy = max(2.0, min(8.0, 5.0 - abs(sillage - 5) * 0.3 - abs(longevity_hours - 5) * 0.2))
+            travel = max(1.0, min(7.0, 4.0 + vers_proxy * 0.2))
         sd_idx = min(3.0, projection / 3.0)
         return np.clip([office, date, casual, formal, sport, travel, sd_idx], 0, 10)
 
     elif group == "value":
         cpw = longevity_hours / 12 * 10 * 0.5 + community_overall * 1.5 * 0.5
-        vers = (season_spring_d + season_summer_d + season_fall_d + season_winter_d) * 10 * 0.5 + community_overall * 0.5
+        season_vote_sum = season_spring_d + season_summer_d + season_fall_d + season_winter_d
+        if season_vote_sum > 0:
+            vers = season_vote_sum * 10 * 0.5 + community_overall * 0.5
+        else:
+            vers = max(2.0, min(8.0, 5.0 - abs(sillage - 5) * 0.3 - abs(longevity_hours - 5) * 0.2))
         comp = sillage * 0.4 + projection * 0.3 + community_overall * 1.5 * 0.3
         blind = community_overall * 1.5 * 0.5 + vers * 0.3 + comp * 0.2
         return np.clip([cpw, vers, comp, blind], 0, 10)
@@ -300,16 +326,16 @@ def predict(perfume: dict, models: dict | None = None, skip_calibration: bool = 
         targets = data["targets"]
         preds = model.predict(feat)[0]
         for name, val in zip(targets, preds):
-            result[name] = float(np.clip(val, 0, 10))
+            if name == "temp_optimal_min_c":
+                result[name] = float(np.clip(val, -10, 35))
+            elif name == "temp_optimal_max_c":
+                result[name] = float(np.clip(val, 5, 45))
+            else:
+                result[name] = float(np.clip(val, 0, 10))
 
     # Convert social_distance_idx to label
     sd_idx = int(round(result.pop("social_distance_idx", 1)))
     result["social_distance"] = SOCIAL_DISTANCE_MAP.get(sd_idx, "personal")
-
-    # Temp range derived from dominant climate (ML outputs are clipped 0-10 by loop above)
-    t_min, t_max = _temp_range_from_climate(result)
-    result["temp_optimal_min_c"] = t_min
-    result["temp_optimal_max_c"] = t_max
 
     # Longevity hours not clipped to 10
     raw_long = float(np.clip(result.get("longevity_hours", 6), 0, 24))
@@ -351,24 +377,6 @@ _CLIMATE_CITIES: dict[str, list[str]] = {
     "cold": ["Stockholm", "Oslo", "Helsinki", "Toronto", "Moscow"],
     "temperate": ["London", "Paris", "New York", "Tokyo", "Berlin"],
 }
-
-_CLIMATE_TEMP_RANGES: dict[str, tuple[int, int]] = {
-    "cold": (5, 12),
-    "temperate": (12, 22),
-    "tropical": (22, 32),
-    "arid": (25, 40),
-}
-
-
-def _temp_range_from_climate(result: dict) -> tuple[int, int]:
-    scores = {
-        "tropical": result.get("climate_tropical", 5),
-        "arid": result.get("climate_arid", 5),
-        "cold": result.get("climate_cold", 5),
-        "temperate": result.get("climate_temperate", 5),
-    }
-    best = max(scores, key=lambda k: scores[k])
-    return _CLIMATE_TEMP_RANGES[best]
 
 
 def _geo_cities(result: dict) -> dict:
