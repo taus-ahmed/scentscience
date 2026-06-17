@@ -29,3 +29,4 @@ rapidfuzz==3.10.0
 
 # Utils
 python-multipart==0.0.12
+aiofiles==24.1.0

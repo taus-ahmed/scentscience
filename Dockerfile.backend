@@ -2,15 +2,29 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# System deps + Node.js 20
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libpq-dev \
+    build-essential libpq-dev curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
+# Frontend: cache npm install layer on package.json changes only
+COPY frontend/package.json frontend/package-lock.json* ./frontend/
+RUN cd frontend && npm install
+
+# Build the React app
+COPY frontend/ ./frontend/
+RUN cd frontend && npm run build && rm -rf node_modules
+
+# Python deps
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Backend source (main.py + routes + ml + etc.)
+# dist ends up at /app/frontend/dist — FastAPI mounts it at runtime
 COPY backend/ .
 
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
