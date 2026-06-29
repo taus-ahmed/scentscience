@@ -318,7 +318,8 @@ def predict(perfume: dict, models: dict | None = None, skip_calibration: bool = 
             train_all_models([perfume])
             models = load_models()
 
-    feat = build_feature_vector(perfume).reshape(1, -1)
+    feat_vec = build_feature_vector(perfume)
+    feat = feat_vec.reshape(1, -1)
     result: dict[str, Any] = {}
 
     for group, data in models.items():
@@ -332,6 +333,15 @@ def predict(perfume: dict, models: dict | None = None, skip_calibration: bool = 
                 result[name] = float(np.clip(val, 5, 45))
             else:
                 result[name] = float(np.clip(val, 0, 10))
+
+    # Family proportion features (indices 11 to 11+len(FAMILIES) in the feature vector)
+    fam_start = 11
+    fam_end = fam_start + len(FAMILIES)
+    result["family_features"] = {
+        fam: round(float(feat_vec[i]), 4)
+        for i, fam in enumerate(FAMILIES, start=fam_start)
+        if fam_end > i  # guard against unexpected dim changes
+    }
 
     # Convert social_distance_idx to label
     sd_idx = int(round(result.pop("social_distance_idx", 1)))

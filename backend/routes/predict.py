@@ -186,12 +186,15 @@ async def predict_endpoint(request: Request, req: PredictRequest, db: AsyncSessi
     predictions["instagram_brief"] = instagram_brief
 
     # 6. Save to DB
+    _DB_EXCLUDE = frozenset({
+        "model_version", "family_features", "confidence_breakdown",
+        "geo_tropical_cities", "geo_arid_cities", "geo_cold_cities",
+        "geo_temperate_cities", "dry_down_character",
+    })
     pred_row = PredictionResult(
         perfume_id=matched_perfume.id,
         input_context=ctx_dict,
-        **{k: v for k, v in predictions.items()
-           if k not in ("model_version", "geo_tropical_cities", "geo_arid_cities",
-                        "geo_cold_cities", "geo_temperate_cities", "dry_down_character")},
+        **{k: v for k, v in predictions.items() if k not in _DB_EXCLUDE},
         geo_tropical_cities=predictions.get("geo_tropical_cities", []),
         geo_arid_cities=predictions.get("geo_arid_cities", []),
         geo_cold_cities=predictions.get("geo_cold_cities", []),

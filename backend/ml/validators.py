@@ -108,29 +108,38 @@ def validate_predictions(
     # ── Data-quality confidence ───────────────────────────────────────────────
     # base: every prediction gets at least 0.10
     conf = 0.10
+    breakdown: dict[str, float] = {"base": 0.10}
 
     # source_count: 0.05 (sc=1) → 0.25 (sc≥6)
     sc = max(1, source_count or 1)
     if sc >= 6:
-        conf += 0.25
+        _sc_contrib = 0.25
     elif sc >= 4:
-        conf += 0.22
+        _sc_contrib = 0.22
     elif sc == 3:
-        conf += 0.18
+        _sc_contrib = 0.18
     elif sc == 2:
-        conf += 0.13
+        _sc_contrib = 0.13
     else:
-        conf += 0.05
+        _sc_contrib = 0.05
+    conf += _sc_contrib
+    breakdown["source_tier"] = _sc_contrib
 
     # pyramid type: 0.00 (none) / 0.15 (inferred) / 0.25 (real)
     if has_pyramid and not has_inferred_pyramid:
-        conf += 0.25
+        _pyr_contrib = 0.25
     elif has_pyramid and has_inferred_pyramid:
-        conf += 0.15
+        _pyr_contrib = 0.15
+    else:
+        _pyr_contrib = 0.00
+    conf += _pyr_contrib
+    breakdown["has_pyramid"] = _pyr_contrib
 
     # note coverage: up to 0.30
     cov = max(0.0, min(1.0, note_coverage))
-    conf += cov * 0.30
+    _cov_contrib = round(cov * 0.30, 4)
+    conf += _cov_contrib
+    breakdown["note_coverage"] = _cov_contrib
 
     # ── Rating count multiplier (continuous log scale) ────────────────────────
     # Replaces coarse step function. Rationale: at 23k ratings the community
@@ -150,6 +159,7 @@ def validate_predictions(
         rating_mult = 0.85 + 0.35 * lf
 
     base_score = conf * rating_mult
+    breakdown["rating_mult"] = round(rating_mult, 4)
 
     # ── Community engagement bonus (additive, post-mult) ─────────────────────
     # Rewards fragrances where many community members have voted on season/
@@ -166,7 +176,9 @@ def validate_predictions(
         community_bonus = 0.01
     else:
         community_bonus = 0.00
+    breakdown["community_data"] = community_bonus
 
     p["confidence_score"] = round(min(base_score + community_bonus, 0.97), 3)
+    p["confidence_breakdown"] = breakdown
 
     return p

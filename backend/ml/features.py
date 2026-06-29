@@ -246,34 +246,70 @@ def apply_context_modifiers(predictions: dict, context: dict) -> dict:
     if not context:
         return predictions
 
-    skin = context.get("skin_type", "").lower()
-    season = context.get("season", "").lower()
-    tod = context.get("time_of_day", "").lower()
+    skin = (context.get("skin_type") or "").lower()
+    season = (context.get("season") or "").lower()
+    tod = (context.get("time_of_day") or "").lower()
 
     p = dict(predictions)
 
+    # ── Skin type — affects longevity, sillage, and compliment ───────────────
     if skin == "dry":
         p["skin_dry_score"] = min(10.0, p.get("skin_dry_score", 5) * 1.15)
         p["longevity_hours"] = min(24.0, p.get("longevity_hours", 6) * 1.10)
+        p["compliment_score"] = min(10.0, p.get("compliment_score", 5) * 1.05)
     elif skin == "oily":
         p["skin_oily_score"] = min(10.0, p.get("skin_oily_score", 5) * 1.15)
+        p["sillage_score"] = min(10.0, p.get("sillage_score", 5) * 1.12)
+        p["longevity_hours"] = min(24.0, p.get("longevity_hours", 6) * 0.92)
+    # combination / normal: no headline modifier
+
+    # ── Season — heat accelerates diffusion, cold preserves ──────────────────
+    if season == "summer":
+        p["longevity_hours"] = min(24.0, p.get("longevity_hours", 6) * 0.85)
+        p["sillage_score"] = min(10.0, p.get("sillage_score", 5) * 0.90)
+        p["compliment_score"] = min(10.0, p.get("compliment_score", 5) * 0.92)
+    elif season == "winter":
+        p["longevity_hours"] = min(24.0, p.get("longevity_hours", 6) * 1.18)
         p["sillage_score"] = min(10.0, p.get("sillage_score", 5) * 1.10)
-    elif skin == "combination":
-        p["skin_combo_score"] = min(10.0, p.get("skin_combo_score", 5) * 1.10)
+        p["compliment_score"] = min(10.0, p.get("compliment_score", 5) * 1.08)
+    elif season == "spring":
+        p["longevity_hours"] = min(24.0, p.get("longevity_hours", 6) * 0.95)
+        p["sillage_score"] = min(10.0, p.get("sillage_score", 5) * 1.02)
+        p["compliment_score"] = min(10.0, p.get("compliment_score", 5) * 1.05)
+    elif season == "fall":
         p["longevity_hours"] = min(24.0, p.get("longevity_hours", 6) * 1.05)
         p["sillage_score"] = min(10.0, p.get("sillage_score", 5) * 1.05)
+        p["compliment_score"] = min(10.0, p.get("compliment_score", 5) * 1.05)
 
+    # Radar-chart axis boost for selected season
     season_boosts = {"spring": "season_spring", "summer": "season_summer",
                      "fall": "season_fall", "winter": "season_winter"}
     if season in season_boosts:
         key = season_boosts[season]
         p[key] = min(10.0, p.get(key, 5) * 1.12)
 
+    # ── Time of day — evening/night favours heavier, longer projecting frags ─
+    if tod in ("evening", "night"):
+        p["compliment_score"] = min(10.0, p.get("compliment_score", 5) * 1.15)
+        p["sillage_score"] = min(10.0, p.get("sillage_score", 5) * 1.08)
+        p["blind_buy_score"] = min(10.0, p.get("blind_buy_score", 5) * 1.05)
+    elif tod == "morning":
+        p["compliment_score"] = min(10.0, p.get("compliment_score", 5) * 0.90)
+        p["sillage_score"] = min(10.0, p.get("sillage_score", 5) * 0.92)
+    # afternoon: neutral — no modifier
+
+    # Radar-chart axis boost for selected time of day
     tod_boosts = {"morning": "time_morning", "afternoon": "time_afternoon",
                   "evening": "time_evening", "night": "time_night"}
     if tod in tod_boosts:
         key = tod_boosts[tod]
         p[key] = min(10.0, p.get(key, 5) * 1.12)
+
+    # ── Final rounding ────────────────────────────────────────────────────────
+    p["longevity_hours"] = round(float(np.clip(p.get("longevity_hours", 6), 0.0, 24.0)), 2)
+    for _sf in ("sillage_score", "compliment_score", "blind_buy_score"):
+        if _sf in p:
+            p[_sf] = round(float(np.clip(p[_sf], 0.0, 10.0)), 1)
 
     return p
 
