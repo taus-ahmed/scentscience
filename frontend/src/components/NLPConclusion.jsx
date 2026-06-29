@@ -22,19 +22,20 @@ export default function NLPConclusion({ conclusion, instagramBrief, perfumeName,
   const bullets = (instagramBrief || '').split('\n').filter(l => l.trim().startsWith('•'))
 
   return (
-    <div className="flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-8">
-      {/* Expert Conclusion */}
+    <div className="flex flex-col gap-4 sm:gap-5 mb-6 sm:mb-8">
+      {/* Expert conclusion — quote-like block */}
       <div
-        className="rounded-2xl p-4 sm:p-8"
-        style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #111827 100%)', border: '1px solid #312e81' }}
+        style={{
+          background: '#0d1117',
+          borderLeft: '3px solid #6366f1',
+          borderRadius: '0 10px 10px 0',
+          padding: '1.25rem 1.5rem',
+        }}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
-          <div className="flex items-center gap-2">
-            <span className="text-lg sm:text-xl">⚗</span>
-            <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#a78bfa' }}>
-              ScentScience Analysis
-            </p>
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+          <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#818cf8' }}>
+            ScentScience Analysis
+          </p>
           <div className="flex flex-wrap gap-2">
             {meta && (
               <span
@@ -54,23 +55,21 @@ export default function NLPConclusion({ conclusion, instagramBrief, perfumeName,
             )}
           </div>
         </div>
-        <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#e5e7eb' }}>
+        <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#d1d5db', fontStyle: 'italic' }}>
           {conclusion || 'Generating expert analysis…'}
         </p>
       </div>
 
       {/* Instagram Brief */}
-      <div className="rounded-2xl p-4 sm:p-8" style={{ background: '#111827', border: '1px solid #1f2937' }}>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 mb-4 sm:mb-5">
-          <div className="flex items-center gap-2">
-            <span className="text-lg sm:text-xl">📱</span>
-            <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9ca3af' }}>
-              Instagram Brief — <span className="normal-case font-semibold" style={{ color: '#e5e7eb' }}>{perfumeName}</span>
-            </p>
-          </div>
+      <div className="rounded-xl p-4 sm:p-6" style={{ background: '#111827', border: '1px solid #1f2937' }}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+          <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9ca3af' }}>
+            Instagram Brief —{' '}
+            <span className="normal-case font-semibold" style={{ color: '#e5e7eb' }}>{perfumeName}</span>
+          </p>
           <button
             onClick={copyAll}
-            className="self-start sm:self-auto px-4 py-1.5 rounded text-xs font-semibold transition-colors"
+            className="self-start sm:self-auto px-3 py-1.5 rounded text-xs font-semibold transition-colors"
             style={{
               background: copied === 'all' ? '#059669' : '#374151',
               border: 'none', color: '#e5e7eb', cursor: 'pointer',
@@ -80,7 +79,7 @@ export default function NLPConclusion({ conclusion, instagramBrief, perfumeName,
           </button>
         </div>
 
-        <div className="flex flex-col gap-2 sm:gap-3">
+        <div className="flex flex-col gap-2 sm:gap-2.5">
           {bullets.length > 0 ? bullets.map((bullet, i) => (
             <BulletPoint key={i} text={bullet} index={i} />
           )) : (
@@ -110,10 +109,10 @@ function BulletPoint({ text, index }) {
 
   return (
     <div
-      className="flex items-start justify-between gap-2 sm:gap-3 px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg"
-      style={{ background: '#1f2937', borderLeft: `3px solid ${color}` }}
+      className="flex items-start justify-between gap-2 sm:gap-3 px-3 py-2.5 rounded-lg"
+      style={{ background: '#1a1a2e', borderLeft: `2px solid ${color}` }}
     >
-      <p className="text-sm leading-relaxed flex-1" style={{ color: '#e5e7eb' }}>
+      <p className="text-sm leading-relaxed flex-1" style={{ color: '#d1d5db' }}>
         {text.replace(/^•\s*/, '')}
       </p>
       <button

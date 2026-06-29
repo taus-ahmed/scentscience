@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { searchPerfumes } from '../api/client.js'
 
-const SKIN_TYPES = ['', 'dry', 'oily', 'combination']
-const SEASONS = ['', 'spring', 'summer', 'fall', 'winter']
-const TIMES = ['', 'morning', 'afternoon', 'evening', 'night']
+const SEASON_OPTS  = ['spring', 'summer', 'fall', 'winter']
+const TIME_OPTS    = ['morning', 'afternoon', 'evening', 'night']
+const SKIN_OPTS    = ['dry', 'normal', 'oily', 'combo']
 
 const INPUT_STYLE = {
   background: '#111827', border: '1px solid #374151', borderRadius: '12px',
@@ -14,14 +14,42 @@ const BTN_STYLE = {
   border: 'none', borderRadius: '12px', color: '#fff',
   fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
 }
-const SELECT_STYLE = {
-  background: '#111827', border: '1px solid #374151',
-  borderRadius: '8px', color: '#9ca3af', cursor: 'pointer',
-}
 const SUGGESTIONS_STYLE = {
   position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10,
   background: '#1f2937', border: '1px solid #374151', borderRadius: '8px',
   overflow: 'hidden', marginTop: '4px',
+}
+
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1) }
+
+function PillGroup({ label, options, value, onChange }) {
+  return (
+    <div className="flex items-start gap-2">
+      <span className="text-xs pt-1 shrink-0 w-12" style={{ color: '#4b5563' }}>{label}</span>
+      <div className="flex flex-wrap gap-1.5">
+        {options.map(opt => {
+          const active = value === opt
+          return (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => onChange(active ? '' : opt)}
+              className="px-2.5 py-1 rounded-full text-xs transition-all"
+              style={{
+                background: active ? '#4338ca' : '#111827',
+                border: `1px solid ${active ? '#6366f1' : '#374151'}`,
+                color: active ? '#e0e7ff' : '#6b7280',
+                cursor: 'pointer',
+                fontWeight: active ? 600 : 400,
+              }}
+            >
+              {cap(opt)}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 export default function PerfumeSearch({ onSearch, loading, defaultName = '', defaultBrand = '' }) {
@@ -48,7 +76,7 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
   const submit = () => {
     setShowSuggestions(false)
     const context = {}
-    if (skinType) context.skin_type = skinType
+    if (skinType) context.skin_type = skinType === 'combo' ? 'combination' : skinType
     if (season) context.season = season
     if (timeOfDay) context.time_of_day = timeOfDay
     onSearch({ name, brand, context: Object.keys(context).length ? context : null })
@@ -62,9 +90,9 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
 
   return (
     <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
-      <div className="relative">
-        {/* Main input row — stacks on mobile, side-by-side on sm+ */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-2 sm:mb-3">
+      <div className="relative mb-3">
+        {/* Search row */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <input
             style={INPUT_STYLE}
             className="w-full sm:flex-1 px-4 py-3 sm:py-3.5 text-sm sm:text-base"
@@ -107,27 +135,20 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
               >
                 <strong>{sg.name}</strong>
                 <span style={{ color: '#a78bfa', marginLeft: '0.5rem' }}>{sg.brand}</span>
-                <span style={{ color: '#6b7280', marginLeft: '0.5rem', fontSize: '0.78rem' }}>{sg.concentration}</span>
+                <span style={{ color: '#6b7280', marginLeft: '0.5rem', fontSize: '0.78rem' }}>
+                  {sg.concentration}
+                </span>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* Context selectors — always 3 equal columns */}
-      <div className="grid grid-cols-3 gap-2">
-        <select style={SELECT_STYLE} className="w-full px-2 py-1.5 text-xs sm:text-sm" value={skinType} onChange={e => setSkinType(e.target.value)}>
-          <option value="">Skin type</option>
-          {SKIN_TYPES.filter(Boolean).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
-        </select>
-        <select style={SELECT_STYLE} className="w-full px-2 py-1.5 text-xs sm:text-sm" value={season} onChange={e => setSeason(e.target.value)}>
-          <option value="">Season</option>
-          {SEASONS.filter(Boolean).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
-        </select>
-        <select style={SELECT_STYLE} className="w-full px-2 py-1.5 text-xs sm:text-sm" value={timeOfDay} onChange={e => setTimeOfDay(e.target.value)}>
-          <option value="">Time of day</option>
-          {TIMES.filter(Boolean).map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
-        </select>
+      {/* Context selectors — pill groups */}
+      <div className="flex flex-col gap-2 text-left">
+        <PillGroup label="Season" options={SEASON_OPTS} value={season} onChange={setSeason} />
+        <PillGroup label="Time"   options={TIME_OPTS}   value={timeOfDay} onChange={setTimeOfDay} />
+        <PillGroup label="Skin"   options={SKIN_OPTS}   value={skinType} onChange={setSkinType} />
       </div>
     </div>
   )

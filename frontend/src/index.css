@@ -22,3 +22,11 @@ html, body {
   overflow-x: hidden;
   max-width: 100vw;
 }
+
+/* Remove browser default disclosure marker so we can use our own */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
