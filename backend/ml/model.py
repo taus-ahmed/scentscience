@@ -115,8 +115,8 @@ def _generate_labels(perfume: dict, group: str) -> np.ndarray:
     occ_night_d = feat[fam_end + 11]
     occ_beach_d = feat[fam_end + 12]
 
-    longevity_hours = (longevity_class * 2.0 + community_long * 1.5) * conc_mult / 2.5
-    sillage = (projection * 0.6 + community_sill * 2.0) * conc_mult / 2.0
+    longevity_hours = (longevity_class * 3.0 + community_long * 1.5) * conc_mult / 2.5
+    sillage = (projection * 1.0 + community_sill * 2.0) * conc_mult / 2.0
 
     # Use 100% of the community label for labeled perfumes (was 50/50 blend)
     label_key = perfume.get("community_longevity_label", "")
