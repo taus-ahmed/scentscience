@@ -381,11 +381,56 @@ def _describe_dry_down(perfume: dict) -> str:
     return f"Soft and clean — {names}"
 
 
-_CLIMATE_CITIES: dict[str, list[str]] = {
-    "tropical": ["Singapore", "Bangkok", "Miami", "São Paulo"],
-    "arid": ["Dubai", "Riyadh", "Phoenix", "Las Vegas"],
-    "cold": ["Stockholm", "Oslo", "Helsinki", "Toronto", "Moscow"],
-    "temperate": ["London", "Paris", "New York", "Tokyo", "Berlin"],
+_CLIMATE_CITIES_FAMILY: dict[str, dict[str, list[str]]] = {
+    "tropical": {
+        "citrus":    ["Bali", "Phuket", "Cancún", "Barbados"],
+        "aquatic":   ["Maldives", "Seychelles", "Bali", "Bermuda"],
+        "fresh":     ["Bali", "Phuket", "Jamaica", "Cancún"],
+        "floral":    ["Bali", "Singapore", "Kuala Lumpur", "Ho Chi Minh City"],
+        "oriental":  ["Bangkok", "Mumbai", "Havana", "Colombo"],
+        "woody":     ["Mumbai", "Jakarta", "Ho Chi Minh City", "Bangkok"],
+        "gourmand":  ["São Paulo", "Havana", "Bangkok", "Singapore"],
+        "spicy":     ["Bangkok", "Mumbai", "Colombo", "Havana"],
+        "default":   ["Singapore", "Bangkok", "Miami", "São Paulo"],
+    },
+    "arid": {
+        "woody":     ["Dubai", "Abu Dhabi", "Marrakech", "Riyadh"],
+        "oriental":  ["Dubai", "Muscat", "Riyadh", "Cairo"],
+        "spicy":     ["Marrakech", "Muscat", "Cairo", "Jeddah"],
+        "resinous":  ["Riyadh", "Muscat", "Dubai", "Marrakech"],
+        "earthy":    ["Marrakech", "Cairo", "Muscat", "Riyadh"],
+        "citrus":    ["Tel Aviv", "Casablanca", "Seville", "Athens"],
+        "floral":    ["Tel Aviv", "Casablanca", "Cairo", "Seville"],
+        "aquatic":   ["Tel Aviv", "Eilat", "Agadir", "Alicante"],
+        "default":   ["Dubai", "Riyadh", "Marrakech", "Phoenix"],
+    },
+    "cold": {
+        "oriental":  ["Vienna", "Prague", "Budapest", "Istanbul"],
+        "spicy":     ["Vienna", "Prague", "Warsaw", "Budapest"],
+        "woody":     ["Stockholm", "Helsinki", "Oslo", "Reykjavik"],
+        "musky":     ["Copenhagen", "Amsterdam", "Helsinki", "Edinburgh"],
+        "powdery":   ["Vienna", "Zurich", "Copenhagen", "Brussels"],
+        "floral":    ["Montreal", "Edinburgh", "Stockholm", "Zurich"],
+        "chypre":    ["Edinburgh", "Dublin", "Brussels", "Zurich"],
+        "fougere":   ["Stockholm", "Helsinki", "Oslo", "Copenhagen"],
+        "smoky":     ["Tallinn", "Riga", "Warsaw", "Prague"],
+        "earthy":    ["Oslo", "Bergen", "Reykjavik", "Helsinki"],
+        "default":   ["Stockholm", "Oslo", "Helsinki", "Toronto"],
+    },
+    "temperate": {
+        "floral":    ["Paris", "Tokyo", "Istanbul", "Amsterdam"],
+        "citrus":    ["Barcelona", "Nice", "Lisbon", "Naples"],
+        "chypre":    ["London", "Milan", "Vienna", "Brussels"],
+        "aquatic":   ["Nice", "Barcelona", "San Francisco", "Seattle"],
+        "woody":     ["London", "Milan", "Portland", "Zurich"],
+        "oriental":  ["Istanbul", "Milan", "Barcelona", "Athens"],
+        "gourmand":  ["Paris", "Brussels", "Vienna", "Lyon"],
+        "green":     ["Portland", "Seattle", "Vancouver", "Dublin"],
+        "fougere":   ["London", "Berlin", "Amsterdam", "Brussels"],
+        "musky":     ["Copenhagen", "Amsterdam", "London", "Berlin"],
+        "fresh":     ["San Francisco", "Vancouver", "Dublin", "Edinburgh"],
+        "default":   ["London", "Paris", "New York", "Tokyo"],
+    },
 }
 
 
@@ -402,6 +447,13 @@ def _geo_cities(result: dict) -> dict:
         best = max(scores, key=lambda k: scores[k])
         qualifying = {best: scores[best]}
 
+    # Dominant fragrance family drives city selection within each climate
+    family_features = result.get("family_features", {})
+    dominant_family = (
+        max(family_features, key=lambda k: family_features[k])
+        if family_features else "default"
+    )
+
     output: dict[str, list[str]] = {
         "geo_tropical_cities": [],
         "geo_arid_cities": [],
@@ -410,5 +462,7 @@ def _geo_cities(result: dict) -> dict:
     }
     for climate, score in qualifying.items():
         n = 2 if score > 7 else 1
-        output[f"geo_{climate}_cities"] = _CLIMATE_CITIES[climate][:n]
+        pool = _CLIMATE_CITIES_FAMILY[climate]
+        cities = pool.get(dominant_family, pool["default"])
+        output[f"geo_{climate}_cities"] = cities[:n]
     return output

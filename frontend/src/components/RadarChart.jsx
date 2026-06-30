@@ -8,6 +8,8 @@ const TIP_STYLE = {
   background: '#141A2E', border: '1px solid rgba(201,168,76,0.2)',
   borderRadius: '8px', color: '#E8DCC8',
 }
+const TIP_LABEL_STYLE = { color: '#C9A84C' }
+const TIP_ITEM_STYLE  = { color: '#E8DCC8' }
 const TIP_FMT = v => [v?.toFixed(1), 'Score']
 
 export default function SeasonBars({ predictions: p }) {
@@ -28,7 +30,7 @@ export default function SeasonBars({ predictions: p }) {
           <CartesianGrid strokeDasharray="3 3" stroke="#1A2035" />
           <XAxis dataKey="name" tick={{ fill: '#E8DCC8', fontSize: 12 }} axisLine={false} tickLine={false} />
           <YAxis domain={[0, 10]} tick={{ fill: '#5A5245', fontSize: 10 }} axisLine={false} tickLine={false} />
-          <Tooltip contentStyle={TIP_STYLE} formatter={TIP_FMT} />
+          <Tooltip contentStyle={TIP_STYLE} labelStyle={TIP_LABEL_STYLE} itemStyle={TIP_ITEM_STYLE} formatter={TIP_FMT} />
           <Bar dataKey="value" radius={[6, 6, 0, 0]}>
             {data.map((entry, i) => <Cell key={i} fill={entry.color} />)}
           </Bar>
@@ -70,7 +72,7 @@ export function OccasionRanking({ predictions: p }) {
             tickLine={false}
             width={52}
           />
-          <Tooltip contentStyle={TIP_STYLE} formatter={TIP_FMT} />
+          <Tooltip contentStyle={TIP_STYLE} labelStyle={TIP_LABEL_STYLE} itemStyle={TIP_ITEM_STYLE} formatter={TIP_FMT} />
           <Bar dataKey="value" fill="#C9A84C" radius={[0, 4, 4, 0]} />
         </ReBarChart>
       </ResponsiveContainer>

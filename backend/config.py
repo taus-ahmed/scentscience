@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     backend_url: str = "http://localhost:8000"
     secret_key: str = "dev-secret-key"
     models_dir: str = "ml/models"
+    admin_key: str = "SCENT_ADMIN_2025"
+    gemini_api_key: str = ""
+    groq_api_key: str = ""
 
     @property
     def async_database_url(self) -> str:

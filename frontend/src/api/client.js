@@ -5,8 +5,21 @@ const api = axios.create({
   timeout: 30000,
 })
 
+export const isAdminMode = () => localStorage.getItem('ss_admin_mode') === 'true'
+
+const adminHeaders = () =>
+  isAdminMode() ? { 'x-admin-mode': 'true' } : {}
+
 export const predictPerfume = (perfumeName, brand, context) =>
-  api.post('/predict', { perfume_name: perfumeName, brand, context }).then(r => r.data)
+  api
+    .post('/predict', { perfume_name: perfumeName, brand, context }, { headers: adminHeaders() })
+    .then(r => r.data)
+
+export const predictFromNotes = (data) =>
+  api.post('/predict/from-notes', data).then(r => r.data)
+
+export const getSimilarPerfumes = (name, brand) =>
+  api.get('/perfumes/similar', { params: { name, brand } }).then(r => r.data)
 
 export const searchPerfumes = (q, brand) =>
   api.get('/perfumes', { params: { q, brand, limit: 20 } }).then(r => r.data)

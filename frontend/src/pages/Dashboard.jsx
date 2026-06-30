@@ -8,9 +8,11 @@ import PieChart from '../components/PieChart.jsx'
 import NLPConclusion from '../components/NLPConclusion.jsx'
 import FamilyRadar from '../components/FamilyRadar.jsx'
 import ContextHeatmap from '../components/ContextHeatmap.jsx'
-import { predictPerfume } from '../api/client.js'
+import OutOfDBPanel from '../components/OutOfDBPanel.jsx'
+import { predictPerfume, predictFromNotes } from '../api/client.js'
+import { getCityRecommendations } from '../utils/cityRecommendations.js'
 
-const PAGE_BG = { background: 'linear-gradient(180deg, #0B0F1A 0%, #0D1220 100%)' }
+const PAGE_BG = { background: 'transparent', position: 'relative', zIndex: 1 }
 
 const PERFUME_CARD_STYLE = {
   background: 'linear-gradient(135deg, #141A2E 0%, #111729 100%)',
@@ -169,6 +171,38 @@ function PersonFitBadges({ predictions: p }) {
   )
 }
 
+const PARTICLE_DATA = Array.from({ length: 24 }, (_, i) => ({
+  left:     `${((i * 37 + i * i * 7) % 97)}%`,
+  size:     i % 3 === 0 ? '2px' : '1px',
+  delay:    `-${(i * 1.3) % 12}s`,
+  duration: `${10 + (i % 7) * 1.5}s`,
+  opacity:  0.18 + (i % 5) * 0.06,
+  drift:    `${(i % 2 === 0 ? 1 : -1) * (8 + (i % 12) * 2)}px`,
+}))
+
+function Particles() {
+  return (
+    <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 0 }}>
+      {PARTICLE_DATA.map((pt, i) => (
+        <span
+          key={i}
+          style={{
+            position: 'absolute',
+            bottom: '-2px',
+            left: pt.left,
+            width: pt.size,
+            height: pt.size,
+            borderRadius: '50%',
+            background: `rgba(201,168,76,${pt.opacity})`,
+            animation: `particle-float ${pt.duration} ${pt.delay} infinite linear`,
+            '--p-drift': pt.drift,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 function CollapsibleSection({ label, children }) {
   return (
     <details className="mb-3">
@@ -278,42 +312,71 @@ function ClimateChart({ predictions: p }) {
   )
 }
 
-function GeoSection({ predictions: p }) {
-  const sections = [
-    { key: 'geo_tropical_cities',  label: 'Tropical',  color: '#C9A84C' },
-    { key: 'geo_arid_cities',      label: 'Arid',      color: '#D4956B' },
-    { key: 'geo_temperate_cities', label: 'Temperate', color: '#5DB89C' },
-    { key: 'geo_cold_cities',      label: 'Cold',      color: '#6B9BC4' },
-  ]
-  const hasAny = sections.some(sec => (p[sec.key] || []).length > 0)
-  if (!hasAny) return null
+const CLIMATE_DOT = { tropical: '#C9A84C', arid: '#D4956B', temperate: '#5DB89C', cold: '#6B9BC4' }
+
+function CityGrid({ predictions: p }) {
+  const cities = getCityRecommendations(p)
+  if (!cities.length) return null
 
   return (
     <div className="rounded-xl p-4 sm:p-6 mb-4 glass-card" style={{ background: '#111729', border: '1px solid rgba(201,168,76,0.15)' }}>
-      <p className="text-xs font-bold uppercase tracking-wide mb-3 sm:mb-4" style={{ color: '#9B8E7A' }}>
-        Recommended Cities
+      <p className="text-xs font-bold uppercase tracking-wide mb-4" style={{ color: '#9B8E7A' }}>
+        Recommended Cities · 15 Global Picks
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {sections.map(({ key, label, color }) => {
-          const cities = p[key] || []
-          if (!cities.length) return null
-          return (
-            <div key={key}>
-              <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color }}>{label}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {cities.map(city => (
-                  <span
-                    key={city}
-                    className="px-2 py-0.5 rounded-full text-xs"
-                    style={{ background: `${color}15`, border: `1px solid ${color}35`, color: '#E8DCC8' }}
-                  >
-                    {city}
-                  </span>
-                ))}
-              </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {cities.map(c => (
+          <div
+            key={c.id}
+            style={{
+              background: '#0D1220',
+              borderRadius: '10px',
+              padding: '12px 14px',
+              border: '1px solid rgba(201,168,76,0.10)',
+            }}
+          >
+            {/* City name + country */}
+            <div className="flex items-baseline justify-between mb-2">
+              <span className="font-semibold text-sm" style={{ color: '#E8DCC8' }}>
+                {c.city}
+              </span>
+              <span className="text-xs ml-2" style={{ color: '#3A3528' }}>{c.country}</span>
             </div>
-          )
-        })}
+
+            {/* Month badges */}
+            <div className="flex flex-wrap gap-1 mb-2">
+              {c.bestMonths.map(m => (
+                <span
+                  key={m}
+                  style={{
+                    background: 'rgba(201,168,76,0.10)',
+                    border: '1px solid rgba(201,168,76,0.25)',
+                    borderRadius: '999px',
+                    padding: '1px 7px',
+                    fontSize: '0.63rem',
+                    color: '#C9A84C',
+                    fontWeight: 600,
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {m}
+                </span>
+              ))}
+            </div>
+
+            {/* Climate dot + reason */}
+            <div className="flex items-start gap-1.5">
+              <span
+                style={{
+                  width: '5px', height: '5px', borderRadius: '50%', flexShrink: 0,
+                  background: CLIMATE_DOT[c.climate] || '#8B7355', marginTop: '5px',
+                }}
+              />
+              <p style={{ color: '#4A4235', fontSize: '0.70rem', lineHeight: 1.45, margin: 0 }}>
+                {c.reason}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -325,14 +388,45 @@ export default function Dashboard() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [notFound, setNotFound] = useState(null)  // {similar, requires_notes} when perfume not in DB
+  const [lastSearch, setLastSearch] = useState({ name: '', brand: '' })
   const [searchParams] = useSearchParams()
+
+  const defaultName = searchParams.get('name') || ''
+  const defaultBrand = searchParams.get('brand') || ''
+
+  const _applyResult = (data) => {
+    if (data.not_found) {
+      setNotFound(data)
+      setResult(null)
+    } else {
+      setResult(data)
+      setNotFound(null)
+    }
+  }
 
   const handleSearch = async ({ name, brand, context }) => {
     setLoading(true)
     setError(null)
     setResult(null)
+    setNotFound(null)
+    setLastSearch({ name, brand: brand || '' })
     try {
       const data = await predictPerfume(name, brand, context)
+      _applyResult(data)
+    } catch (e) {
+      setError(e.response?.data?.detail || e.message || 'Prediction failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handlePredictFromNotes = async (noteData) => {
+    setLoading(true)
+    setError(null)
+    setNotFound(null)
+    try {
+      const data = await predictFromNotes(noteData)
       setResult(data)
     } catch (e) {
       setError(e.response?.data?.detail || e.message || 'Prediction failed')
@@ -348,18 +442,19 @@ export default function Dashboard() {
     setLoading(true)
     setError(null)
     setResult(null)
+    setNotFound(null)
+    setLastSearch({ name, brand: brand || '' })
     predictPerfume(name, brand || '', null)
-      .then(data => setResult(data))
+      .then(data => _applyResult(data))
       .catch(e => setError(e.response?.data?.detail || e.message || 'Prediction failed'))
       .finally(() => setLoading(false))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const p = result?.predictions
-  const defaultName = searchParams.get('name') || ''
-  const defaultBrand = searchParams.get('brand') || ''
 
   return (
     <div style={PAGE_BG} className="min-h-screen">
+      <Particles />
       {/* Hero */}
       <div
         className="px-4 pt-8 pb-6 text-center sm:px-8 sm:pt-12 sm:pb-8"
@@ -388,6 +483,20 @@ export default function Dashboard() {
         )}
       </div>
 
+      {/* Not-found panel: shown when perfume isn't in DB */}
+      {notFound && (
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8">
+          <OutOfDBPanel
+            name={lastSearch.name}
+            brand={lastSearch.brand}
+            similar={notFound.similar || []}
+            onSelectSimilar={(name, brand) => handleSearch({ name, brand, context: null })}
+            onPredictFromNotes={handlePredictFromNotes}
+            loading={loading}
+          />
+        </div>
+      )}
+
       {result && p && (
         <div className="max-w-5xl mx-auto px-4 pb-16 sm:px-6 md:px-8">
 
@@ -414,6 +523,85 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
+
+          {/* AI-inferred banner — shown only when source is ai_inferred */}
+          {result.source === 'ai_inferred' && (
+            <>
+              <div
+                className="flex items-center gap-3 px-4 py-2.5 rounded-xl mb-4"
+                style={{ background: 'rgba(201,168,76,0.07)', border: '1px solid rgba(201,168,76,0.2)' }}
+              >
+                <span
+                  className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded"
+                  style={{ background: 'rgba(201,168,76,0.15)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.35)' }}
+                >
+                  AI-inferred
+                </span>
+                <span className="text-xs" style={{ color: '#9B8E7A' }}>
+                  Notes inferred by AI · confidence:{' '}
+                  <span style={{ color: '#C9A84C', fontWeight: 600 }}>
+                    {result.inferred_notes?.ai_confidence || 'unknown'}
+                  </span>
+                  {' '}· not in database
+                </span>
+              </div>
+
+              {result.inferred_notes && (
+                <details className="mb-4">
+                  <summary
+                    className="flex items-center justify-between cursor-pointer select-none px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest"
+                    style={{ background: '#0D1117', color: '#4A4235', border: '1px solid rgba(201,168,76,0.10)', listStyle: 'none' }}
+                  >
+                    <span>Inferred note pyramid</span>
+                    <span style={{ fontSize: '0.65rem', opacity: 0.5 }}>expand</span>
+                  </summary>
+                  <div
+                    className="mt-2 px-4 py-3 rounded-xl grid grid-cols-1 sm:grid-cols-3 gap-3"
+                    style={{ background: '#0D1117', border: '1px solid rgba(201,168,76,0.08)' }}
+                  >
+                    {[
+                      { label: 'Top', notes: result.inferred_notes.top_notes, color: '#D4B86A' },
+                      { label: 'Heart', notes: result.inferred_notes.middle_notes, color: '#C9A84C' },
+                      { label: 'Base', notes: result.inferred_notes.base_notes, color: '#8B6914' },
+                    ].map(({ label, notes, color }) => (
+                      <div key={label}>
+                        <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color }}>{label}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {(notes || []).map(n => (
+                            <span
+                              key={n}
+                              className="px-2 py-0.5 rounded-full text-xs"
+                              style={{ background: `${color}15`, border: `1px solid ${color}35`, color: '#E8DCC8' }}
+                            >
+                              {n}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              )}
+            </>
+          )}
+
+          {/* User-notes banner */}
+          {result.source === 'user_notes' && (
+            <div
+              className="flex items-center gap-3 px-4 py-2.5 rounded-xl mb-4"
+              style={{ background: 'rgba(93,184,156,0.07)', border: '1px solid rgba(93,184,156,0.2)' }}
+            >
+              <span
+                className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded"
+                style={{ background: 'rgba(93,184,156,0.15)', color: '#5DB89C', border: '1px solid rgba(93,184,156,0.35)' }}
+              >
+                From your notes
+              </span>
+              <span className="text-xs" style={{ color: '#9B8E7A' }}>
+                Prediction built from manually entered notes
+              </span>
+            </div>
+          )}
 
           {/* Headline Trio */}
           <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-5 mb-3">
@@ -502,7 +690,7 @@ export default function Dashboard() {
 
           <CollapsibleSection label="Climate & Cities">
             <ClimateChart predictions={p} />
-            <GeoSection predictions={p} />
+            <CityGrid predictions={p} />
           </CollapsibleSection>
 
           <CollapsibleSection label="Full Person Fit & Distribution">

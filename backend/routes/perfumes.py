@@ -1,10 +1,10 @@
+import difflib
 import hashlib
 import json
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
-from pydantic import BaseModel
 from typing import Optional
 from cachetools import TTLCache
 
@@ -46,6 +46,60 @@ async def list_perfumes(
     out = [_serialize(p) for p in perfumes]
     search_cache[key] = out
     return out
+
+
+@router.get("/perfumes/similar")
+@limiter.limit("60/minute")
+async def get_similar_perfumes(
+    request: Request,
+    name: str = Query(..., description="Perfume name to search for"),
+    brand: Optional[str] = Query(None),
+    limit: int = Query(3, le=10),
+    db: AsyncSession = Depends(get_db),
+):
+    """Return perfumes with the most similar name/brand to the query."""
+    if not name:
+        return []
+
+    first_word = name.split()[0]
+    stmt = select(Perfume).where(Perfume.name.ilike(f"%{first_word}%")).limit(60)
+    res = await db.execute(stmt)
+    candidates = res.scalars().all()
+
+    if not candidates:
+        stmt2 = (
+            select(Perfume)
+            .where(Perfume.rating_count.isnot(None))
+            .order_by(Perfume.rating_count.desc())
+            .limit(limit)
+        )
+        res2 = await db.execute(stmt2)
+        candidates = res2.scalars().all()
+
+    if not candidates:
+        return []
+
+    query_str = f"{brand or ''} {name}".lower().strip()
+    scored = [
+        (
+            p,
+            difflib.SequenceMatcher(
+                None, query_str, f"{p.brand or ''} {p.name}".lower().strip()
+            ).ratio(),
+        )
+        for p in candidates
+    ]
+    scored.sort(key=lambda x: -x[1])
+    return [
+        {
+            "id": p.id,
+            "name": p.name,
+            "brand": p.brand,
+            "concentration": p.concentration,
+            "similarity": round(score, 2),
+        }
+        for p, score in scored[:limit]
+    ]
 
 
 @router.get("/perfumes/{perfume_id}")

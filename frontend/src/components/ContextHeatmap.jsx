@@ -5,6 +5,19 @@ const TIMES = ['Morning', 'Afternoon', 'Evening', 'Night']
 const S_KEYS = ['season_spring', 'season_summer', 'season_fall', 'season_winter']
 const T_KEYS = ['time_morning', 'time_afternoon', 'time_evening', 'time_night']
 
+function cellStyle(norm) {
+  // Cold → hot color ramp based on relative intensity (norm 0–1)
+  if (norm >= 0.9) {
+    return {
+      background: 'rgba(220,185,90,1)',
+      boxShadow: '0 0 10px rgba(201,168,76,0.55)',
+    }
+  }
+  if (norm >= 0.7) return { background: 'rgba(201,168,76,0.9)' }
+  if (norm >= 0.5) return { background: 'rgba(180,145,60,0.7)' }
+  return { background: 'rgba(100,90,70,0.5)' }
+}
+
 export default function ContextHeatmap({ predictions: p }) {
   const raw = SEASONS.map((_, si) =>
     TIMES.map((_, ti) => (p[S_KEYS[si]] || 0) * (p[T_KEYS[ti]] || 0))
@@ -36,13 +49,13 @@ export default function ContextHeatmap({ predictions: p }) {
               </div>
               {TIMES.map((_, ti) => {
                 const norm = cells[si][ti]
-                const alpha = 0.06 + norm * 0.75
+                const cs = cellStyle(norm)
                 return (
                   <div
                     key={ti}
                     title={`${season} ${TIMES[ti]}: ${(norm * 10).toFixed(1)}`}
                     style={{
-                      background: `rgba(201,168,76,${alpha})`,
+                      ...cs,
                       borderRadius: '6px',
                       padding: '10px 4px',
                       textAlign: 'center',
@@ -59,7 +72,7 @@ export default function ContextHeatmap({ predictions: p }) {
         </div>
       </div>
       <p className="mt-3 text-xs" style={{ color: '#2A2520' }}>
-        Intensity = season fit × time fit
+        Intrinsic season × time fit — unaffected by your context selections
       </p>
     </div>
   )

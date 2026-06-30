@@ -10,6 +10,8 @@ const TIP_STYLE = {
   background: '#141A2E', border: '1px solid rgba(201,168,76,0.2)',
   borderRadius: '8px', color: '#E8DCC8',
 }
+const TIP_LABEL_STYLE = { color: '#C9A84C' }
+const TIP_ITEM_STYLE  = { color: '#E8DCC8' }
 
 function getDecayData(p) {
   const lng = p.longevity_hours || 6
@@ -61,6 +63,8 @@ export default function LongevityDecayChart({ predictions: p }) {
           />
           <Tooltip
             contentStyle={TIP_STYLE}
+            labelStyle={TIP_LABEL_STYLE}
+            itemStyle={TIP_ITEM_STYLE}
             labelFormatter={v => `${v}h after application`}
             formatter={v => [v?.toFixed(1), 'Strength']}
           />
@@ -99,6 +103,8 @@ export function TimeOfDayChart({ predictions: p }) {
           <YAxis domain={[0, 10]} tick={{ fill: '#5A5245', fontSize: 10 }} axisLine={false} tickLine={false} />
           <Tooltip
             contentStyle={TIP_STYLE}
+            labelStyle={TIP_LABEL_STYLE}
+            itemStyle={TIP_ITEM_STYLE}
             formatter={v => [v?.toFixed(1), 'Score']}
           />
           <Bar dataKey="value" radius={[4, 4, 0, 0]}>

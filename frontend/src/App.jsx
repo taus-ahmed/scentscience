@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import Dashboard from './pages/Dashboard.jsx'
 import Search from './pages/Search.jsx'
+import AdminUnlock from './pages/AdminUnlock.jsx'
 import ChatWidget from './components/ChatWidget.jsx'
 
 const NAV_BG = {
@@ -50,6 +51,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/admin-unlock" element={<AdminUnlock />} />
       </Routes>
       <ChatWidget />
     </BrowserRouter>

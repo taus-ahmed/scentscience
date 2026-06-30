@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --bg-page: #0B0F1A;
+  --bg-page: #080C18;
   --bg-card: #111729;
   --bg-card-raised: #141A2E;
   --bg-inset: #0D1117;
@@ -29,8 +29,20 @@ body {
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
-  background: var(--bg-page);
+  background-color: var(--bg-page);
   color: var(--text-primary);
+}
+
+/* Ambient radial bloom — light through a perfume flacon */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(201,168,76,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 35% at 92% 8%,  rgba(180,80,60,0.04)  0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 input, select, button {
@@ -50,10 +62,25 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 
+/* ── Floating particle animation ────────────────────────────────────────── */
+@keyframes particle-float {
+  0%   { transform: translateY(100vh) translateX(0);                opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translateY(-120px) translateX(var(--p-drift));  opacity: 0; }
+}
+
+/* ── Glass card depth ───────────────────────────────────────────────────── */
 .glass-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(201,168,76,0.08), 0 4px 32px rgba(0,0,0,0.4);
   transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 .glass-card:hover {
-  box-shadow: 0 4px 24px rgba(201,168,76,0.09);
+  box-shadow:
+    inset 0 1px 0 rgba(201,168,76,0.12),
+    0 8px 40px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(201,168,76,0.20);
   border-color: rgba(201,168,76,0.30) !important;
 }
