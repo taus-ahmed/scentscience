@@ -1,8 +1,8 @@
 import React from 'react'
 import { PieChart as RePieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
-const GENDER_COLORS = ['#60a5fa', '#f472b6', '#34d399']
-const SKIN_COLORS = ['#a78bfa', '#fb923c', '#34d399']
+const GENDER_COLORS = ['#6B9BC4', '#C47D9A', '#5DB89C']
+const SKIN_COLORS = ['#C9A84C', '#D4956B', '#5DB89C']
 
 export default function PieChart({ predictions: p }) {
   const genderData = [
@@ -16,9 +16,14 @@ export default function PieChart({ predictions: p }) {
     { name: 'Combo', value: parseFloat(p.skin_combo_score?.toFixed(1)) },
   ]
 
+  const tipStyle = {
+    background: '#141A2E', border: '1px solid rgba(201,168,76,0.2)',
+    borderRadius: '8px', color: '#E8DCC8',
+  }
+
   return (
-    <div className="rounded-xl p-4 sm:p-6" style={{ background: '#111827', border: '1px solid #1f2937' }}>
-      <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: '#9ca3af' }}>
+    <div className="rounded-xl p-4 sm:p-6 glass-card" style={{ background: '#111729', border: '1px solid rgba(201,168,76,0.15)' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: '#9B8E7A' }}>
         Gender Expression Fit
       </p>
       <ResponsiveContainer width="100%" height={140}>
@@ -26,15 +31,12 @@ export default function PieChart({ predictions: p }) {
           <Pie data={genderData} cx="50%" cy="50%" outerRadius={55} dataKey="value" strokeWidth={0}>
             {genderData.map((_, i) => <Cell key={i} fill={GENDER_COLORS[i]} />)}
           </Pie>
-          <Tooltip
-            contentStyle={{ background: '#1f2937', border: '1px solid #374151', borderRadius: '8px', color: '#e5e7eb' }}
-            formatter={v => [v?.toFixed(1), 'Score']}
-          />
-          <Legend iconType="circle" iconSize={8} wrapperStyle={{ color: '#9ca3af', fontSize: '0.75rem' }} />
+          <Tooltip contentStyle={tipStyle} formatter={v => [v?.toFixed(1), 'Score']} />
+          <Legend iconType="circle" iconSize={8} wrapperStyle={{ color: '#9B8E7A', fontSize: '0.75rem' }} />
         </RePieChart>
       </ResponsiveContainer>
 
-      <p className="text-xs font-bold uppercase tracking-wide mt-2 mb-2" style={{ color: '#9ca3af' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mt-2 mb-2" style={{ color: '#9B8E7A' }}>
         Skin Type Distribution
       </p>
       <ResponsiveContainer width="100%" height={140}>
@@ -42,11 +44,8 @@ export default function PieChart({ predictions: p }) {
           <Pie data={skinData} cx="50%" cy="50%" innerRadius={30} outerRadius={55} dataKey="value" strokeWidth={0}>
             {skinData.map((_, i) => <Cell key={i} fill={SKIN_COLORS[i]} />)}
           </Pie>
-          <Tooltip
-            contentStyle={{ background: '#1f2937', border: '1px solid #374151', borderRadius: '8px', color: '#e5e7eb' }}
-            formatter={v => [v?.toFixed(1), 'Score']}
-          />
-          <Legend iconType="circle" iconSize={8} wrapperStyle={{ color: '#9ca3af', fontSize: '0.75rem' }} />
+          <Tooltip contentStyle={tipStyle} formatter={v => [v?.toFixed(1), 'Score']} />
+          <Legend iconType="circle" iconSize={8} wrapperStyle={{ color: '#9B8E7A', fontSize: '0.75rem' }} />
         </RePieChart>
       </ResponsiveContainer>
     </div>

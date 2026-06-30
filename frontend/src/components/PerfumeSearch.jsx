@@ -6,17 +6,17 @@ const TIME_OPTS    = ['morning', 'afternoon', 'evening', 'night']
 const SKIN_OPTS    = ['dry', 'normal', 'oily', 'combo']
 
 const INPUT_STYLE = {
-  background: '#111827', border: '1px solid #374151', borderRadius: '12px',
-  color: '#fff', fontSize: '1rem', outline: 'none',
+  background: '#111729', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '12px',
+  color: '#E8DCC8', fontSize: '1rem', outline: 'none',
 }
 const BTN_STYLE = {
-  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-  border: 'none', borderRadius: '12px', color: '#fff',
+  background: 'linear-gradient(135deg, #8B6914, #C9A84C)',
+  border: 'none', borderRadius: '12px', color: '#0B0F1A',
   fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
 }
 const SUGGESTIONS_STYLE = {
   position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10,
-  background: '#1f2937', border: '1px solid #374151', borderRadius: '8px',
+  background: '#141A2E', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '8px',
   overflow: 'hidden', marginTop: '4px',
 }
 
@@ -25,7 +25,7 @@ function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1) }
 function PillGroup({ label, options, value, onChange }) {
   return (
     <div className="flex items-start gap-2">
-      <span className="text-xs pt-1 shrink-0 w-12" style={{ color: '#4b5563' }}>{label}</span>
+      <span className="text-xs pt-1 shrink-0 w-12" style={{ color: '#4A4235' }}>{label}</span>
       <div className="flex flex-wrap gap-1.5">
         {options.map(opt => {
           const active = value === opt
@@ -36,9 +36,9 @@ function PillGroup({ label, options, value, onChange }) {
               onClick={() => onChange(active ? '' : opt)}
               className="px-2.5 py-1 rounded-full text-xs transition-all"
               style={{
-                background: active ? '#4338ca' : '#111827',
-                border: `1px solid ${active ? '#6366f1' : '#374151'}`,
-                color: active ? '#e0e7ff' : '#6b7280',
+                background: active ? 'rgba(201,168,76,0.12)' : '#111729',
+                border: `1px solid ${active ? '#C9A84C' : 'rgba(201,168,76,0.12)'}`,
+                color: active ? '#E8DCC8' : '#5A5245',
                 cursor: 'pointer',
                 fontWeight: active ? 600 : 400,
               }}
@@ -128,14 +128,14 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
               <div
                 key={sg.id}
                 className="px-4 py-3 cursor-pointer border-b text-sm"
-                style={{ borderColor: '#374151', color: '#e5e7eb' }}
+                style={{ borderColor: 'rgba(201,168,76,0.10)', color: '#E8DCC8' }}
                 onClick={() => pickSuggestion(sg)}
-                onMouseEnter={e => e.currentTarget.style.background = '#374151'}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.06)'}
                 onMouseLeave={e => e.currentTarget.style.background = ''}
               >
                 <strong>{sg.name}</strong>
-                <span style={{ color: '#a78bfa', marginLeft: '0.5rem' }}>{sg.brand}</span>
-                <span style={{ color: '#6b7280', marginLeft: '0.5rem', fontSize: '0.78rem' }}>
+                <span style={{ color: '#C9A84C', marginLeft: '0.5rem' }}>{sg.brand}</span>
+                <span style={{ color: '#5A5245', marginLeft: '0.5rem', fontSize: '0.78rem' }}>
                   {sg.concentration}
                 </span>
               </div>

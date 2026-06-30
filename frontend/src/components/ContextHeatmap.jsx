@@ -14,8 +14,8 @@ export default function ContextHeatmap({ predictions: p }) {
   const cells = raw.map(row => row.map(v => v / maxVal))
 
   return (
-    <div className="rounded-xl p-4 sm:p-6" style={{ background: '#111827', border: '1px solid #1f2937' }}>
-      <p className="text-xs font-bold uppercase tracking-wide mb-4" style={{ color: '#9ca3af' }}>
+    <div className="rounded-xl p-4 sm:p-6 glass-card" style={{ background: '#111729', border: '1px solid rgba(201,168,76,0.15)' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mb-4" style={{ color: '#9B8E7A' }}>
         Best Moments
       </p>
       <div className="overflow-x-auto">
@@ -23,7 +23,7 @@ export default function ContextHeatmap({ predictions: p }) {
           {/* Header */}
           <div />
           {TIMES.map(t => (
-            <div key={t} className="text-center pb-1" style={{ color: '#6b7280', fontSize: '0.68rem', lineHeight: 1.2 }}>
+            <div key={t} className="text-center pb-1" style={{ color: '#5A5245', fontSize: '0.68rem', lineHeight: 1.2 }}>
               {t}
             </div>
           ))}
@@ -31,24 +31,24 @@ export default function ContextHeatmap({ predictions: p }) {
           {/* Rows */}
           {SEASONS.map((season, si) => (
             <React.Fragment key={season}>
-              <div className="flex items-center" style={{ color: '#6b7280', fontSize: '0.72rem' }}>
+              <div className="flex items-center" style={{ color: '#5A5245', fontSize: '0.72rem' }}>
                 {season}
               </div>
               {TIMES.map((_, ti) => {
                 const norm = cells[si][ti]
-                const alpha = 0.06 + norm * 0.82
+                const alpha = 0.06 + norm * 0.75
                 return (
                   <div
                     key={ti}
                     title={`${season} ${TIMES[ti]}: ${(norm * 10).toFixed(1)}`}
                     style={{
-                      background: `rgba(99, 102, 241, ${alpha})`,
+                      background: `rgba(201,168,76,${alpha})`,
                       borderRadius: '6px',
                       padding: '10px 4px',
                       textAlign: 'center',
                     }}
                   >
-                    <span style={{ fontSize: '0.68rem', fontWeight: 500, color: norm > 0.55 ? '#e0e7ff' : '#4b5563' }}>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 500, color: norm > 0.55 ? '#F0E6C8' : '#4A4235' }}>
                       {(norm * 10).toFixed(1)}
                     </span>
                   </div>
@@ -58,7 +58,7 @@ export default function ContextHeatmap({ predictions: p }) {
           ))}
         </div>
       </div>
-      <p className="mt-3 text-xs" style={{ color: '#374151' }}>
+      <p className="mt-3 text-xs" style={{ color: '#2A2520' }}>
         Intensity = season fit × time fit
       </p>
     </div>

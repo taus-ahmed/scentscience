@@ -7,8 +7,8 @@ import {
 } from 'recharts'
 
 const TIP_STYLE = {
-  background: '#1f2937', border: '1px solid #374151',
-  borderRadius: '8px', color: '#e5e7eb',
+  background: '#141A2E', border: '1px solid rgba(201,168,76,0.2)',
+  borderRadius: '8px', color: '#E8DCC8',
 }
 
 function getDecayData(p) {
@@ -30,32 +30,32 @@ export default function LongevityDecayChart({ predictions: p }) {
   const ticks = data.map(d => d.t)
 
   return (
-    <div className="rounded-xl p-4 sm:p-6" style={{ background: '#111827', border: '1px solid #1f2937' }}>
-      <p className="text-xs font-bold uppercase tracking-wide mb-3 sm:mb-4" style={{ color: '#9ca3af' }}>
+    <div className="rounded-xl p-4 sm:p-6 glass-card" style={{ background: '#111729', border: '1px solid rgba(201,168,76,0.15)' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mb-3 sm:mb-4" style={{ color: '#9B8E7A' }}>
         Performance over time
       </p>
       <ResponsiveContainer width="100%" height={200}>
         <AreaChart data={data} margin={{ top: 5, right: 10, bottom: 0, left: -20 }}>
           <defs>
             <linearGradient id="decayGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%"  stopColor="#6366f1" stopOpacity={0.35} />
-              <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+              <stop offset="5%"  stopColor="#C9A84C" stopOpacity={0.6} />
+              <stop offset="95%" stopColor="#C9A84C" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1a2030" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#1A2035" />
           <XAxis
             dataKey="t"
             type="number"
             domain={[0, 'dataMax']}
             ticks={ticks}
             tickFormatter={v => `${v}h`}
-            tick={{ fill: '#6b7280', fontSize: 10 }}
+            tick={{ fill: '#5A5245', fontSize: 10 }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             domain={[0, 10]}
-            tick={{ fill: '#6b7280', fontSize: 10 }}
+            tick={{ fill: '#5A5245', fontSize: 10 }}
             axisLine={false}
             tickLine={false}
           />
@@ -67,11 +67,11 @@ export default function LongevityDecayChart({ predictions: p }) {
           <Area
             type="monotone"
             dataKey="strength"
-            stroke="#6366f1"
+            stroke="#C9A84C"
             strokeWidth={2}
             fill="url(#decayGrad)"
             dot={false}
-            activeDot={{ r: 4, fill: '#818cf8' }}
+            activeDot={{ r: 4, fill: '#E0C06A' }}
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -81,22 +81,22 @@ export default function LongevityDecayChart({ predictions: p }) {
 
 export function TimeOfDayChart({ predictions: p }) {
   const data = [
-    { name: 'Morning',   value: p.time_morning,   color: '#fbbf24' },
-    { name: 'Afternoon', value: p.time_afternoon,  color: '#fb923c' },
-    { name: 'Evening',   value: p.time_evening,    color: '#a78bfa' },
-    { name: 'Night',     value: p.time_night,      color: '#3b82f6' },
+    { name: 'Morning',   value: p.time_morning,   color: '#C9A84C' },
+    { name: 'Afternoon', value: p.time_afternoon,  color: '#D4956B' },
+    { name: 'Evening',   value: p.time_evening,    color: '#8B7355' },
+    { name: 'Night',     value: p.time_night,      color: '#5B6B9B' },
   ]
 
   return (
-    <div className="rounded-xl p-4 sm:p-6" style={{ background: '#111827', border: '1px solid #1f2937' }}>
-      <p className="text-xs font-bold uppercase tracking-wide mb-3 sm:mb-4" style={{ color: '#9ca3af' }}>
+    <div className="rounded-xl p-4 sm:p-6 glass-card" style={{ background: '#111729', border: '1px solid rgba(201,168,76,0.15)' }}>
+      <p className="text-xs font-bold uppercase tracking-wide mb-3 sm:mb-4" style={{ color: '#9B8E7A' }}>
         Time of Day
       </p>
       <ResponsiveContainer width="100%" height={200}>
         <ReBarChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1a2030" />
-          <XAxis dataKey="name" tick={{ fill: '#d1d5db', fontSize: 11 }} axisLine={false} tickLine={false} />
-          <YAxis domain={[0, 10]} tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#1A2035" />
+          <XAxis dataKey="name" tick={{ fill: '#E8DCC8', fontSize: 11 }} axisLine={false} tickLine={false} />
+          <YAxis domain={[0, 10]} tick={{ fill: '#5A5245', fontSize: 10 }} axisLine={false} tickLine={false} />
           <Tooltip
             contentStyle={TIP_STYLE}
             formatter={v => [v?.toFixed(1), 'Score']}

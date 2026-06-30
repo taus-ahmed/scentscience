@@ -2,14 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-page: #0B0F1A;
+  --bg-card: #111729;
+  --bg-card-raised: #141A2E;
+  --bg-inset: #0D1117;
+  --border-subtle: rgba(201,168,76,0.10);
+  --border-card: rgba(201,168,76,0.15);
+  --border-accent: rgba(201,168,76,0.35);
+  --gold: #C9A84C;
+  --gold-muted: #8B7355;
+  --gold-glow: rgba(201,168,76,0.08);
+  --text-primary: #E8DCC8;
+  --text-secondary: #9B8E7A;
+  --text-muted: #4A4235;
+  --score-high: #5DB89C;
+  --score-mid: #C9A84C;
+  --score-low: #C4614A;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+  background: var(--bg-page);
+  color: var(--text-primary);
 }
 
 input, select, button {
@@ -17,16 +38,22 @@ input, select, button {
   touch-action: manipulation;
 }
 
-/* Prevent horizontal overflow on small viewports */
 html, body {
   overflow-x: hidden;
   max-width: 100vw;
 }
 
-/* Remove browser default disclosure marker so we can use our own */
 details > summary {
   list-style: none;
 }
 details > summary::-webkit-details-marker {
   display: none;
+}
+
+.glass-card {
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.glass-card:hover {
+  box-shadow: 0 4px 24px rgba(201,168,76,0.09);
+  border-color: rgba(201,168,76,0.30) !important;
 }

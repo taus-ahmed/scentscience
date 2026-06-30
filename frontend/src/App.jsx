@@ -4,9 +4,12 @@ import Dashboard from './pages/Dashboard.jsx'
 import Search from './pages/Search.jsx'
 import ChatWidget from './components/ChatWidget.jsx'
 
-const NAV_BG = { background: 'linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 100%)', borderBottom: '1px solid #2a2a4a' }
-const LOGO_COLOR = { color: '#a78bfa', textDecoration: 'none' }
-const LINK_COLOR = { color: '#94a3b8', textDecoration: 'none' }
+const NAV_BG = {
+  background: 'linear-gradient(135deg, #080C15 0%, #0D1220 100%)',
+  borderBottom: '1px solid rgba(201,168,76,0.12)',
+}
+const LOGO_COLOR = { color: '#C9A84C', textDecoration: 'none', fontFamily: "'Playfair Display', Georgia, serif" }
+const LINK_COLOR = { color: '#9B8E7A', textDecoration: 'none' }
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -27,7 +30,7 @@ export default function App() {
         {/* Mobile hamburger */}
         <button
           className="sm:hidden p-1 rounded text-lg leading-none"
-          style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
+          style={{ background: 'none', border: 'none', color: '#9B8E7A', cursor: 'pointer' }}
           onClick={() => setMenuOpen(v => !v)}
           aria-label="Toggle navigation"
         >
@@ -37,7 +40,7 @@ export default function App() {
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div style={{ background: '#1a1a2e', borderBottom: '1px solid #2a2a4a' }}
+        <div style={{ background: '#0D1220', borderBottom: '1px solid rgba(201,168,76,0.12)' }}
           className="sm:hidden flex flex-col px-5 py-4 gap-4">
           <Link to="/" style={LINK_COLOR} className="text-sm" onClick={() => setMenuOpen(false)}>Dashboard</Link>
           <Link to="/search" style={LINK_COLOR} className="text-sm" onClick={() => setMenuOpen(false)}>Browse</Link>
