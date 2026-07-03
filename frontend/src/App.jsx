@@ -5,6 +5,39 @@ import Search from './pages/Search.jsx'
 import AdminUnlock from './pages/AdminUnlock.jsx'
 import ChatWidget from './components/ChatWidget.jsx'
 
+// Deterministic particle configs — no Math.random so values are stable across renders
+const PARTICLE_DATA = Array.from({ length: 14 }, (_, i) => ({
+  id: i,
+  left: `${((i * 7 + 3) % 97) + 1}%`,
+  size: i % 3 === 0 ? '3px' : '2px',
+  dur: `${11 + (i % 5) * 1.8}s`,
+  delay: `${-(i * 0.9)}s`,
+  drift: `${((i % 7) - 3) * 22}px`,
+  opacity: i % 4 === 0 ? 0.45 : 0.28,
+}))
+
+function Particles() {
+  return (
+    <>
+      {PARTICLE_DATA.map(p => (
+        <div
+          key={p.id}
+          className="particle"
+          style={{
+            left: p.left,
+            width: p.size,
+            height: p.size,
+            background: `rgba(201,168,76,${p.opacity})`,
+            '--p-drift': p.drift,
+            '--p-dur': p.dur,
+            animationDelay: p.delay,
+          }}
+        />
+      ))}
+    </>
+  )
+}
+
 const NAV_BG = {
   background: 'linear-gradient(135deg, #080C15 0%, #0D1220 100%)',
   borderBottom: '1px solid rgba(201,168,76,0.12)',
@@ -54,6 +87,7 @@ export default function App() {
         <Route path="/admin-unlock" element={<AdminUnlock />} />
       </Routes>
       <ChatWidget />
+      <Particles />
     </BrowserRouter>
   )
 }
