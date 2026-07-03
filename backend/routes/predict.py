@@ -117,11 +117,9 @@ def _predict_cache_key(req: PredictRequest) -> str:
 
 
 def _check_admin(request: Request) -> bool:
-    """Return True if the request carries a valid admin mode header."""
-    return (
-        request.headers.get("x-admin-mode", "").lower() == "true"
-        and bool(settings.admin_key)
-    )
+    """Return True if the request carries a valid admin key header."""
+    provided_key = request.headers.get("x-admin-key", "")
+    return bool(getattr(settings, 'admin_key', None)) and provided_key == settings.admin_key
 
 
 async def _find_similar(
@@ -131,7 +129,10 @@ async def _find_similar(
     limit: int = 3,
 ) -> list[dict]:
     """Return up to `limit` DB perfumes most similar to the searched name/brand."""
-    first_word = name.split()[0] if name else name
+    _words = (name or "").split()
+    first_word = _words[0] if _words else None
+    if not first_word:
+        return []
 
     stmt = select(Perfume).where(Perfume.name.ilike(f"%{first_word}%")).limit(60)
     res = await db.execute(stmt)
@@ -229,14 +230,14 @@ async def predict_endpoint(
     # 1. Fuzzy search perfume in DB
     from rapidfuzz import process, fuzz
 
-    stmt = select(Perfume)
+    stmt = select(Perfume).limit(500)
     if req.brand:
-        stmt = stmt.where(Perfume.brand.ilike(f"%{req.brand}%"))
+        stmt = select(Perfume).where(Perfume.brand.ilike(f"%{req.brand}%")).limit(200)
     result = await db.execute(stmt)
     perfumes = result.scalars().all()
 
     if not perfumes:
-        stmt2 = select(Perfume).where(Perfume.name.ilike(f"%{req.perfume_name}%"))
+        stmt2 = select(Perfume).where(Perfume.name.ilike(f"%{req.perfume_name}%")).limit(200)
         result2 = await db.execute(stmt2)
         perfumes = result2.scalars().all()
 
@@ -374,9 +375,13 @@ async def predict_endpoint(
         dry_down_character=predictions.get("dry_down_character", ""),
         model_version=settings.model_version,
     )
-    db.add(pred_row)
-    await db.commit()
-    await db.refresh(pred_row)
+    try:
+        db.add(pred_row)
+        await db.commit()
+        await db.refresh(pred_row)
+    except Exception as _e:
+        logger.warning(f"Prediction log DB save failed (non-fatal): {_e}")
+        await db.rollback()
 
     result_out = {
         "perfume": {

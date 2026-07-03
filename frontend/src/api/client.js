@@ -7,8 +7,11 @@ const api = axios.create({
 
 export const isAdminMode = () => localStorage.getItem('ss_admin_mode') === 'true'
 
-const adminHeaders = () =>
-  isAdminMode() ? { 'x-admin-mode': 'true' } : {}
+export const adminHeaders = () => {
+  const isAdmin = isAdminMode()
+  const adminKey = import.meta.env.VITE_ADMIN_KEY || 'SCENT_ADMIN_2025'
+  return isAdmin ? { 'x-admin-key': adminKey } : {}
+}
 
 export const predictPerfume = (perfumeName, brand, context) =>
   api
