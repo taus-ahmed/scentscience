@@ -5,9 +5,9 @@ import {
 } from 'recharts'
 
 const FAMILY_NAMES = [
-  'citrus', 'floral', 'woody', 'oriental', 'fresh', 'gourmand',
+  'citrus', 'woody', 'floral', 'oriental', 'fresh', 'gourmand',
   'chypre', 'fougere', 'aquatic', 'spicy', 'earthy', 'green',
-  'musky', 'aromatic', 'smoky', 'resinous', 'powdery',
+  'powdery', 'smoky', 'resinous', 'musky', 'animalic',
 ]
 
 const TIP_STYLE = {
@@ -20,7 +20,8 @@ export default function FamilyRadar({ familyFeatures }) {
 
   const data = FAMILY_NAMES.map(f => ({
     subject: f[0].toUpperCase() + f.slice(1),
-    value: familyFeatures[f] || 0,
+    value: Math.round((familyFeatures[f] || 0) * 100),
+    fullMark: 100,
   }))
 
   if (data.every(d => d.value === 0)) return null
@@ -30,11 +31,11 @@ export default function FamilyRadar({ familyFeatures }) {
       <p className="text-xs font-bold uppercase tracking-wide mb-3 sm:mb-4" style={{ color: '#9B8E7A' }}>
         Note Family DNA
       </p>
-      <ResponsiveContainer width="100%" height={700}>
-        <ReRadarChart cx="50%" cy="50%" outerRadius={300} data={data}>
+      <ResponsiveContainer width="100%" height={380}>
+        <ReRadarChart cx="50%" cy="50%" outerRadius="42%" data={data}>
           <PolarGrid stroke="#1A2035" />
           <PolarAngleAxis dataKey="subject" tick={{ fill: '#5A5245', fontSize: 10 }} />
-          <PolarRadiusAxis angle={90} domain={[0, 1]} tick={false} axisLine={false} />
+          <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
           <Radar
             name="Family"
             dataKey="value"
@@ -45,7 +46,7 @@ export default function FamilyRadar({ familyFeatures }) {
           />
           <Tooltip
             contentStyle={TIP_STYLE}
-            formatter={v => [(v * 100).toFixed(0) + '%', 'Weight']}
+            formatter={v => [v + '%', 'Weight']}
           />
         </ReRadarChart>
       </ResponsiveContainer>
