@@ -5,22 +5,31 @@ const TIMES = ['Morning', 'Afternoon', 'Evening', 'Night']
 const S_KEYS = ['season_spring', 'season_summer', 'season_fall', 'season_winter']
 const T_KEYS = ['time_morning', 'time_afternoon', 'time_evening', 'time_night']
 
-function cellStyle(norm) {
-  // Cold → hot color ramp based on relative intensity (norm 0–1)
-  if (norm >= 0.9) {
-    return {
-      background: 'rgba(220,185,90,1)',
-      boxShadow: '0 0 10px rgba(201,168,76,0.55)',
-    }
-  }
-  if (norm >= 0.7) return { background: 'rgba(201,168,76,0.9)' }
-  if (norm >= 0.5) return { background: 'rgba(180,145,60,0.7)' }
-  return { background: 'rgba(100,90,70,0.5)' }
+function getCellStyle(score) {
+  if (score === null || score === undefined) return { background: 'rgba(30,35,55,0.6)' };
+  const v = Math.max(0, Math.min(10, score));
+  if (v <= 3) return { background: 'rgba(60,55,45,0.5)', color: '#9B8E7A' };
+  if (v <= 5) return { background: 'rgba(110,90,50,0.65)', color: '#C4A86A' };
+  if (v <= 7) return { background: 'rgba(160,128,58,0.8)', color: '#E8D4A0' };
+  if (v <= 8.5) return { background: 'rgba(201,168,76,0.9)', color: '#fff' };
+  return {
+    background: 'rgba(220,185,90,1)',
+    color: '#fff',
+    boxShadow: '0 0 12px rgba(201,168,76,0.6)',
+  };
 }
 
 export default function ContextHeatmap({ predictions: p }) {
+  // Normalize each axis to 0-1 independently so mixed scales (e.g. season 0-10,
+  // time 0-1) don't cause one dimension to dominate after multiplication.
+  const sMax = Math.max(...S_KEYS.map(k => p[k] || 0), 0.001)
+  const tMax = Math.max(...T_KEYS.map(k => p[k] || 0), 0.001)
   const raw = SEASONS.map((_, si) =>
-    TIMES.map((_, ti) => (p[S_KEYS[si]] || 0) * (p[T_KEYS[ti]] || 0))
+    TIMES.map((_, ti) => {
+      const s = (p[S_KEYS[si]] || 0) / sMax
+      const t = (p[T_KEYS[ti]] || 0) / tMax
+      return s * 0.7 + t * 0.3
+    })
   )
 
   const maxVal = Math.max(...raw.flat(), 1)
@@ -28,8 +37,11 @@ export default function ContextHeatmap({ predictions: p }) {
 
   return (
     <div className="rounded-xl p-4 sm:p-6 glass-card" style={{ background: '#111729', border: '1px solid rgba(201,168,76,0.15)' }}>
-      <p className="text-xs font-bold uppercase tracking-wide mb-4" style={{ color: '#9B8E7A' }}>
-        Best Moments
+      <p className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: '#9B8E7A' }}>
+        Wear Intensity
+      </p>
+      <p className="text-xs mb-3" style={{ color: '#5A5245' }}>
+        Higher = stronger projection &amp; season fit. Longevity increases in cooler weather independently.
       </p>
       <div className="overflow-x-auto">
         <div style={{ display: 'grid', gridTemplateColumns: '60px repeat(4, 1fr)', gap: '5px', minWidth: '260px' }}>
@@ -49,11 +61,12 @@ export default function ContextHeatmap({ predictions: p }) {
               </div>
               {TIMES.map((_, ti) => {
                 const norm = cells[si][ti]
-                const cs = cellStyle(norm)
+                const score = norm * 10
+                const cs = getCellStyle(score)
                 return (
                   <div
                     key={ti}
-                    title={`${season} ${TIMES[ti]}: ${(norm * 10).toFixed(1)}`}
+                    title={`${season} ${TIMES[ti]}: ${score.toFixed(1)}`}
                     style={{
                       ...cs,
                       borderRadius: '6px',
@@ -61,8 +74,8 @@ export default function ContextHeatmap({ predictions: p }) {
                       textAlign: 'center',
                     }}
                   >
-                    <span style={{ fontSize: '0.68rem', fontWeight: 500, color: norm > 0.55 ? '#F0E6C8' : '#4A4235' }}>
-                      {(norm * 10).toFixed(1)}
+                    <span style={{ fontSize: '0.68rem', fontWeight: 500, color: cs.color }}>
+                      {score.toFixed(1)}
                     </span>
                   </div>
                 )

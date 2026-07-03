@@ -24,6 +24,9 @@ export const getSimilarPerfumes = (name, brand) =>
 export const searchPerfumes = (q, brand) =>
   api.get('/perfumes', { params: { q, brand, limit: 20 } }).then(r => r.data)
 
+export const getAllPerfumes = (limit = 200) =>
+  api.get('/perfumes', { params: { limit } }).then(r => r.data)
+
 export const getNotes = (family) =>
   api.get('/notes', { params: { family } }).then(r => r.data)
 

@@ -5,9 +5,9 @@ import {
 } from 'recharts'
 
 const FAMILY_NAMES = [
-  'citrus', 'woody', 'floral', 'oriental', 'fresh', 'gourmand',
+  'citrus', 'floral', 'woody', 'oriental', 'fresh', 'gourmand',
   'chypre', 'fougere', 'aquatic', 'spicy', 'earthy', 'green',
-  'powdery', 'smoky', 'resinous', 'musky', 'animalic',
+  'musky', 'aromatic', 'smoky', 'resinous', 'powdery',
 ]
 
 const TIP_STYLE = {
@@ -18,19 +18,20 @@ const TIP_STYLE = {
 export default function FamilyRadar({ familyFeatures }) {
   if (!familyFeatures || typeof familyFeatures !== 'object') return null
 
-  const data = FAMILY_NAMES
-    .map(f => ({ subject: f[0].toUpperCase() + f.slice(1), value: familyFeatures[f] || 0 }))
-    .filter(d => d.value > 0.01)
+  const data = FAMILY_NAMES.map(f => ({
+    subject: f[0].toUpperCase() + f.slice(1),
+    value: familyFeatures[f] || 0,
+  }))
 
-  if (data.length < 3) return null
+  if (data.every(d => d.value === 0)) return null
 
   return (
     <div className="rounded-xl p-4 sm:p-6 glass-card" style={{ background: '#111729', border: '1px solid rgba(201,168,76,0.15)' }}>
       <p className="text-xs font-bold uppercase tracking-wide mb-3 sm:mb-4" style={{ color: '#9B8E7A' }}>
         Note Family DNA
       </p>
-      <ResponsiveContainer width="100%" height={260}>
-        <ReRadarChart cx="50%" cy="50%" outerRadius="72%" data={data}>
+      <ResponsiveContainer width="100%" height={700}>
+        <ReRadarChart cx="50%" cy="50%" outerRadius={300} data={data}>
           <PolarGrid stroke="#1A2035" />
           <PolarAngleAxis dataKey="subject" tick={{ fill: '#5A5245', fontSize: 10 }} />
           <PolarRadiusAxis angle={90} domain={[0, 1]} tick={false} axisLine={false} />

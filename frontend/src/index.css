@@ -2,7 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
+  --bg: #080C18;
+  --surface: #111729;
+  --surface2: #0d1424;
+  --accent: #C9A84C;
+  --accent-hover: #D4B55A;
+  --text-primary: #E8DCC8;
+  --text-secondary: #9B8E7A;
+  --text-muted: #6B6357;
+  --border: rgba(201,168,76,0.12);
+  --green: #5DB89C;
+  --amber: #C9A84C;
+  --red: #C4614A;
+  --blue: #4A90C4;
+  --sidebar-w: 220px;
+  --sidebar-bg: #080C18;
+  --sb-active: #C9A84C;
+
+  /* Legacy aliases so existing components that use --bg-page etc. still work */
   --bg-page: #080C18;
   --bg-card: #111729;
   --bg-card-raised: #141A2E;
@@ -13,53 +37,92 @@
   --gold: #C9A84C;
   --gold-muted: #8B7355;
   --gold-glow: rgba(201,168,76,0.08);
-  --text-primary: #E8DCC8;
-  --text-secondary: #9B8E7A;
-  --text-muted: #4A4235;
   --score-high: #5DB89C;
   --score-mid: #C9A84C;
   --score-low: #C4614A;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
+html {
+  height: 100%;
 }
 
 body {
-  margin: 0;
+  min-height: 100vh;
+  background-color: #080C18;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-color: var(--bg-page);
-  color: var(--text-primary);
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* Ambient radial bloom — light through a perfume flacon */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(201,168,76,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 45% 35% at 92% 8%,  rgba(180,80,60,0.04)  0%, transparent 50%);
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(201,168,76,0.16) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 10%, rgba(180,80,60,0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 15% 80%, rgba(74,100,150,0.05) 0%, transparent 40%),
+    radial-gradient(ellipse at 10% 90%, rgba(150,80,40,0.08) 0%, transparent 40%);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+h1, h2, .fragrance-title {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ── Glass card depth ───────────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(17,23,41,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(201,168,76,0.12);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(201,168,76,0.08), 0 4px 32px rgba(0,0,0,0.4);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(201,168,76,0.22);
+  box-shadow: inset 0 1px 0 rgba(201,168,76,0.12), 0 4px 24px rgba(201,168,76,0.09), 0 8px 40px rgba(0,0,0,0.5);
+}
+
+.score-high { color: var(--green); }
+.score-mid  { color: var(--amber); }
+.score-low  { color: var(--red); }
+
+.section-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(201,168,76,0.3), transparent);
 }
 
 input, select, button {
   font-family: inherit;
   touch-action: manipulation;
-}
-
-html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-
-details > summary {
-  list-style: none;
-}
-details > summary::-webkit-details-marker {
-  display: none;
 }
 
 /* ── Floating particle animation ────────────────────────────────────────── */
@@ -70,17 +133,19 @@ details > summary::-webkit-details-marker {
   100% { transform: translateY(-120px) translateX(var(--p-drift));  opacity: 0; }
 }
 
-/* ── Glass card depth ───────────────────────────────────────────────────── */
-.glass-card {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: inset 0 1px 0 rgba(201,168,76,0.08), 0 4px 32px rgba(0,0,0,0.4);
-  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+.particle {
+  position: fixed;
+  bottom: -4px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation-name: particle-float;
+  animation-duration: var(--p-dur, 12s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  z-index: 2;
 }
-.glass-card:hover {
-  box-shadow:
-    inset 0 1px 0 rgba(201,168,76,0.12),
-    0 8px 40px rgba(0,0,0,0.5),
-    0 0 0 1px rgba(201,168,76,0.20);
-  border-color: rgba(201,168,76,0.30) !important;
-}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.5); }
