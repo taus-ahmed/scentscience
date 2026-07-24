@@ -70,19 +70,19 @@ function bestWornSentence(p) {
 function HeadlineScore({ label, value, sub, color }) {
   return (
     <div
-      className="flex flex-col items-center text-center p-4 sm:p-6 rounded-2xl glass-card"
+      className="flex flex-col items-center text-center p-3 sm:p-6 rounded-2xl glass-card min-w-0"
       style={{ background: '#111729', border: `1px solid ${color}25` }}
     >
-      <span className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#4A4235' }}>
+      <span className="text-[0.65rem] sm:text-xs font-semibold uppercase tracking-wide sm:tracking-widest mb-2 leading-tight" style={{ color: '#4A4235' }}>
         {label}
       </span>
       <span
-        className="text-4xl sm:text-5xl font-black leading-none mb-1.5"
-        style={{ color, fontFamily: "'Playfair Display', Georgia, serif" }}
+        className="text-2xl sm:text-5xl font-black leading-none mb-1.5"
+        style={{ color, fontFamily: "'Playfair Display', Georgia, serif", whiteSpace: 'nowrap' }}
       >
         {value}
       </span>
-      <span className="text-xs" style={{ color: '#4A4235' }}>{sub}</span>
+      <span className="text-[0.65rem] sm:text-xs leading-tight" style={{ color: '#4A4235' }}>{sub}</span>
     </div>
   )
 }
@@ -651,11 +651,9 @@ export default function Dashboard() {
 
           <SectionDivider />
 
-          {/* NLP Conclusion — moved above charts */}
+          {/* Scent Analysis — compact conclusion above charts */}
           <NLPConclusion
             conclusion={p.nlp_conclusion}
-            instagramBrief={p.instagram_brief}
-            perfumeName={`${result.perfume.brand} ${result.perfume.name}`}
             confidenceScore={p.confidence_score}
             modelVersion={p.model_version}
           />

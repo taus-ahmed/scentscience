@@ -149,3 +149,39 @@ input, select, button {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.5); }
+
+/* Prevent iOS from auto-zooming inputs; keep recharts SVG from overflowing */
+.recharts-responsive-container { width: 100% !important; }
+svg { max-width: 100%; }
+
+/* ── Mobile tuning (phones / Chrome device-mode recording) ───────────────── */
+@media (max-width: 640px) {
+  /* Comfortable tap targets */
+  button, a, summary, input, textarea, select { touch-action: manipulation; }
+  button, summary { min-height: 40px; }
+
+  /* Softer blur = smoother scrolling while recording on mobile */
+  .glass-card {
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    box-shadow: 0 2px 18px rgba(0,0,0,0.4);
+  }
+  /* No sticky hover state on touch */
+  .glass-card:hover {
+    border-color: rgba(201,168,76,0.12);
+    box-shadow: 0 2px 18px rgba(0,0,0,0.4);
+  }
+
+  /* Keep long words (perfume names, temp ranges) from forcing horizontal scroll */
+  h1, h2, p, span, div { overflow-wrap: anywhere; }
+
+  /* Recharts axis labels a touch smaller so they don't collide on narrow width */
+  .recharts-cartesian-axis-tick text,
+  .recharts-polar-angle-axis-tick text { font-size: 10px; }
+}
+
+/* Respect users who prefer reduced motion — also calms recordings */
+@media (prefers-reduced-motion: reduce) {
+  .particle { animation: none; opacity: 0.2; }
+  * { transition-duration: 0.01ms !important; }
+}

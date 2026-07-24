@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { sendChat } from '../api/client.js'
 
 const WELCOME = {
@@ -147,6 +147,28 @@ export default function ChatWidget() {
   const bottomRef = useRef(null)
   const inputRef = useRef(null)
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // Presentation / screen-recording mode: hide the guide entirely.
+  // Trigger with a URL param (?clean=1 or ?present=1). Once mounted you can also
+  // toggle it live by pressing "g" (except while typing in a field).
+  const cleanParam = new URLSearchParams(location.search).get('clean')
+  const presentParam = new URLSearchParams(location.search).get('present')
+  const forcedHidden = ['1', 'true', 'yes'].includes((cleanParam || presentParam || '').toLowerCase())
+  const [hidden, setHidden] = useState(forcedHidden)
+
+  useEffect(() => { setHidden(forcedHidden) }, [forcedHidden])
+
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      const tag = (e.target?.tagName || '').toLowerCase()
+      const typing = tag === 'input' || tag === 'textarea' || e.target?.isContentEditable
+      if (typing) return
+      if (e.key === 'g' || e.key === 'G') setHidden(v => !v)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -197,6 +219,9 @@ export default function ChatWidget() {
     navigate(`/?name=${encodeURIComponent(p.name)}&brand=${encodeURIComponent(p.brand)}`)
     setOpen(false)
   }
+
+  // Hidden for screen recording — render nothing (no FAB, no panel).
+  if (hidden) return null
 
   return (
     <>
