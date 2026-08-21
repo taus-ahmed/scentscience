@@ -40,6 +40,29 @@ const OCC_LABELS = {
   occ_formal: 'formal', occ_sport: 'sport', occ_travel: 'travel',
 }
 
+const GENDER_META = {
+  masculine: { label: 'For Him', color: 'var(--gender-masculine)', bg: '#0D1520' },
+  feminine: { label: 'For Her', color: 'var(--gender-feminine)', bg: '#1A0F16' },
+  unisex: { label: 'For Him & Her', color: 'var(--gender-unisex)', bg: '#150F1A' },
+}
+
+function GenderBadge({ genderVote }) {
+  const meta = GENDER_META[genderVote]
+  if (!meta) return null
+  return (
+    <span
+      className="px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap"
+      style={{
+        background: meta.bg,
+        border: `1px solid color-mix(in srgb, ${meta.color} 40%, transparent)`,
+        color: meta.color,
+      }}
+    >
+      {meta.label}
+    </span>
+  )
+}
+
 function scoreColor(v) {
   if (v == null || isNaN(v)) return '#C9A84C'
   if (v > 7) return '#5DB89C'
@@ -512,8 +535,15 @@ export default function Dashboard() {
               >
                 {result.perfume.name}
               </div>
-              <div className="text-xs mt-0.5" style={{ color: '#5A5245' }}>
-                {result.perfume.concentration}
+              <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                <span className="text-xs" style={{ color: '#5A5245' }}>
+                  {result.perfume.concentration}
+                </span>
+                <GenderBadge genderVote={result.perfume.gender_vote} />
+                <NLPConclusion
+                  confidenceScore={p.confidence_score}
+                  modelVersion={p.model_version}
+                />
               </div>
               <FamilyChips familyFeatures={p.family_features} />
             </div>
@@ -648,15 +678,6 @@ export default function Dashboard() {
               color="#8B7355"
             />
           </div>
-
-          <SectionDivider />
-
-          {/* Scent Analysis — compact conclusion above charts */}
-          <NLPConclusion
-            conclusion={p.nlp_conclusion}
-            confidenceScore={p.confidence_score}
-            modelVersion={p.model_version}
-          />
 
           <SectionDivider label="Fragrance DNA" />
 

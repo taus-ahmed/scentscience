@@ -7,7 +7,6 @@ class Settings(BaseSettings):
     model_config = ConfigDict(env_file=".env", protected_namespaces=("settings_",))
 
     database_url: str = "postgresql://user:password@localhost:5432/scentscience"
-    anthropic_api_key: str = ""
     fragrantica_scrape_delay: float = 3.0
     model_version: str = "1.0.0"
     frontend_url: str = "http://localhost:5173"

@@ -1,16 +1,16 @@
-import difflib
 import hashlib
 import json
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, or_
+from sqlalchemy import select
 from typing import Optional
 from cachetools import TTLCache
 
 from models.database import get_db
 from models.perfume import Perfume
 from limiter import limiter
+from search_utils import trgm_search
 
 router = APIRouter()
 
@@ -33,17 +33,16 @@ async def list_perfumes(
     if key in search_cache:
         return search_cache[key]
 
-    stmt = select(Perfume)
     if q:
-        stmt = stmt.where(
-            or_(Perfume.name.ilike(f"%{q}%"), Perfume.brand.ilike(f"%{q}%"))
-        )
-    if brand:
-        stmt = stmt.where(Perfume.brand.ilike(f"%{brand}%"))
-    stmt = stmt.offset(offset).limit(limit)
-    result = await db.execute(stmt)
-    perfumes = result.scalars().all()
-    out = [_serialize(p) for p in perfumes]
+        out = await trgm_search(db, q, brand, limit=limit, offset=offset)
+    else:
+        stmt = select(Perfume)
+        if brand:
+            stmt = stmt.where(Perfume.brand.ilike(f"%{brand}%"))
+        stmt = stmt.offset(offset).limit(limit)
+        result = await db.execute(stmt)
+        perfumes = result.scalars().all()
+        out = [_serialize(p) for p in perfumes]
     search_cache[key] = out
     return out
 
@@ -61,12 +60,10 @@ async def get_similar_perfumes(
     if not name:
         return []
 
-    first_word = name.split()[0]
-    stmt = select(Perfume).where(Perfume.name.ilike(f"%{first_word}%")).limit(60)
-    res = await db.execute(stmt)
-    candidates = res.scalars().all()
+    query_str = f"{brand or ''} {name}".strip()
+    rows = await trgm_search(db, query_str, limit=limit)
 
-    if not candidates:
+    if not rows:
         stmt2 = (
             select(Perfume)
             .where(Perfume.rating_count.isnot(None))
@@ -74,31 +71,20 @@ async def get_similar_perfumes(
             .limit(limit)
         )
         res2 = await db.execute(stmt2)
-        candidates = res2.scalars().all()
+        rows = [
+            {"id": p.id, "name": p.name, "brand": p.brand, "concentration": p.concentration, "score": 0.0}
+            for p in res2.scalars().all()
+        ]
 
-    if not candidates:
-        return []
-
-    query_str = f"{brand or ''} {name}".lower().strip()
-    scored = [
-        (
-            p,
-            difflib.SequenceMatcher(
-                None, query_str, f"{p.brand or ''} {p.name}".lower().strip()
-            ).ratio(),
-        )
-        for p in candidates
-    ]
-    scored.sort(key=lambda x: -x[1])
     return [
         {
-            "id": p.id,
-            "name": p.name,
-            "brand": p.brand,
-            "concentration": p.concentration,
-            "similarity": round(score, 2),
+            "id": r["id"],
+            "name": r["name"],
+            "brand": r["brand"],
+            "concentration": r["concentration"],
+            "similarity": round(r["score"], 2),
         }
-        for p, score in scored[:limit]
+        for r in rows[:limit]
     ]
 
 

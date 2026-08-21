@@ -1,5 +1,4 @@
 import asyncio
-import difflib
 import hashlib
 import json
 import logging
@@ -15,12 +14,12 @@ from models.database import get_db
 from models.perfume import Perfume
 from models.prediction import PredictionResult
 from ml.model import predict as ml_predict, load_models, train_all_models
-from ml.nlp import generate_nlp_conclusion
 from ml.validators import validate_predictions
 from ml.features import apply_context_modifiers, compute_note_coverage
 from ml.note_mapper import build_perfume_dict_from_notes, normalize_concentration
 from config import get_settings
 from limiter import limiter
+from search_utils import trgm_search
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -129,16 +128,13 @@ async def _find_similar(
     limit: int = 3,
 ) -> list[dict]:
     """Return up to `limit` DB perfumes most similar to the searched name/brand."""
-    _words = (name or "").split()
-    first_word = _words[0] if _words else None
-    if not first_word:
+    if not name:
         return []
 
-    stmt = select(Perfume).where(Perfume.name.ilike(f"%{first_word}%")).limit(60)
-    res = await db.execute(stmt)
-    candidates = res.scalars().all()
+    query_str = f"{brand or ''} {name}".strip()
+    rows = await trgm_search(db, query_str, limit=limit)
 
-    if not candidates:
+    if not rows:
         # fallback: most-rated perfumes
         stmt2 = (
             select(Perfume)
@@ -147,44 +143,30 @@ async def _find_similar(
             .limit(limit)
         )
         res2 = await db.execute(stmt2)
-        candidates = res2.scalars().all()
-
-    if not candidates:
-        return []
-
-    query_str = f"{brand or ''} {name}".lower().strip()
-    scored = [
-        (
-            p,
-            difflib.SequenceMatcher(
-                None, query_str, f"{p.brand or ''} {p.name}".lower().strip()
-            ).ratio(),
-        )
-        for p in candidates
-    ]
-    scored.sort(key=lambda x: -x[1])
+        rows = [
+            {"id": p.id, "name": p.name, "brand": p.brand, "concentration": p.concentration, "score": 0.0}
+            for p in res2.scalars().all()
+        ]
 
     return [
         {
-            "id": p.id,
-            "name": p.name,
-            "brand": p.brand,
-            "concentration": p.concentration,
-            "similarity": round(score, 2),
+            "id": r["id"],
+            "name": r["name"],
+            "brand": r["brand"],
+            "concentration": r["concentration"],
+            "similarity": round(r["score"], 2),
         }
-        for p, score in scored[:limit]
+        for r in rows[:limit]
     ]
 
 
 async def _run_ml_pipeline(
     perfume_dict: dict,
-    name: str,
-    brand: str,
     context: Optional[PredictContext],
     models: dict,
     has_real_pyramid: bool,
 ) -> dict:
-    """Run ML models + context modifiers + validation + NLP for a perfume dict."""
+    """Run ML models + context modifiers + validation for a perfume dict."""
     raw_predictions = ml_predict(perfume_dict, models)
     ctx_dict = context.model_dump() if context else {}
     raw_predictions = apply_context_modifiers(raw_predictions, ctx_dict)
@@ -209,10 +191,6 @@ async def _run_ml_pipeline(
         total_community_votes=0,
     )
     predictions["model_version"] = settings.model_version
-
-    nlp_conclusion, instagram_brief = await generate_nlp_conclusion(name, brand, predictions)
-    predictions["nlp_conclusion"] = nlp_conclusion
-    predictions["instagram_brief"] = instagram_brief
     return predictions
 
 
@@ -282,8 +260,6 @@ async def predict_endpoint(
             models = await _get_models()
             predictions = await _run_ml_pipeline(
                 perfume_dict=perfume_dict,
-                name=req.perfume_name,
-                brand=req.brand or "Unknown",
                 context=req.context,
                 models=models,
                 has_real_pyramid=False,  # AI-inferred → inferred pyramid tier
@@ -296,6 +272,7 @@ async def predict_endpoint(
                     "brand": req.brand or "Unknown",
                     "concentration": normalize_concentration(inferred["concentration"]),
                     "accords": [inferred["family"]] if inferred.get("family") else [],
+                    "gender_vote": None,
                 },
                 "predictions": predictions,
                 "prediction_id": None,
@@ -353,12 +330,6 @@ async def predict_endpoint(
     )
     predictions["model_version"] = settings.model_version
 
-    nlp_conclusion, instagram_brief = await generate_nlp_conclusion(
-        matched_perfume.name, matched_perfume.brand, predictions
-    )
-    predictions["nlp_conclusion"] = nlp_conclusion
-    predictions["instagram_brief"] = instagram_brief
-
     _DB_EXCLUDE = frozenset({
         "model_version", "family_features", "confidence_breakdown",
         "geo_tropical_cities", "geo_arid_cities", "geo_cold_cities",
@@ -390,6 +361,7 @@ async def predict_endpoint(
             "brand": matched_perfume.brand,
             "concentration": matched_perfume.concentration,
             "accords": matched_perfume.accords,
+            "gender_vote": matched_perfume.gender_vote,
         },
         "predictions": predictions,
         "prediction_id": pred_row.id,
@@ -423,8 +395,6 @@ async def predict_from_notes(
     models = await _get_models()
     predictions = await _run_ml_pipeline(
         perfume_dict=perfume_dict,
-        name=req.name,
-        brand=req.brand,
         context=None,
         models=models,
         has_real_pyramid=True,  # user provided real notes
@@ -438,6 +408,7 @@ async def predict_from_notes(
             "brand": req.brand,
             "concentration": normalize_concentration(req.concentration),
             "accords": [req.family] if req.family else [],
+            "gender_vote": None,
         },
         "predictions": predictions,
         "prediction_id": None,

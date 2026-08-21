@@ -20,6 +20,17 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     await init_db()
     try:
+        from sqlalchemy import text
+        from models.database import engine as _engine
+        async with _engine.begin() as conn:
+            await conn.execute(text("CREATE EXTENSION IF NOT EXISTS pg_trgm"))
+            await conn.execute(text(
+                "CREATE INDEX IF NOT EXISTS idx_perfumes_brand_name_trgm "
+                "ON perfumes USING gin ((brand || ' ' || name) gin_trgm_ops)"
+            ))
+    except Exception as exc:
+        logger.warning("pg_trgm setup failed (search will fall back to ILIKE): %s", exc)
+    try:
         from sqlalchemy import select
         from models.perfume import Perfume
         from ml.brand_dna import initialize_brand_dna

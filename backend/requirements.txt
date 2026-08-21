@@ -14,8 +14,7 @@ numpy==2.1.1
 pandas==2.2.3
 joblib==1.4.2
 
-# NLP / API
-anthropic==0.34.2
+# API
 httpx==0.27.2
 
 # Scraping

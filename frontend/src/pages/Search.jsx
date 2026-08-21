@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { searchPerfumes, getAllPerfumes } from '../api/client.js'
 import { useNavigate } from 'react-router-dom'
+import { BRANDS } from '../constants/brands.js'
 
 const GOLD = '#C9A84C'
 const CARD_BG = '#111827'
@@ -12,15 +13,28 @@ const BADGE_STYLE = {
   fontSize: '0.7rem', color: '#94a3b8', marginRight: '0.3rem',
 }
 
-const BRANDS = [
-  'Acqua di Parma', 'Amouage', 'Burberry', 'Calvin Klein', 'Carolina Herrera',
-  'Chanel', 'Creed', 'Dior', 'Dolce & Gabbana', 'Frederic Malle',
-  'Giorgio Armani', 'Givenchy', 'Guerlain', 'Hermès', 'Initio',
-  'Jean Paul Gaultier', 'Maison Margiela', 'Memo Paris', 'Nishane',
-  'Paco Rabanne', 'Parfums de Marly', "Penhaligon's", 'Santa Maria Novella',
-  'Serge Lutens', 'Thierry Mugler', 'Tom Ford', 'Viktor & Rolf', 'Versace',
-  'Xerjoff', 'Yves Saint Laurent',
-]
+const GENDER_META = {
+  masculine: { label: 'For Him', color: 'var(--gender-masculine)', bg: '#0D1520' },
+  feminine: { label: 'For Her', color: 'var(--gender-feminine)', bg: '#1A0F16' },
+  unisex: { label: 'For Him & Her', color: 'var(--gender-unisex)', bg: '#150F1A' },
+}
+
+function GenderBadge({ genderVote }) {
+  const meta = GENDER_META[genderVote]
+  if (!meta) return null
+  return (
+    <span
+      style={{
+        display: 'inline-block', padding: '0.1rem 0.5rem', borderRadius: '999px',
+        fontSize: '0.65rem', fontWeight: 700, color: meta.color,
+        background: meta.bg,
+        border: `1px solid color-mix(in srgb, ${meta.color} 40%, transparent)`,
+      }}
+    >
+      {meta.label}
+    </span>
+  )
+}
 
 function accordIntersects(arr, keywords) {
   if (!arr || arr.length === 0) return false
@@ -79,7 +93,10 @@ function PerfumeCard({ p, onClick }) {
       onMouseEnter={e => { e.currentTarget.style.borderColor = '#4c1d95' }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = '#1f2937' }}
     >
-      <div style={{ fontWeight: 700, color: '#fff', marginBottom: '0.2rem' }}>{p.name}</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.2rem' }}>
+        <span style={{ fontWeight: 700, color: '#fff' }}>{p.name}</span>
+        <GenderBadge genderVote={p.gender_vote} />
+      </div>
       <div style={{ fontSize: '0.85rem', color: '#a78bfa', marginBottom: '0.6rem' }}>
         {p.brand}{p.concentration ? ` · ${p.concentration}` : ''}
       </div>

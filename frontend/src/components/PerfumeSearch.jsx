@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { searchPerfumes } from '../api/client.js'
+import { splitBrandPrefix } from '../constants/brands.js'
 
 const SEASON_OPTS  = ['spring', 'summer', 'fall', 'winter']
 const TIME_OPTS    = ['morning', 'afternoon', 'evening', 'night']
@@ -75,11 +76,26 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
 
   const submit = () => {
     setShowSuggestions(false)
+
+    // If the user typed "Brand Name" fully into the Name field and left
+    // Brand empty, split it so the search (and the UI) reflect both fields.
+    let finalName = name
+    let finalBrand = brand
+    if (!brand.trim()) {
+      const split = splitBrandPrefix(name)
+      if (split) {
+        finalName = split.name
+        finalBrand = split.brand
+        setName(split.name)
+        setBrand(split.brand)
+      }
+    }
+
     const context = {}
     if (skinType) context.skin_type = skinType === 'combo' ? 'combination' : skinType
     if (season) context.season = season
     if (timeOfDay) context.time_of_day = timeOfDay
-    onSearch({ name, brand, context: Object.keys(context).length ? context : null })
+    onSearch({ name: finalName, brand: finalBrand, context: Object.keys(context).length ? context : null })
   }
 
   const pickSuggestion = sg => {

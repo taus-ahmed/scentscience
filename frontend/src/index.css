@@ -40,6 +40,11 @@
   --score-high: #5DB89C;
   --score-mid: #C9A84C;
   --score-low: #C4614A;
+
+  /* Gender badge ("For Him" / "For Her" / "For Him & Her") */
+  --gender-masculine: #6B9BC4;
+  --gender-feminine: #C47D9A;
+  --gender-unisex: #9B7FC4;
 }
 
 html {
