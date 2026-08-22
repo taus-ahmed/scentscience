@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { searchPerfumes } from '../api/client.js'
 import { splitBrandPrefix } from '../constants/brands.js'
 
@@ -18,7 +18,7 @@ const BTN_STYLE = {
 const SUGGESTIONS_STYLE = {
   position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10,
   background: '#141A2E', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '8px',
-  overflow: 'hidden', marginTop: '4px',
+  maxHeight: '320px', overflowY: 'auto', marginTop: '4px',
 }
 
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1) }
@@ -62,15 +62,52 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
   const [suggestions, setSuggestions] = useState([])
   const [showSuggestions, setShowSuggestions] = useState(false)
 
+  const containerRef = useRef(null)
+  const skipNextFetchRef = useRef(false)
+  const abortRef = useRef(null)
+  const cacheRef = useRef(new Map())
+
+  // Closes the dropdown on any click outside the input/suggestions area —
+  // a defensive backstop independent of the debounce/pick race below.
   useEffect(() => {
+    const handleOutsideClick = e => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener('mousedown', handleOutsideClick)
+    return () => document.removeEventListener('mousedown', handleOutsideClick)
+  }, [])
+
+  useEffect(() => {
+    // pickSuggestion sets `name` too — skip the fetch that would otherwise
+    // reopen the dropdown right after a selection was made.
+    if (skipNextFetchRef.current) {
+      skipNextFetchRef.current = false
+      return
+    }
     if (name.length < 2) { setSuggestions([]); return }
+
+    const cacheKey = name.trim().toLowerCase()
+    const cached = cacheRef.current.get(cacheKey)
+    if (cached) {
+      setSuggestions(cached)
+      setShowSuggestions(true)
+      return
+    }
+
     const timer = setTimeout(async () => {
+      abortRef.current?.abort()
+      const controller = new AbortController()
+      abortRef.current = controller
       try {
-        const results = await searchPerfumes(name)
-        setSuggestions(results.slice(0, 6))
+        const results = await searchPerfumes(name, undefined, controller.signal)
+        const top = results.slice(0, 6)
+        cacheRef.current.set(cacheKey, top)
+        setSuggestions(top)
         setShowSuggestions(true)
-      } catch { /* ignore */ }
-    }, 300)
+      } catch { /* ignore — includes aborted/superseded requests */ }
+    }, 150)
     return () => clearTimeout(timer)
   }, [name])
 
@@ -99,14 +136,16 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
   }
 
   const pickSuggestion = sg => {
+    skipNextFetchRef.current = true
+    setSuggestions([])
+    setShowSuggestions(false)
     setName(sg.name)
     setBrand(sg.brand)
-    setShowSuggestions(false)
   }
 
   return (
     <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
-      <div className="relative mb-3">
+      <div className="relative mb-3" ref={containerRef}>
         {/* Search row */}
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <input

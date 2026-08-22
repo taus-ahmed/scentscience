@@ -32,21 +32,28 @@ async def trgm_search(
         return await _ilike_fallback(db, q, brand_filter, limit, offset)
 
     sql = text("""
-        SELECT id, name, brand, concentration, gender_vote,
-               similarity(brand || ' ' || name, :q) AS score
-        FROM perfumes
-        WHERE (
-            similarity(brand || ' ' || name, :q) > :threshold
-            OR (brand || ' ' || name) ILIKE ALL(:token_patterns)
+        WITH matches AS (
+            SELECT id, name, brand, concentration, gender_vote, rating_count,
+                   similarity(brand || ' ' || name, :q) AS score
+            FROM perfumes
+            WHERE (
+                similarity(brand || ' ' || name, :q) > :threshold
+                OR (brand || ' ' || name) ILIKE ALL(:token_patterns)
+                OR name ILIKE :prefix_pattern
+                OR brand ILIKE :prefix_pattern
+            )
+            AND (:brand_filter = '' OR brand ILIKE :brand_pattern)
         )
-        AND (:brand_filter = '' OR brand ILIKE :brand_pattern)
-        ORDER BY score DESC
+        SELECT id, name, brand, concentration, gender_vote, score
+        FROM matches
+        ORDER BY score * (1 + ln(1 + COALESCE(rating_count, 0)) / 10.0) DESC
         LIMIT :limit OFFSET :offset
     """)
     result = await db.execute(sql, {
         "q": q,
         "threshold": TRGM_THRESHOLD,
         "token_patterns": token_patterns,
+        "prefix_pattern": f"{q}%",
         "brand_filter": brand_filter,
         "brand_pattern": f"%{brand_filter}%",
         "limit": limit,
@@ -70,6 +77,7 @@ async def _ilike_fallback(
         FROM perfumes
         WHERE (lower(brand) LIKE lower(:like) OR lower(name) LIKE lower(:like))
         AND (:brand_filter = '' OR lower(brand) LIKE lower(:brand_pattern))
+        ORDER BY COALESCE(rating_count, 0) DESC
         LIMIT :limit OFFSET :offset
     """)
     result = await db.execute(fallback_sql, {
