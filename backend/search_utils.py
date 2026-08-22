@@ -3,6 +3,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 TRGM_THRESHOLD = 0.15
+SHORT_QUERY_LEN = 3
 
 
 async def trgm_search(
@@ -13,10 +14,17 @@ async def trgm_search(
     offset: int = 0,
 ) -> list[dict]:
     """
-    Search perfumes by combined `brand || ' ' || name` using pg_trgm similarity,
-    OR'd with a tokenized ILIKE ALL match (so multi-word queries like
-    "tom ford oud wood" match regardless of trigram score). Falls back to a
-    plain ILIKE search if both approaches return nothing.
+    Search perfumes by pg_trgm similarity, scoring name and brand separately
+    (so a strong match on either field alone can surface a result, e.g. a
+    right-name/wrong-brand query) and taking the best of the two plus the
+    combined `brand || ' ' || name` similarity. OR'd with a tokenized ILIKE
+    ALL match for word-order tolerance, and a prefix match for very short
+    queries where trigram similarity is unreliable. Falls back to a plain
+    ILIKE search if nothing matches.
+
+    Results are ranked by similarity x (1 + log(1 + rating_count)) so
+    well-known originals with real rating history outrank low-signal
+    name-alike clones at similar text similarity.
     """
     q = (q or "").strip()
     if not q:
@@ -25,28 +33,36 @@ async def trgm_search(
     tokens = q.split()
     token_patterns = [f"%{t}%" for t in tokens]
     brand_filter = (brand or "").strip()
+    short_query = len(q) < SHORT_QUERY_LEN
 
     # pg_trgm's similarity() only exists on Postgres — local/dev sqlite goes
     # straight to the ILIKE fallback below.
     if db.bind.dialect.name != "postgresql":
         return await _ilike_fallback(db, q, brand_filter, limit, offset)
 
-    sql = text("""
+    prefix_clause = "OR name ILIKE :prefix_pattern OR brand ILIKE :prefix_pattern" if short_query else ""
+
+    sql = text(f"""
         WITH matches AS (
             SELECT id, name, brand, concentration, gender_vote, rating_count,
-                   similarity(brand || ' ' || name, :q) AS score
+                   GREATEST(
+                       similarity(name, :q),
+                       similarity(brand, :q),
+                       similarity(brand || ' ' || name, :q)
+                   ) AS score
             FROM perfumes
             WHERE (
                 similarity(brand || ' ' || name, :q) > :threshold
+                OR similarity(name, :q) > :threshold
+                OR similarity(brand, :q) > :threshold
                 OR (brand || ' ' || name) ILIKE ALL(:token_patterns)
-                OR name ILIKE :prefix_pattern
-                OR brand ILIKE :prefix_pattern
+                {prefix_clause}
             )
             AND (:brand_filter = '' OR brand ILIKE :brand_pattern)
         )
         SELECT id, name, brand, concentration, gender_vote, score
         FROM matches
-        ORDER BY score * (1 + ln(1 + COALESCE(rating_count, 0)) / 10.0) DESC
+        ORDER BY score * (1 + ln(1 + COALESCE(rating_count, 0))) DESC
         LIMIT :limit OFFSET :offset
     """)
     result = await db.execute(sql, {
@@ -72,6 +88,8 @@ async def _ilike_fallback(
     db: AsyncSession, q: str, brand_filter: str, limit: int, offset: int
 ) -> list[dict]:
     # lower() + LIKE instead of ILIKE so this also works on sqlite (local dev).
+    # No trigram similarity is available here, so rating_count alone drives
+    # the same "popularity-aware" ranking as the primary path.
     fallback_sql = text("""
         SELECT id, name, brand, concentration, gender_vote, 0.0 AS score
         FROM perfumes

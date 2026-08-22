@@ -107,7 +107,7 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
         setSuggestions(top)
         setShowSuggestions(true)
       } catch { /* ignore — includes aborted/superseded requests */ }
-    }, 150)
+    }, 120)
     return () => clearTimeout(timer)
   }, [name])
 
