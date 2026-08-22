@@ -230,7 +230,7 @@ export default function ChatWidget() {
           <div style={s.header}>
             <div style={s.headerTitle}>
               <span>⬡</span>
-              <span>ScentScience Guide</span>
+              <span>DecodeScents Guide</span>
             </div>
             <button style={s.closeBtn} onClick={() => setOpen(false)} title="Close">✕</button>
           </div>

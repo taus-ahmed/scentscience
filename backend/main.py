@@ -58,7 +58,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="ScentScience API",
+    title="DecodeScents API",
     description="ML platform for perfume performance prediction",
     version="1.0.0",
     lifespan=lifespan,

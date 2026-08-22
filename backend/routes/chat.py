@@ -312,7 +312,7 @@ async def chat(req: ChatRequest, db: AsyncSession = Depends(get_db)):
     # ── Fallback ──────────────────────────────────────────────────────
     return ChatResponse(
         answer=(
-            "I'm ScentScience's fragrance guide. Try asking:\n\n"
+            "I'm the DecodeScents fragrance guide. Try asking:\n\n"
             "• \"Best perfume for a job interview\"\n"
             "• \"What lasts all day in summer?\"\n"
             "• \"Compare Sauvage vs Bleu de Chanel\"\n"

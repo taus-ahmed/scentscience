@@ -8,14 +8,14 @@ const T_KEYS = ['time_morning', 'time_afternoon', 'time_evening', 'time_night']
 function getCellStyle(score) {
   if (score === null || score === undefined) return { background: 'rgba(30,35,55,0.6)' };
   const v = Math.max(0, Math.min(10, score));
-  if (v <= 3) return { background: 'rgba(60,55,45,0.5)', color: '#9B8E7A' };
-  if (v <= 5) return { background: 'rgba(110,90,50,0.65)', color: '#C4A86A' };
-  if (v <= 7) return { background: 'rgba(160,128,58,0.8)', color: '#E8D4A0' };
-  if (v <= 8.5) return { background: 'rgba(201,168,76,0.9)', color: '#fff' };
+  if (v <= 3) return { background: 'rgba(58,54,46,0.5)', color: '#8F8574' };
+  if (v <= 5) return { background: 'rgba(92,80,58,0.55)', color: '#B3A382' };
+  if (v <= 7) return { background: 'rgba(126,106,70,0.62)', color: '#CBBB94' };
+  if (v <= 8.5) return { background: 'rgba(158,132,84,0.72)', color: '#E4D6B8' };
   return {
-    background: 'rgba(220,185,90,1)',
-    color: '#fff',
-    boxShadow: '0 0 12px rgba(201,168,76,0.6)',
+    background: 'rgba(182,154,96,0.8)',
+    color: '#F5EDD8',
+    boxShadow: '0 0 8px rgba(182,154,96,0.3)',
   };
 }
 

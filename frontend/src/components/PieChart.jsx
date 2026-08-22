@@ -1,8 +1,8 @@
 import React from 'react'
 import { PieChart as RePieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
-const GENDER_COLORS = ['#6B9BC4', '#C47D9A', '#5DB89C']
-const SKIN_COLORS = ['#C9A84C', '#D4956B', '#5DB89C']
+const GENDER_COLORS = ['#8CA9C2', '#C99CB0', '#A896C7']
+const SKIN_COLORS = ['#C9A84C', '#C9946E', '#A89178']
 
 export default function PieChart({ predictions: p }) {
   const genderData = [

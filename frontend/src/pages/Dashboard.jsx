@@ -41,23 +41,16 @@ const OCC_LABELS = {
 }
 
 const GENDER_META = {
-  masculine: { label: 'For Him', color: 'var(--gender-masculine)', bg: '#0D1520' },
-  feminine: { label: 'For Her', color: 'var(--gender-feminine)', bg: '#1A0F16' },
-  unisex: { label: 'For Him & Her', color: 'var(--gender-unisex)', bg: '#150F1A' },
+  masculine: { label: 'For Him', color: 'var(--gender-masculine)' },
+  feminine: { label: 'For Her', color: 'var(--gender-feminine)' },
+  unisex: { label: 'For Him & Her', color: 'var(--gender-unisex)' },
 }
 
 function GenderBadge({ genderVote }) {
   const meta = GENDER_META[genderVote]
   if (!meta) return null
   return (
-    <span
-      className="px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap"
-      style={{
-        background: meta.bg,
-        border: `1px solid color-mix(in srgb, ${meta.color} 40%, transparent)`,
-        color: meta.color,
-      }}
-    >
+    <span className="text-xs" style={{ color: meta.color }}>
       {meta.label}
     </span>
   )
@@ -244,8 +237,8 @@ function CollapsibleSection({ label, children }) {
 function FullPersonFit({ predictions: p }) {
   const skinData = [
     { label: 'Dry Skin',   value: p.skin_dry_score,  color: '#C9A84C' },
-    { label: 'Oily Skin',  value: p.skin_oily_score,  color: '#D4956B' },
-    { label: 'Combo Skin', value: p.skin_combo_score, color: '#8B7355' },
+    { label: 'Oily Skin',  value: p.skin_oily_score,  color: '#C9946E' },
+    { label: 'Combo Skin', value: p.skin_combo_score, color: '#A89178' },
   ]
   const ageData = [
     { label: '18–25', value: p.age_18_25 },
@@ -260,9 +253,9 @@ function FullPersonFit({ predictions: p }) {
     { label: 'Romantic',     value: p.personality_romantic,     color: '#C47D9A' },
   ]
   const genderData = [
-    { label: 'Masculine', value: p.gender_masculine, color: '#6B9BC4' },
-    { label: 'Feminine',  value: p.gender_feminine,  color: '#C47D9A' },
-    { label: 'Unisex',    value: p.gender_unisex,    color: '#5DB89C' },
+    { label: 'Masculine', value: p.gender_masculine, color: '#8CA9C2' },
+    { label: 'Feminine',  value: p.gender_feminine,  color: '#C99CB0' },
+    { label: 'Unisex',    value: p.gender_unisex,    color: '#A896C7' },
   ]
 
   const Bar = ({ label, value, color = '#C9A84C' }) => (
@@ -535,15 +528,14 @@ export default function Dashboard() {
               >
                 {result.perfume.name}
               </div>
-              <div className="flex flex-wrap items-center gap-2 mt-1.5">
+              <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                 <span className="text-xs" style={{ color: '#5A5245' }}>
                   {result.perfume.concentration}
                 </span>
+                {GENDER_META[result.perfume.gender_vote] && (
+                  <span className="text-xs" style={{ color: '#5A5245' }}>·</span>
+                )}
                 <GenderBadge genderVote={result.perfume.gender_vote} />
-                <NLPConclusion
-                  confidenceScore={p.confidence_score}
-                  modelVersion={p.model_version}
-                />
               </div>
               <FamilyChips familyFeatures={p.family_features} />
             </div>
@@ -716,6 +708,14 @@ export default function Dashboard() {
             <FullPersonFit predictions={p} />
             <PieChart predictions={p} />
           </CollapsibleSection>
+
+          {/* Confidence footer — de-emphasized supporting info, out of the header */}
+          <div className="flex justify-center mt-6">
+            <NLPConclusion
+              confidenceScore={p.confidence_score}
+              modelVersion={p.model_version}
+            />
+          </div>
 
         </div>
       )}

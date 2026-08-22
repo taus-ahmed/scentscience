@@ -52,7 +52,7 @@ export default function App() {
     <BrowserRouter>
       <nav style={NAV_BG} className="flex items-center justify-between px-4 py-3 sm:px-8">
         <Link to="/" style={LOGO_COLOR} className="text-lg font-black tracking-tight sm:text-xl">
-          ⬡ ScentScience
+          ⬡ DecodeScents
         </Link>
 
         {/* Desktop links */}
