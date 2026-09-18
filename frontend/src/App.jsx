@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import Dashboard from './pages/Dashboard.jsx'
 import Search from './pages/Search.jsx'
 import AdminUnlock from './pages/AdminUnlock.jsx'
+import About from './pages/About.jsx'
 import ChatWidget from './components/ChatWidget.jsx'
-import Footer from './components/Footer.jsx'
 
 // Deterministic particle configs — no Math.random so values are stable across renders
 const PARTICLE_DATA = Array.from({ length: 14 }, (_, i) => ({
@@ -60,6 +60,7 @@ export default function App() {
         <div className="hidden sm:flex items-center gap-6">
           <Link to="/" style={LINK_COLOR} className="text-sm hover:opacity-80 transition-opacity">Dashboard</Link>
           <Link to="/search" style={LINK_COLOR} className="text-sm hover:opacity-80 transition-opacity">Browse</Link>
+          <Link to="/about" style={LINK_COLOR} className="text-sm hover:opacity-80 transition-opacity">About</Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -79,6 +80,7 @@ export default function App() {
           className="sm:hidden flex flex-col px-5 py-4 gap-4">
           <Link to="/" style={LINK_COLOR} className="text-sm" onClick={() => setMenuOpen(false)}>Dashboard</Link>
           <Link to="/search" style={LINK_COLOR} className="text-sm" onClick={() => setMenuOpen(false)}>Browse</Link>
+          <Link to="/about" style={LINK_COLOR} className="text-sm" onClick={() => setMenuOpen(false)}>About</Link>
         </div>
       )}
 
@@ -86,8 +88,8 @@ export default function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/search" element={<Search />} />
         <Route path="/admin-unlock" element={<AdminUnlock />} />
+        <Route path="/about" element={<About />} />
       </Routes>
-      <Footer />
       <ChatWidget />
       <Particles />
     </BrowserRouter>
