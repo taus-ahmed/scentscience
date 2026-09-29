@@ -1,4 +1,4 @@
-import asyncio
+﻿import asyncio
 import hashlib
 import json
 import logging
@@ -71,7 +71,7 @@ class FromNotesRequest(BaseModel):
     top_notes: list[str] = []
     middle_notes: list[str] = []
     base_notes: list[str] = []
-    concentration: str = "EDP"
+    concentration: str = "Unknown"
     family: Optional[str] = None
 
 
@@ -79,7 +79,7 @@ def _perfume_to_dict(p: Perfume) -> dict:
     return {
         "name": p.name,
         "brand": p.brand,
-        "concentration": p.concentration,
+        "concentration": p.concentration_clean,
         "top_notes": p.top_notes or [],
         "middle_notes": p.middle_notes or [],
         "base_notes": p.base_notes or [],
@@ -144,7 +144,7 @@ async def _find_similar(
         )
         res2 = await db.execute(stmt2)
         rows = [
-            {"id": p.id, "name": p.name, "brand": p.brand, "concentration": p.concentration, "score": 0.0}
+            {"id": p.id, "name": p.name, "brand": p.brand, "concentration": p.concentration_clean, "score": 0.0}
             for p in res2.scalars().all()
         ]
 
@@ -359,7 +359,7 @@ async def predict_endpoint(
             "id": matched_perfume.id,
             "name": matched_perfume.name,
             "brand": matched_perfume.brand,
-            "concentration": matched_perfume.concentration,
+            "concentration": matched_perfume.concentration_clean,
             "accords": matched_perfume.accords,
             "gender_vote": matched_perfume.gender_vote,
         },

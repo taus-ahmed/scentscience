@@ -1,4 +1,4 @@
-import hashlib
+﻿import hashlib
 import json
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -72,7 +72,7 @@ async def get_similar_perfumes(
         )
         res2 = await db.execute(stmt2)
         rows = [
-            {"id": p.id, "name": p.name, "brand": p.brand, "concentration": p.concentration, "score": 0.0}
+            {"id": p.id, "name": p.name, "brand": p.brand, "concentration": p.concentration_clean, "score": 0.0}
             for p in res2.scalars().all()
         ]
 
@@ -103,7 +103,7 @@ def _serialize(p: Perfume) -> dict:
         "id": p.id,
         "name": p.name,
         "brand": p.brand,
-        "concentration": p.concentration,
+        "concentration": p.concentration_clean,
         "top_notes": p.top_notes,
         "middle_notes": p.middle_notes,
         "base_notes": p.base_notes,

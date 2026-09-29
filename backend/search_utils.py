@@ -1,4 +1,4 @@
-"""Shared pg_trgm + tokenized search helpers used by the perfumes and predict routes."""
+﻿"""Shared pg_trgm + tokenized search helpers used by the perfumes and predict routes."""
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -44,7 +44,7 @@ async def trgm_search(
 
     sql = text(f"""
         WITH matches AS (
-            SELECT id, name, brand, concentration, gender_vote, rating_count,
+            SELECT id, name, brand, COALESCE(concentration_clean, concentration) AS concentration, gender_vote, rating_count,
                    GREATEST(
                        similarity(name, :q),
                        similarity(brand, :q),
@@ -60,7 +60,7 @@ async def trgm_search(
             )
             AND (:brand_filter = '' OR brand ILIKE :brand_pattern)
         )
-        SELECT id, name, brand, concentration, gender_vote, score
+        SELECT id, name, brand, COALESCE(concentration_clean, concentration) AS concentration, gender_vote, score
         FROM matches
         ORDER BY score * (1 + ln(1 + COALESCE(rating_count, 0))) DESC
         LIMIT :limit OFFSET :offset
@@ -91,7 +91,7 @@ async def _ilike_fallback(
     # No trigram similarity is available here, so rating_count alone drives
     # the same "popularity-aware" ranking as the primary path.
     fallback_sql = text("""
-        SELECT id, name, brand, concentration, gender_vote, 0.0 AS score
+        SELECT id, name, brand, COALESCE(concentration_clean, concentration) AS concentration, gender_vote, 0.0 AS score
         FROM perfumes
         WHERE (lower(brand) LIKE lower(:like) OR lower(name) LIKE lower(:like))
         AND (:brand_filter = '' OR lower(brand) LIKE lower(:brand_pattern))

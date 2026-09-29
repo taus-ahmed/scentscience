@@ -1,4 +1,4 @@
-import re
+﻿import re
 from typing import Optional
 
 from fastapi import APIRouter, Depends
@@ -131,7 +131,7 @@ def _serialize(p: Perfume) -> dict:
         "id": p.id,
         "name": p.name,
         "brand": p.brand,
-        "concentration": p.concentration,
+        "concentration": p.concentration_clean,
         "accords": p.accords or [],
         "community_longevity_label": p.community_longevity_label,
         "community_longevity_rating": p.community_longevity_rating,
