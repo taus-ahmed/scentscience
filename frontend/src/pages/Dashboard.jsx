@@ -9,7 +9,7 @@ import NLPConclusion from '../components/NLPConclusion.jsx'
 import FamilyRadar from '../components/FamilyRadar.jsx'
 import ContextHeatmap from '../components/ContextHeatmap.jsx'
 import OutOfDBPanel from '../components/OutOfDBPanel.jsx'
-import { predictPerfume, predictFromNotes } from '../api/client.js'
+import { predictPerfume, predictFromNotes, getNotesSimilar } from '../api/client.js'
 import { getCityRecommendations } from '../utils/cityRecommendations.js'
 import { displayConcentration } from '../utils/concentration.js'
 
@@ -216,6 +216,79 @@ function Particles() {
           }}
         />
       ))}
+    </div>
+  )
+}
+
+function SimilarPanel({ perfumeId, onSelect }) {
+  const [items, setItems] = React.useState([])
+  const [loading, setLoading] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!perfumeId) return
+    setLoading(true)
+    getNotesSimilar(perfumeId, 6)
+      .then(data => setItems(data || []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [perfumeId])
+
+  if (loading) return (
+    <div className="mt-4 text-xs text-center" style={{ color: '#3A3428' }}>
+      Finding similar fragrances…
+    </div>
+  )
+  if (!items.length) return null
+
+  return (
+    <div className="mt-6">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="flex-1 h-px" style={{ background: 'rgba(201,168,76,0.10)' }} />
+        <span className="text-[0.65rem] font-bold uppercase tracking-widest" style={{ color: '#3A3428' }}>
+          Similar Fragrances
+        </span>
+        <div className="flex-1 h-px" style={{ background: 'rgba(201,168,76,0.10)' }} />
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        {items.map(item => (
+          <button
+            key={item.id}
+            onClick={() => onSelect(item.name, item.brand, item.id)}
+            className="text-left p-3 rounded-xl transition-all"
+            style={{
+              background: '#0D1117',
+              border: '1px solid rgba(201,168,76,0.10)',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(201,168,76,0.25)'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(201,168,76,0.10)'}
+          >
+            <p className="text-xs font-semibold leading-tight mb-0.5" style={{ color: '#C9A84C', fontSize: '0.65rem' }}>
+              {item.brand}
+            </p>
+            <p className="text-sm font-bold leading-tight mb-1" style={{ color: '#E8DCC8' }}>
+              {item.name}
+            </p>
+            {(item.accords || []).slice(0, 2).map(a => (
+              <span
+                key={a}
+                style={{
+                  display: 'inline-block', marginRight: '0.25rem',
+                  padding: '0.05rem 0.35rem', borderRadius: '999px',
+                  fontSize: '0.58rem', color: '#C9A84C',
+                  background: 'rgba(201,168,76,0.08)',
+                  border: '1px solid rgba(201,168,76,0.20)',
+                }}
+              >
+                {a}
+              </span>
+            ))}
+            <p className="mt-1" style={{ fontSize: '0.6rem', color: '#3A3428' }}>
+              {Math.round(item.similarity * 100)}% match
+            </p>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }
@@ -775,6 +848,14 @@ export default function Dashboard() {
               modelVersion={p.model_version}
             />
           </div>
+
+          {/* Similar fragrances — notes+accord Jaccard, lazy-loaded */}
+          {result.perfume?.id && (
+            <SimilarPanel
+              perfumeId={result.perfume.id}
+              onSelect={(name, brand, id) => handleSearch({ name, brand, context: null, id })}
+            />
+          )}
 
         </div>
       )}
