@@ -110,19 +110,31 @@ NOTE_TO_FEATURE: dict[str, dict[str, float]] = {
 }
 
 _CONC_NORMALIZE: dict[str, str] = {
-    "cologne":   "EDC",
-    "edc":       "EDC",
-    "edt":       "EDT",
-    "edp":       "EDP",
-    "parfum":    "Parfum",
-    "extrait":   "Extrait",
-    "perfume":   "Parfum",
+    "cologne":           "EDC",
+    "edc":               "EDC",
+    "eau de cologne":    "EDC",
+    "edt":               "EDT",
+    "eau de toilette":   "EDT",
+    "edp":               "EDP",
+    "eau de parfum":     "EDP",
+    "eau de parfume":    "EDP",
+    "parfum":            "Parfum",
+    "perfume":           "Parfum",
+    "pure parfum":       "Parfum",
+    "extrait":           "Extrait",
+    "extrait de parfum": "Extrait",
+    "unknown":           "Unknown",
 }
 
 
-def normalize_concentration(raw: str) -> str:
-    """Normalize free-text concentration values (e.g. from Gemini) to our canonical set."""
-    return _CONC_NORMALIZE.get(raw.lower().strip(), "EDT")
+def normalize_concentration(raw: Optional[str]) -> str:
+    """Normalize free-text concentration values (e.g. from Gemini) to our canonical set.
+
+    Unrecognised or missing values return "Unknown" rather than guessing EDT.
+    """
+    if raw is None:
+        return "Unknown"
+    return _CONC_NORMALIZE.get(raw.lower().strip(), "Unknown")
 
 
 def build_perfume_dict_from_notes(

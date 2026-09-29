@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { searchPerfumes } from '../api/client.js'
 import { splitBrandPrefix } from '../constants/brands.js'
+import { displayConcentration } from '../utils/concentration.js'
 
 const SEASON_OPTS  = ['spring', 'summer', 'fall', 'winter']
 const TIME_OPTS    = ['morning', 'afternoon', 'evening', 'night']
@@ -191,7 +192,7 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
                 <strong>{sg.name}</strong>
                 <span style={{ color: '#C9A84C', marginLeft: '0.5rem' }}>{sg.brand}</span>
                 <span style={{ color: '#5A5245', marginLeft: '0.5rem', fontSize: '0.78rem' }}>
-                  {sg.concentration}
+                  {displayConcentration(sg.concentration)}
                 </span>
               </div>
             ))}

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { sendChat } from '../api/client.js'
+import { displayConcentration } from '../utils/concentration.js'
 
 const WELCOME = {
   id: 'welcome',
@@ -125,7 +126,9 @@ function PerfumeCard({ p, onClick }) {
     >
       <div style={{ minWidth: 0 }}>
         <div style={s.suggName}>{p.name}</div>
-        <div style={s.suggBrand}>{p.brand} · {p.concentration}</div>
+        <div style={s.suggBrand}>
+          {p.brand}{displayConcentration(p.concentration) ? ` · ${p.concentration}` : ''}
+        </div>
         {p.accords && p.accords.length > 0 && (
           <div style={s.suggAccords}>
             {p.accords.slice(0, 3).map(a => (

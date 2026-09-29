@@ -12,6 +12,7 @@ CONCENTRATION_MULTIPLIERS = {
     "EDP": 1.0,
     "Parfum": 1.3,
     "Extrait": 1.4,
+    "Unknown": 1.0,  # neutral midpoint until models are retrained on concentration_clean
 }
 
 FAMILIES = [
@@ -166,7 +167,7 @@ def build_feature_vector(perfume: dict[str, Any]) -> np.ndarray:
 
     # Concentration multiplier
     conc = perfume.get("concentration", "EDT")
-    conc_mult = CONCENTRATION_MULTIPLIERS.get(conc, 0.8)
+    conc_mult = CONCENTRATION_MULTIPLIERS.get(conc, CONCENTRATION_MULTIPLIERS["Unknown"])
     note_features.append(conc_mult)
 
     # Hard family assignment: count notes per family, normalize to proportions.

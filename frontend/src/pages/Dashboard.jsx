@@ -11,6 +11,7 @@ import ContextHeatmap from '../components/ContextHeatmap.jsx'
 import OutOfDBPanel from '../components/OutOfDBPanel.jsx'
 import { predictPerfume, predictFromNotes } from '../api/client.js'
 import { getCityRecommendations } from '../utils/cityRecommendations.js'
+import { displayConcentration } from '../utils/concentration.js'
 
 const PAGE_BG = { background: 'transparent', position: 'relative', zIndex: 1 }
 
@@ -529,9 +530,11 @@ export default function Dashboard() {
                 {result.perfume.name}
               </div>
               <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-                <span className="text-xs" style={{ color: '#5A5245' }}>
-                  {result.perfume.concentration}
-                </span>
+                {displayConcentration(result.perfume.concentration) && (
+                  <span className="text-xs" style={{ color: '#5A5245' }}>
+                    {result.perfume.concentration}
+                  </span>
+                )}
                 {GENDER_META[result.perfume.gender_vote] && (
                   <span className="text-xs" style={{ color: '#5A5245' }}>·</span>
                 )}

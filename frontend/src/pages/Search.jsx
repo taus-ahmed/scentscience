@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { searchPerfumes, getAllPerfumes } from '../api/client.js'
 import { useNavigate } from 'react-router-dom'
 import { BRANDS } from '../constants/brands.js'
+import { displayConcentration } from '../utils/concentration.js'
 
 const GOLD = '#C9A84C'
 const CARD_BG = '#111827'
@@ -98,7 +99,7 @@ function PerfumeCard({ p, onClick }) {
         <GenderBadge genderVote={p.gender_vote} />
       </div>
       <div style={{ fontSize: '0.85rem', color: '#a78bfa', marginBottom: '0.6rem' }}>
-        {p.brand}{p.concentration ? ` · ${p.concentration}` : ''}
+        {p.brand}{displayConcentration(p.concentration) ? ` · ${p.concentration}` : ''}
       </div>
       <div style={{ marginBottom: '0.6rem' }}>
         {(p.accords || []).slice(0, 3).map(a => (
