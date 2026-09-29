@@ -227,4 +227,5 @@ def _serialize(p: Perfume) -> dict:
         "community_longevity_rating": p.community_longevity_rating,
         "community_sillage_rating": p.community_sillage_rating,
         "community_overall_rating": p.community_overall_rating,
+        "perfume_role": p.perfume_role,  # 'clone' | 'original' | None
     }
