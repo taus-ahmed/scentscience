@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import Search from './pages/Search.jsx'
 import AdminUnlock from './pages/AdminUnlock.jsx'
 import ChatWidget from './components/ChatWidget.jsx'
+import Footer from './components/Footer.jsx'
 
 // Deterministic particle configs — no Math.random so values are stable across renders
 const PARTICLE_DATA = Array.from({ length: 14 }, (_, i) => ({
@@ -86,6 +87,7 @@ export default function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/admin-unlock" element={<AdminUnlock />} />
       </Routes>
+      <Footer />
       <ChatWidget />
       <Particles />
     </BrowserRouter>

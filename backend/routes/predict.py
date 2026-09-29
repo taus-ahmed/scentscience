@@ -63,6 +63,7 @@ class PredictRequest(BaseModel):
     perfume_name: str
     brand: Optional[str] = None
     context: Optional[PredictContext] = None
+    perfume_id: Optional[int] = None  # Phase 4: predict by ID to prevent perfume swapping
 
 
 class FromNotesRequest(BaseModel):
@@ -106,8 +107,11 @@ def _perfume_to_dict(p: Perfume) -> dict:
 
 def _predict_cache_key(req: PredictRequest) -> str:
     data = {
-        "name": req.perfume_name.lower().strip(),
-        "brand": (req.brand or "").lower().strip(),
+        # Phase 4: when an ID is provided, key on it — prevents stale name-based cache entries
+        # from returning the wrong perfume after the user picks from the autocomplete.
+        "id": req.perfume_id,
+        "name": req.perfume_name.lower().strip() if not req.perfume_id else "",
+        "brand": (req.brand or "").lower().strip() if not req.perfume_id else "",
         "skin_type": (req.context.skin_type if req.context else None) or "",
         "season": (req.context.season if req.context else None) or "",
         "time_of_day": (req.context.time_of_day if req.context else None) or "",
@@ -205,29 +209,41 @@ async def predict_endpoint(
     if key in predict_cache:
         return predict_cache[key]
 
-    # 1. Fuzzy search perfume in DB
-    from rapidfuzz import process, fuzz
-
-    stmt = select(Perfume).limit(500)
-    if req.brand:
-        stmt = select(Perfume).where(Perfume.brand.ilike(f"%{req.brand}%")).limit(200)
-    result = await db.execute(stmt)
-    perfumes = result.scalars().all()
-
-    if not perfumes:
-        stmt2 = select(Perfume).where(Perfume.name.ilike(f"%{req.perfume_name}%")).limit(200)
-        result2 = await db.execute(stmt2)
-        perfumes = result2.scalars().all()
-
-    # Try fuzzy match
+    # Phase 4: predict by ID — when the user picks from the autocomplete dropdown,
+    # the frontend passes the exact DB row ID.  Skip fuzzy search entirely to prevent
+    # swapping (e.g. "Light Blue" masculine id=7 vs feminine id=7264).
     matched_perfume = None
-    match_score = 0
-    if perfumes:
-        names = [p.name for p in perfumes]
-        match = process.extractOne(req.perfume_name, names, scorer=fuzz.WRatio)
-        if match and match[1] >= 40:
-            matched_perfume = perfumes[names.index(match[0])]
-            match_score = match[1]
+    match_score = 100
+
+    if req.perfume_id is not None:
+        id_result = await db.execute(select(Perfume).where(Perfume.id == req.perfume_id))
+        matched_perfume = id_result.scalar_one_or_none()
+        if matched_perfume is None:
+            # ID supplied but not found — fall through to fuzzy search
+            match_score = 0
+
+    if matched_perfume is None:
+        # 1. Fuzzy search perfume in DB
+        from rapidfuzz import process, fuzz
+
+        stmt = select(Perfume).limit(500)
+        if req.brand:
+            stmt = select(Perfume).where(Perfume.brand.ilike(f"%{req.brand}%")).limit(200)
+        result = await db.execute(stmt)
+        perfumes = result.scalars().all()
+
+        if not perfumes:
+            stmt2 = select(Perfume).where(Perfume.name.ilike(f"%{req.perfume_name}%")).limit(200)
+            result2 = await db.execute(stmt2)
+            perfumes = result2.scalars().all()
+
+        match_score = 0
+        if perfumes:
+            names = [p.name for p in perfumes]
+            match = process.extractOne(req.perfume_name, names, scorer=fuzz.WRatio)
+            if match and match[1] >= 40:
+                matched_perfume = perfumes[names.index(match[0])]
+                match_score = match[1]
 
     # 2. Handle not-found
     if matched_perfume is None:

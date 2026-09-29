@@ -62,6 +62,7 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
   const [timeOfDay, setTimeOfDay] = useState('')
   const [suggestions, setSuggestions] = useState([])
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [selectedId, setSelectedId] = useState(null)  // Phase 4: track exact DB id from autocomplete pick
 
   const containerRef = useRef(null)
   const skipNextFetchRef = useRef(false)
@@ -87,6 +88,8 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
       skipNextFetchRef.current = false
       return
     }
+    // Typing clears any previously-picked ID — the user changed their mind.
+    setSelectedId(null)
     if (name.length < 2) { setSuggestions([]); return }
 
     const cacheKey = name.trim().toLowerCase()
@@ -133,7 +136,7 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
     if (skinType) context.skin_type = skinType === 'combo' ? 'combination' : skinType
     if (season) context.season = season
     if (timeOfDay) context.time_of_day = timeOfDay
-    onSearch({ name: finalName, brand: finalBrand, context: Object.keys(context).length ? context : null })
+    onSearch({ name: finalName, brand: finalBrand, context: Object.keys(context).length ? context : null, id: selectedId })
   }
 
   const pickSuggestion = sg => {
@@ -142,6 +145,7 @@ export default function PerfumeSearch({ onSearch, loading, defaultName = '', def
     setShowSuggestions(false)
     setName(sg.name)
     setBrand(sg.brand)
+    setSelectedId(sg.id)  // Phase 4: remember the exact perfume picked
   }
 
   return (

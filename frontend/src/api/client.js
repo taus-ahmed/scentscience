@@ -13,9 +13,9 @@ export const adminHeaders = () => {
   return isAdmin ? { 'x-admin-key': adminKey } : {}
 }
 
-export const predictPerfume = (perfumeName, brand, context) =>
+export const predictPerfume = (perfumeName, brand, context, perfumeId = null) =>
   api
-    .post('/predict', { perfume_name: perfumeName, brand, context }, { headers: adminHeaders() })
+    .post('/predict', { perfume_name: perfumeName, brand, context, perfume_id: perfumeId }, { headers: adminHeaders() })
     .then(r => r.data)
 
 export const predictFromNotes = (data) =>

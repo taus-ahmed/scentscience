@@ -422,14 +422,15 @@ export default function Dashboard() {
     }
   }
 
-  const handleSearch = async ({ name, brand, context }) => {
+  const handleSearch = async ({ name, brand, context, id = null }) => {
     setLoading(true)
     setError(null)
     setResult(null)
     setNotFound(null)
     setLastSearch({ name, brand: brand || '' })
     try {
-      const data = await predictPerfume(name, brand, context)
+      // Phase 4: pass perfume_id when the user picked from autocomplete — prevents swapping
+      const data = await predictPerfume(name, brand, context, id)
       _applyResult(data)
     } catch (e) {
       setError(e.response?.data?.detail || e.message || 'Prediction failed')
