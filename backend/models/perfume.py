@@ -37,6 +37,7 @@ class Perfume(Base):
     concentration_confidence: Mapped[float | None] = mapped_column(Float, nullable=True, default=None)
     concentration_flag: Mapped[str | None] = mapped_column(String(120), nullable=True, default=None)
     product_type: Mapped[str | None] = mapped_column(String(20), nullable=True, default=None)
+    brand_canonical: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)  # set by 001_brand_aliases
     fragrantica_id: Mapped[str | None] = mapped_column(String(50), nullable=True)
     fragrantica_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     top_notes: Mapped[list] = mapped_column(JSON, default=list)

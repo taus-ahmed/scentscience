@@ -30,6 +30,12 @@ export const searchPerfumes = (q, brand, signal) =>
 export const getAllPerfumes = (limit = 200) =>
   api.get('/perfumes', { params: { limit } }).then(r => r.data)
 
+export const browsePerfumes = (params) =>
+  api.get('/perfumes/browse', { params }).then(r => r.data)
+
+export const listBrands = () =>
+  api.get('/brands').then(r => r.data)
+
 export const getNotes = (family) =>
   api.get('/notes', { params: { family } }).then(r => r.data)
 
