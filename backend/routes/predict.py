@@ -370,6 +370,20 @@ async def predict_endpoint(
         logger.warning(f"Prediction log DB save failed (non-fatal): {_e}")
         await db.rollback()
 
+    # If this is a clone, fetch the original for display
+    inspired_by_data = None
+    if matched_perfume.inspired_by_id:
+        orig_result = await db.execute(
+            select(Perfume).where(Perfume.id == matched_perfume.inspired_by_id)
+        )
+        orig = orig_result.scalar_one_or_none()
+        if orig:
+            inspired_by_data = {
+                "id": orig.id,
+                "name": orig.name,
+                "brand": orig.brand,
+            }
+
     result_out = {
         "perfume": {
             "id": matched_perfume.id,
@@ -378,6 +392,8 @@ async def predict_endpoint(
             "concentration": matched_perfume.concentration_clean,
             "accords": matched_perfume.accords,
             "gender_vote": matched_perfume.gender_vote,
+            "perfume_role": matched_perfume.perfume_role,
+            "inspired_by": inspired_by_data,
         },
         "predictions": predictions,
         "prediction_id": pred_row.id,

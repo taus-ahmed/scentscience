@@ -220,6 +220,46 @@ function Particles() {
   )
 }
 
+function InspiredByBanner({ inspiredBy, onCompare }) {
+  if (!inspiredBy) return null
+  return (
+    <div
+      className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-3 rounded-xl mb-4"
+      style={{ background: 'rgba(139,105,20,0.07)', border: '1px solid rgba(201,168,76,0.2)' }}
+    >
+      <div className="flex items-start gap-3 flex-1 min-w-0">
+        <span
+          className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded shrink-0 mt-0.5"
+          style={{ background: 'rgba(201,168,76,0.12)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.3)' }}
+        >
+          Clone
+        </span>
+        <span className="text-xs" style={{ color: '#9B8E7A' }}>
+          Inspired by{' '}
+          <span className="font-semibold" style={{ color: '#E8DCC8' }}>
+            {inspiredBy.name}
+          </span>
+          {' '}by{' '}
+          <span style={{ color: '#C9A84C' }}>{inspiredBy.brand}</span>
+          {' '}· community-matched by note & accord similarity
+        </span>
+      </div>
+      {onCompare && (
+        <button
+          onClick={() => onCompare(inspiredBy.name, inspiredBy.brand)}
+          className="shrink-0 text-xs px-3 py-1.5 rounded-lg transition-all"
+          style={{
+            background: 'rgba(201,168,76,0.10)', border: '1px solid rgba(201,168,76,0.25)',
+            color: '#C9A84C', cursor: 'pointer', fontWeight: 600,
+          }}
+        >
+          Compare →
+        </button>
+      )}
+    </div>
+  )
+}
+
 function CollapsibleSection({ label, children }) {
   return (
     <details className="mb-3">
@@ -532,14 +572,21 @@ export default function Dashboard() {
               </div>
               <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                 {displayConcentration(result.perfume.concentration) && (
-                  <span className="text-xs" style={{ color: '#5A5245' }}>
+                  <span style={{
+                    display: 'inline-block', padding: '0.1rem 0.55rem', borderRadius: '999px',
+                    fontSize: '0.65rem', fontWeight: 700,
+                    color: '#C9A84C', background: 'rgba(201,168,76,0.10)',
+                    border: '1px solid rgba(201,168,76,0.30)',
+                  }}>
                     {result.perfume.concentration}
                   </span>
                 )}
-                {GENDER_META[result.perfume.gender_vote] && (
-                  <span className="text-xs" style={{ color: '#5A5245' }}>·</span>
-                )}
                 <GenderBadge genderVote={result.perfume.gender_vote} />
+                {result.match_score && result.match_score < 80 && (
+                  <span style={{ fontSize: '0.62rem', color: '#5A5245', marginLeft: '0.2rem' }}>
+                    {result.match_score}% match
+                  </span>
+                )}
               </div>
               <FamilyChips familyFeatures={p.family_features} />
             </div>
@@ -609,6 +656,14 @@ export default function Dashboard() {
                 </details>
               )}
             </>
+          )}
+
+          {/* Clone / inspired-by banner */}
+          {result.perfume?.perfume_role === 'clone' && result.perfume?.inspired_by && (
+            <InspiredByBanner
+              inspiredBy={result.perfume.inspired_by}
+              onCompare={(name, brand) => handleSearch({ name, brand, context: null })}
+            />
           )}
 
           {/* User-notes banner */}
