@@ -72,7 +72,14 @@ class Perfume(Base):
 
     perfume_notes: Mapped[list["PerfumeNote"]] = relationship(back_populates="perfume")
     predictions: Mapped[list["PredictionResult"]] = relationship(back_populates="perfume")
-    inspired_by: Mapped["Perfume | None"] = relationship("Perfume", foreign_keys=[inspired_by_id], remote_side="Perfume.id")
+    # Self-referential: a clone → its original. Use lazy="raise" so async code
+    # is never silently blocked — the predict route does an explicit query instead.
+    inspired_by: Mapped["Perfume | None"] = relationship(
+        "Perfume",
+        foreign_keys="[Perfume.inspired_by_id]",
+        primaryjoin="Perfume.inspired_by_id == Perfume.id",
+        lazy="raise",
+    )
 
 
 class PerfumeNote(Base):
