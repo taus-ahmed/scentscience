@@ -64,22 +64,9 @@ class Perfume(Base):
     has_inferred_pyramid: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False)
     scraped_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-    # Added by 003_dupes.py
-    perfume_role: Mapped[str | None] = mapped_column(String(10), nullable=True)  # 'clone' | 'original' | None
-    inspired_by_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("perfumes.id", ondelete="SET NULL"), nullable=True)
-    # Added by 004_longevity.py
-    longevity_data_quality: Mapped[str | None] = mapped_column(String(20), nullable=True)  # 'community_label' | 'rating_based' | 'missing'
 
     perfume_notes: Mapped[list["PerfumeNote"]] = relationship(back_populates="perfume")
     predictions: Mapped[list["PredictionResult"]] = relationship(back_populates="perfume")
-    # Self-referential: a clone → its original. Use lazy="raise" so async code
-    # is never silently blocked — the predict route does an explicit query instead.
-    inspired_by: Mapped["Perfume | None"] = relationship(
-        "Perfume",
-        foreign_keys="[Perfume.inspired_by_id]",
-        primaryjoin="Perfume.inspired_by_id == Perfume.id",
-        lazy="raise",
-    )
 
 
 class PerfumeNote(Base):

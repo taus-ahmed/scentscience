@@ -203,92 +203,6 @@ async def get_similar_perfumes(
     ]
 
 
-@router.get("/perfumes/{perfume_id}/notes-similar")
-@limiter.limit("30/minute")
-async def notes_similar(
-    request: Request,
-    perfume_id: int,
-    limit: int = Query(6, le=12),
-    db: AsyncSession = Depends(get_db),
-):
-    """
-    Return perfumes most similar by notes+accord Jaccard to the given perfume_id.
-    Results are cached for 1 h. Excludes the source perfume itself.
-    """
-    cache_key = f"notes_sim_{perfume_id}_{limit}"
-    if cache_key in search_cache:
-        return search_cache[cache_key]
-
-    # Fetch the source perfume
-    src_result = await db.execute(select(Perfume).where(Perfume.id == perfume_id))
-    src = src_result.scalar_one_or_none()
-    if not src:
-        raise HTTPException(status_code=404, detail="Perfume not found")
-
-    def _to_set(val):
-        if not val:
-            return set()
-        if isinstance(val, list):
-            return {v.lower().strip() for v in val if v}
-        try:
-            return {v.lower().strip() for v in json.loads(val) if v}
-        except Exception:
-            return set()
-
-    src_notes = _to_set(src.top_notes) | _to_set(src.middle_notes) | _to_set(src.base_notes)
-    src_acc   = _to_set(src.accords)
-
-    if not src_notes and not src_acc:
-        search_cache[cache_key] = []
-        return []
-
-    # Candidates: same gender or unisex, rating_count >= 5, not the source
-    stmt = (
-        select(Perfume)
-        .where(Perfume.id != perfume_id)
-        .where(Perfume.rating_count >= 5)
-        .limit(3000)  # cap for performance — top-rated candidates
-        .order_by(Perfume.rating_count.desc())
-    )
-    result = await db.execute(stmt)
-    candidates = result.scalars().all()
-
-    def jaccard(a: set, b: set) -> float:
-        if not a and not b:
-            return 0.0
-        u = a | b
-        return len(a & b) / len(u) if u else 0.0
-
-    scored = []
-    for c in candidates:
-        c_notes = _to_set(c.top_notes) | _to_set(c.middle_notes) | _to_set(c.base_notes)
-        c_acc   = _to_set(c.accords)
-        score   = 0.6 * jaccard(src_notes, c_notes) + 0.4 * jaccard(src_acc, c_acc)
-        if score >= 0.15:
-            scored.append((score, c))
-
-    scored.sort(key=lambda x: -x[0])
-    top = scored[:limit]
-
-    out = [
-        {
-            "id": c.id,
-            "name": c.name,
-            "brand": c.brand,
-            "concentration": c.concentration_clean,
-            "accords": c.accords or [],
-            "gender_vote": c.gender_vote,
-            "community_overall_rating": c.community_overall_rating,
-            "rating_count": c.rating_count,
-            "similarity": round(score, 3),
-            "perfume_role": c.perfume_role,
-        }
-        for score, c in top
-    ]
-    search_cache[cache_key] = out
-    return out
-
-
 @router.get("/perfumes/{perfume_id}")
 @limiter.limit("60/minute")
 async def get_perfume(request: Request, perfume_id: int, db: AsyncSession = Depends(get_db)):
@@ -313,5 +227,4 @@ def _serialize(p: Perfume) -> dict:
         "community_longevity_rating": p.community_longevity_rating,
         "community_sillage_rating": p.community_sillage_rating,
         "community_overall_rating": p.community_overall_rating,
-        "perfume_role": p.perfume_role,  # 'clone' | 'original' | None
     }

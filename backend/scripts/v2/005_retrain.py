@@ -278,9 +278,11 @@ if args.write:
     print("\n=== Step 5: Saving models ===")
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     for group, model in trained_models.items():
+        targets = TARGET_GROUPS[group]
         path = MODELS_DIR / f"{group}_v{MODEL_VERSION}.pkl"
         with open(path, "wb") as f:
-            pickle.dump(model, f)
+            # Must match the format model.py expects: {"model": ..., "targets": ..., "version": ...}
+            pickle.dump({"model": model, "targets": targets, "version": MODEL_VERSION}, f)
         print(f"  Saved {path}")
     print(f"  Done. {len(trained_models)} model groups written.")
     print("  NOTE: restart the backend (Railway redeploy) to load new models.")

@@ -9,7 +9,7 @@ import NLPConclusion from '../components/NLPConclusion.jsx'
 import FamilyRadar from '../components/FamilyRadar.jsx'
 import ContextHeatmap from '../components/ContextHeatmap.jsx'
 import OutOfDBPanel from '../components/OutOfDBPanel.jsx'
-import { predictPerfume, predictFromNotes, getNotesSimilar } from '../api/client.js'
+import { predictPerfume, predictFromNotes } from '../api/client.js'
 import { getCityRecommendations } from '../utils/cityRecommendations.js'
 import { displayConcentration } from '../utils/concentration.js'
 
@@ -216,119 +216,6 @@ function Particles() {
           }}
         />
       ))}
-    </div>
-  )
-}
-
-function SimilarPanel({ perfumeId, onSelect }) {
-  const [items, setItems] = React.useState([])
-  const [loading, setLoading] = React.useState(false)
-
-  React.useEffect(() => {
-    if (!perfumeId) return
-    setLoading(true)
-    getNotesSimilar(perfumeId, 6)
-      .then(data => setItems(data || []))
-      .catch(() => {})
-      .finally(() => setLoading(false))
-  }, [perfumeId])
-
-  if (loading) return (
-    <div className="mt-4 text-xs text-center" style={{ color: '#3A3428' }}>
-      Finding similar fragrances…
-    </div>
-  )
-  if (!items.length) return null
-
-  return (
-    <div className="mt-6">
-      <div className="flex items-center gap-3 mb-3">
-        <div className="flex-1 h-px" style={{ background: 'rgba(201,168,76,0.10)' }} />
-        <span className="text-[0.65rem] font-bold uppercase tracking-widest" style={{ color: '#3A3428' }}>
-          Similar Fragrances
-        </span>
-        <div className="flex-1 h-px" style={{ background: 'rgba(201,168,76,0.10)' }} />
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {items.map(item => (
-          <button
-            key={item.id}
-            onClick={() => onSelect(item.name, item.brand, item.id)}
-            className="text-left p-3 rounded-xl transition-all"
-            style={{
-              background: '#0D1117',
-              border: '1px solid rgba(201,168,76,0.10)',
-              cursor: 'pointer',
-            }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(201,168,76,0.25)'}
-            onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(201,168,76,0.10)'}
-          >
-            <p className="text-xs font-semibold leading-tight mb-0.5" style={{ color: '#C9A84C', fontSize: '0.65rem' }}>
-              {item.brand}
-            </p>
-            <p className="text-sm font-bold leading-tight mb-1" style={{ color: '#E8DCC8' }}>
-              {item.name}
-            </p>
-            {(item.accords || []).slice(0, 2).map(a => (
-              <span
-                key={a}
-                style={{
-                  display: 'inline-block', marginRight: '0.25rem',
-                  padding: '0.05rem 0.35rem', borderRadius: '999px',
-                  fontSize: '0.58rem', color: '#C9A84C',
-                  background: 'rgba(201,168,76,0.08)',
-                  border: '1px solid rgba(201,168,76,0.20)',
-                }}
-              >
-                {a}
-              </span>
-            ))}
-            <p className="mt-1" style={{ fontSize: '0.6rem', color: '#3A3428' }}>
-              {Math.round(item.similarity * 100)}% match
-            </p>
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function InspiredByBanner({ inspiredBy, onCompare }) {
-  if (!inspiredBy) return null
-  return (
-    <div
-      className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-3 rounded-xl mb-4"
-      style={{ background: 'rgba(139,105,20,0.07)', border: '1px solid rgba(201,168,76,0.2)' }}
-    >
-      <div className="flex items-start gap-3 flex-1 min-w-0">
-        <span
-          className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded shrink-0 mt-0.5"
-          style={{ background: 'rgba(201,168,76,0.12)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.3)' }}
-        >
-          Clone
-        </span>
-        <span className="text-xs" style={{ color: '#9B8E7A' }}>
-          Inspired by{' '}
-          <span className="font-semibold" style={{ color: '#E8DCC8' }}>
-            {inspiredBy.name}
-          </span>
-          {' '}by{' '}
-          <span style={{ color: '#C9A84C' }}>{inspiredBy.brand}</span>
-          {' '}· community-matched by note & accord similarity
-        </span>
-      </div>
-      {onCompare && (
-        <button
-          onClick={() => onCompare(inspiredBy.name, inspiredBy.brand)}
-          className="shrink-0 text-xs px-3 py-1.5 rounded-lg transition-all"
-          style={{
-            background: 'rgba(201,168,76,0.10)', border: '1px solid rgba(201,168,76,0.25)',
-            color: '#C9A84C', cursor: 'pointer', fontWeight: 600,
-          }}
-        >
-          Compare →
-        </button>
-      )}
     </div>
   )
 }
@@ -645,21 +532,14 @@ export default function Dashboard() {
               </div>
               <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                 {displayConcentration(result.perfume.concentration) && (
-                  <span style={{
-                    display: 'inline-block', padding: '0.1rem 0.55rem', borderRadius: '999px',
-                    fontSize: '0.65rem', fontWeight: 700,
-                    color: '#C9A84C', background: 'rgba(201,168,76,0.10)',
-                    border: '1px solid rgba(201,168,76,0.30)',
-                  }}>
+                  <span className="text-xs" style={{ color: '#5A5245' }}>
                     {result.perfume.concentration}
                   </span>
                 )}
-                <GenderBadge genderVote={result.perfume.gender_vote} />
-                {result.match_score && result.match_score < 80 && (
-                  <span style={{ fontSize: '0.62rem', color: '#5A5245', marginLeft: '0.2rem' }}>
-                    {result.match_score}% match
-                  </span>
+                {GENDER_META[result.perfume.gender_vote] && (
+                  <span className="text-xs" style={{ color: '#5A5245' }}>·</span>
                 )}
+                <GenderBadge genderVote={result.perfume.gender_vote} />
               </div>
               <FamilyChips familyFeatures={p.family_features} />
             </div>
@@ -729,14 +609,6 @@ export default function Dashboard() {
                 </details>
               )}
             </>
-          )}
-
-          {/* Clone / inspired-by banner */}
-          {result.perfume?.perfume_role === 'clone' && result.perfume?.inspired_by && (
-            <InspiredByBanner
-              inspiredBy={result.perfume.inspired_by}
-              onCompare={(name, brand) => handleSearch({ name, brand, context: null })}
-            />
           )}
 
           {/* User-notes banner */}
@@ -848,14 +720,6 @@ export default function Dashboard() {
               modelVersion={p.model_version}
             />
           </div>
-
-          {/* Similar fragrances — notes+accord Jaccard, lazy-loaded */}
-          {result.perfume?.id && (
-            <SimilarPanel
-              perfumeId={result.perfume.id}
-              onSelect={(name, brand, id) => handleSearch({ name, brand, context: null, id })}
-            />
-          )}
 
         </div>
       )}
