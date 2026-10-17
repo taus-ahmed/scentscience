@@ -181,18 +181,18 @@ if args.write:
     tagged_rating = cur.rowcount
     print(f"  Tagged 'rating_based'   : {tagged_rating:,}")
 
-    # NULL-ify synthetic defaults
+    # Tag synthetic defaults as 'missing' (keep the 3.0 value — column is NOT NULL;
+    # the retrain script excludes 'missing' rows from longevity/sillage training)
     cur.execute("""
         UPDATE perfumes
-           SET community_longevity_rating = NULL,
-               community_sillage_rating   = NULL,
-               longevity_data_quality     = 'missing'
+           SET longevity_data_quality = 'missing'
          WHERE community_longevity_rating = 3.0
            AND (community_longevity_label IS NULL OR community_longevity_label = '')
            AND (rating_count < 10 OR rating_count IS NULL)
+           AND longevity_data_quality IS NULL
     """)
     nullified = cur.rowcount
-    print(f"  Set to NULL             : {nullified:,}")
+    print(f"  Tagged 'missing'        : {nullified:,}")
 
     conn.commit()
 
