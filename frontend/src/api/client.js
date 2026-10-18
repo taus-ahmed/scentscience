@@ -39,6 +39,18 @@ export const listBrands = () =>
 export const getNotes = (family) =>
   api.get('/notes', { params: { family } }).then(r => r.data)
 
+export const getNotesSimilar = (perfumeId, limit = 6) =>
+  api.get(`/perfumes/${perfumeId}/notes-similar`, { params: { limit } }).then(r => r.data)
+
+export const identifyFromPhoto = (imageFile) => {
+  const form = new FormData()
+  form.append('image', imageFile)
+  return api.post('/photo/identify', form, { headers: { 'Content-Type': 'multipart/form-data' } }).then(r => r.data)
+}
+
+export const predictFromPhoto = (brand, name, concentration) =>
+  api.post('/photo/predict', { brand, name, concentration }).then(r => r.data)
+
 export const sendChat = (message, context = {}) =>
   api.post('/chat', { message, context }).then(r => r.data)
 
