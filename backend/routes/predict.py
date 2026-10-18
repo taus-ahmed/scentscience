@@ -80,7 +80,7 @@ def _perfume_to_dict(p: Perfume) -> dict:
     return {
         "name": p.name,
         "brand": p.brand,
-        "concentration": p.concentration_clean,
+        "concentration": p.concentration,
         "top_notes": p.top_notes or [],
         "middle_notes": p.middle_notes or [],
         "base_notes": p.base_notes or [],
@@ -148,7 +148,7 @@ async def _find_similar(
         )
         res2 = await db.execute(stmt2)
         rows = [
-            {"id": p.id, "name": p.name, "brand": p.brand, "concentration": p.concentration_clean, "score": 0.0}
+            {"id": p.id, "name": p.name, "brand": p.brand, "concentration": p.concentration, "score": 0.0}
             for p in res2.scalars().all()
         ]
 
@@ -223,27 +223,23 @@ async def predict_endpoint(
             match_score = 0
 
     if matched_perfume is None:
-        # 1. Fuzzy search perfume in DB
-        from rapidfuzz import process, fuzz
-
-        stmt = select(Perfume).limit(500)
-        if req.brand:
-            stmt = select(Perfume).where(Perfume.brand.ilike(f"%{req.brand}%")).limit(200)
-        result = await db.execute(stmt)
-        perfumes = result.scalars().all()
-
-        if not perfumes:
-            stmt2 = select(Perfume).where(Perfume.name.ilike(f"%{req.perfume_name}%")).limit(200)
-            result2 = await db.execute(stmt2)
-            perfumes = result2.scalars().all()
-
+        # Use trgm_search — the same pg_trgm engine that powers the autocomplete
+        # dropdown, searching across all 110k+ perfumes and ranked by
+        # similarity × log(popularity).  Much better than loading 500 rows and
+        # doing in-memory fuzzy matching.
+        query_str = f"{req.brand or ''} {req.perfume_name}".strip()
+        rows = await trgm_search(db, query_str, limit=5)
         match_score = 0
-        if perfumes:
-            names = [p.name for p in perfumes]
-            match = process.extractOne(req.perfume_name, names, scorer=fuzz.WRatio)
-            if match and match[1] >= 40:
-                matched_perfume = perfumes[names.index(match[0])]
-                match_score = match[1]
+        if rows and rows[0].get("score", 0) >= 0.50:
+            # Name-coverage guard: prevents "9 PM" satisfying "9 PM Night Out".
+            # Re-uses the same helper as the photo route.
+            from routes.photo import _name_covers_query
+            if _name_covers_query(req.perfume_name, rows[0].get("name", "")):
+                id_result = await db.execute(
+                    select(Perfume).where(Perfume.id == rows[0]["id"])
+                )
+                matched_perfume = id_result.scalar_one_or_none()
+                match_score = int(rows[0]["score"] * 100)
 
     # 2. Handle not-found
     if matched_perfume is None:
@@ -370,14 +366,30 @@ async def predict_endpoint(
         logger.warning(f"Prediction log DB save failed (non-fatal): {_e}")
         await db.rollback()
 
+    # If this is a clone, fetch the original for display
+    inspired_by_data = None
+    if matched_perfume.inspired_by_id:
+        orig_result = await db.execute(
+            select(Perfume).where(Perfume.id == matched_perfume.inspired_by_id)
+        )
+        orig = orig_result.scalar_one_or_none()
+        if orig:
+            inspired_by_data = {
+                "id": orig.id,
+                "name": orig.name,
+                "brand": orig.brand,
+            }
+
     result_out = {
         "perfume": {
             "id": matched_perfume.id,
             "name": matched_perfume.name,
             "brand": matched_perfume.brand,
-            "concentration": matched_perfume.concentration_clean,
+            "concentration": matched_perfume.concentration,
             "accords": matched_perfume.accords,
             "gender_vote": matched_perfume.gender_vote,
+            "perfume_role": matched_perfume.perfume_role,
+            "inspired_by": inspired_by_data,
         },
         "predictions": predictions,
         "prediction_id": pred_row.id,

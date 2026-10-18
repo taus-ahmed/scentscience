@@ -63,6 +63,7 @@ function SearchInput({ label, accent, name, setName, brand, setBrand, onSearch, 
   const [showSugs, setShowSugs] = useState(false)
   const abortRef = useRef(null)
   const containerRef = useRef(null)
+  const skipNextRef = useRef(false)
 
   useEffect(() => {
     const handleOutsideClick = e => {
@@ -73,6 +74,7 @@ function SearchInput({ label, accent, name, setName, brand, setBrand, onSearch, 
   }, [])
 
   useEffect(() => {
+    if (skipNextRef.current) { skipNextRef.current = false; return }
     if (name.length < 2) { setSugs([]); return }
     const timer = setTimeout(async () => {
       abortRef.current?.abort()
@@ -87,11 +89,21 @@ function SearchInput({ label, accent, name, setName, brand, setBrand, onSearch, 
   }, [name])
 
   const pick = sg => {
+    skipNextRef.current = true
     setName(sg.name)
     setBrand(sg.brand)
     setSugs([])
     setShowSugs(false)
     onSearch(sg.name, sg.brand, sg.id)
+  }
+
+  const handleEnter = () => {
+    // Auto-pick best match if dropdown is open — prevents wrong-perfume matches
+    if (showSugs && sugs.length > 0) {
+      pick(sugs[0])
+    } else {
+      onSearch(name, brand, null)
+    }
   }
 
   return (
@@ -103,7 +115,7 @@ function SearchInput({ label, accent, name, setName, brand, setBrand, onSearch, 
         <input
           value={name}
           onChange={e => setName(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && onSearch(name, brand, null)}
+          onKeyDown={e => e.key === 'Enter' && handleEnter()}
           placeholder="Fragrance name…"
           className="w-full px-4 py-2.5 rounded-xl text-sm"
           style={{

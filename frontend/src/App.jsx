@@ -2,7 +2,9 @@ import React, { useState } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import Dashboard from './pages/Dashboard.jsx'
 import Search from './pages/Search.jsx'
+import Compare from './pages/Compare.jsx'
 import AdminUnlock from './pages/AdminUnlock.jsx'
+import PhotoLookup from './pages/PhotoLookup.jsx'
 import ChatWidget from './components/ChatWidget.jsx'
 import Footer from './components/Footer.jsx'
 
@@ -60,6 +62,11 @@ export default function App() {
         <div className="hidden sm:flex items-center gap-6">
           <Link to="/" style={LINK_COLOR} className="text-sm hover:opacity-80 transition-opacity">Dashboard</Link>
           <Link to="/search" style={LINK_COLOR} className="text-sm hover:opacity-80 transition-opacity">Browse</Link>
+          <Link to="/compare" style={LINK_COLOR} className="text-sm hover:opacity-80 transition-opacity">Compare</Link>
+          <Link to="/photo" style={{ ...LINK_COLOR, display: 'flex', alignItems: 'center', gap: 4 }}
+            className="text-sm hover:opacity-80 transition-opacity">
+            📷 Photo
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -79,12 +86,16 @@ export default function App() {
           className="sm:hidden flex flex-col px-5 py-4 gap-4">
           <Link to="/" style={LINK_COLOR} className="text-sm" onClick={() => setMenuOpen(false)}>Dashboard</Link>
           <Link to="/search" style={LINK_COLOR} className="text-sm" onClick={() => setMenuOpen(false)}>Browse</Link>
+          <Link to="/compare" style={LINK_COLOR} className="text-sm" onClick={() => setMenuOpen(false)}>Compare</Link>
+          <Link to="/photo" style={LINK_COLOR} className="text-sm" onClick={() => setMenuOpen(false)}>📷 Photo Lookup</Link>
         </div>
       )}
 
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/compare" element={<Compare />} />
+        <Route path="/photo" element={<PhotoLookup />} />
         <Route path="/admin-unlock" element={<AdminUnlock />} />
       </Routes>
       <Footer />

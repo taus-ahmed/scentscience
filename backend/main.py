@@ -10,7 +10,7 @@ from slowapi.errors import RateLimitExceeded
 from config import get_settings
 from limiter import limiter
 from models.database import init_db, AsyncSessionLocal
-from routes import predict, perfumes, notes, chat
+from routes import predict, perfumes, notes, chat, photo
 
 settings = get_settings()
 logger = logging.getLogger(__name__)
@@ -79,6 +79,7 @@ app.include_router(predict.router, prefix="/api")
 app.include_router(perfumes.router, prefix="/api")
 app.include_router(notes.router, prefix="/api")
 app.include_router(chat.router, prefix="/api")
+app.include_router(photo.router, prefix="/api")
 
 
 @app.get("/health")
