@@ -3,9 +3,9 @@
  * User takes / uploads a bottle photo → Gemini reads label →
  * confirmation form (editable) → full prediction result.
  */
-import { useState, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { identifyFromPhoto, predictFromPhoto } from '../api/client'
+import { identifyFromPhoto, predictFromPhoto } from '../api/client.js'
 
 const CONCENTRATIONS = ['EDP', 'EDT', 'Extrait', 'Parfum', 'EDC', 'Unknown']
 
